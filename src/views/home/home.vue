@@ -90,33 +90,69 @@
           </Carousel>
         </div>
       </div>
-      <div class="w-[50%] h-full border rounded-2xl p-[10px] bg-card/20 backdrop-blur-sm flex flex-col">
+      <div
+        class="w-[50%] h-full border rounded-2xl p-[10px] bg-card/20 backdrop-blur-sm flex flex-col"
+      >
         <div class="flex justify-between items-center pb-[5px]">
-          <h3 class="font-bold text-lg"> <span class="text-primary font-bold">下午好</span> ，猜你最近喜欢听</h3>
+          <h3 class="font-bold text-lg">
+            <span class="text-primary font-bold">下午好</span> ，猜你最近喜欢听
+          </h3>
         </div>
-        <div class="flex flex-col gap-[10px] flex-1 overflow-auto"  >
+        <div class="flex flex-col gap-[10px] flex-1 overflow-auto">
           <div class="grid grid-cols-2 gap-[10px] h-full">
-            <div class="h-[100%] relative rounded-xl overflow-hidden cursor-pointer group transition-all">
-              <img src="https://picsum.photos/id/20/200/200" alt="歌单" class="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-all"/>
-              <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-[10px]">
+            <div
+              class="h-[100%] relative rounded-xl overflow-hidden cursor-pointer group transition-all"
+            >
+              <img
+                src="https://picsum.photos/id/20/200/200"
+                alt="歌单"
+                class="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-all"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-[10px]"
+              >
                 <span class="text-white text-sm truncate">歌单</span>
               </div>
             </div>
-            <div class="h-[100%] relative rounded-xl overflow-hidden cursor-pointer group transition-all">
-              <img src="https://picsum.photos/id/26/200/200" alt="歌单" class="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-all"/>
-              <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-[10px]">
+            <div
+              class="h-[100%] relative rounded-xl overflow-hidden cursor-pointer group transition-all"
+            >
+              <img
+                src="https://picsum.photos/id/26/200/200"
+                alt="歌单"
+                class="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-all"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-[10px]"
+              >
                 <span class="text-white text-sm truncate">歌单</span>
               </div>
             </div>
-            <div class="h-[100%] relative rounded-xl overflow-hidden cursor-pointer group transition-all">
-              <img src="https://picsum.photos/id/28/200/200" alt="歌单" class="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-all"/>
-              <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-[10px]">
+            <div
+              class="h-[100%] relative rounded-xl overflow-hidden cursor-pointer group transition-all"
+            >
+              <img
+                src="https://picsum.photos/id/28/200/200"
+                alt="歌单"
+                class="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-all"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-[10px]"
+              >
                 <span class="text-white text-sm truncate">歌单</span>
               </div>
             </div>
-            <div class="h-[100%] relative rounded-xl overflow-hidden cursor-pointer group transition-all">
-              <img src="https://picsum.photos/id/29/200/200" alt="歌单" class="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-all"/>
-              <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-[10px]">
+            <div
+              class="h-[100%] relative rounded-xl overflow-hidden cursor-pointer group transition-all"
+            >
+              <img
+                src="https://picsum.photos/id/29/200/200"
+                alt="歌单"
+                class="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-all"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-[10px]"
+              >
                 <span class="text-white text-sm truncate">歌单</span>
               </div>
             </div>
@@ -124,16 +160,15 @@
         </div>
       </div>
     </div>
-   
-    <!-- 热门歌单 -->
+    <!-- 精选推荐 -->
     <div class="pl-[20px] font-bold">
-      <span class="iconfont icon-bofanggedan text-primary"></span> 热门歌单
+      <span class="iconfont icon-bofanggedan text-primary"></span> 精选推荐
     </div>
     <div class="h-[40%] w-full shrink-0 flex gap-[5px] ml-[20px]">
-      <Carousel class="relative w-full  group overflow-visible ">
+      <Carousel class="relative w-full group overflow-visible">
         <CarouselContent class="h-[100%] w-[100%]">
           <CarouselItem
-            class="h-[100%] w-full cursor-pointer flex  grid grid-cols-7  grid-rows-1"
+            class="h-[100%] w-full cursor-pointer flex grid grid-cols-7 grid-rows-1"
             v-for="(_, index) in 2"
             :key="index"
           >
@@ -150,227 +185,464 @@
         />
       </Carousel>
     </div>
-     <!-- 榜单竞选 -->
+    <!-- 热门歌单 -->
+    <div class="pl-[20px] font-bold">
+      <span class="iconfont icon-bofanggedan text-primary"></span> 热门歌单
+    </div>
+    <div class="h-[40%] w-full shrink-0 flex gap-[5px] ml-[20px]">
+      <Carousel class="relative w-full group overflow-visible">
+        <CarouselContent class="h-[100%] w-[100%]">
+          <CarouselItem
+            class="h-[100%] w-full cursor-pointer flex grid grid-cols-7 grid-rows-1"
+            v-for="(_, index) in 2"
+            :key="index"
+          >
+            <div class="p-1 h-[100%] w-[100%]" v-for="i in 7">
+              <card></card>
+            </div>
+          </CarouselItem>
+        </CarouselContent>
+        <CarouselPrevious
+          class="left-[5px] hidden group-hover:inline-block group-hover:flex group-hover:items-center size-[35px] text-primary"
+        />
+        <CarouselNext
+          class="right-[20px] hidden group-hover:inline-block group-hover:flex group-hover:items-center size-[35px] text-primary"
+        />
+      </Carousel>
+    </div>
+    <!-- 榜单竞选 -->
     <div class="pl-[20px] font-bold mb-[10px]">
       <span class="iconfont icon-bofanggedan text-primary"></span> 榜单竞选
     </div>
     <div class="grid grid-cols-2 gap-[10px] pl-[20px] mb-[20px]">
       <!-- 飙升榜 -->
-      <div class="border rounded-xl p-[10px] bg-card/20 backdrop-blur-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-2px]">
+      <div
+        class="border rounded-xl p-[10px] bg-card/20 backdrop-blur-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-2px]"
+      >
         <div class="flex justify-between items-center mb-[10px]">
           <div class="flex items-center gap-[5px]">
-            <div class="w-[20px] h-[20px] rounded-full bg-red-500 text-white flex items-center justify-center text-xs font-bold">榜</div>
+            <div
+              class="w-[20px] h-[20px] rounded-full bg-red-500 text-white flex items-center justify-center text-xs font-bold"
+            >
+              榜
+            </div>
             <h3 class="font-bold">飙升榜</h3>
           </div>
           <span class="text-xs text-gray-400">刚刚更新</span>
         </div>
         <div class="space-y-[8px] flex gap-[10px]">
           <div class="w-[15%] relative">
-              <div class="border rounded-xl size-full absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]"></div>
-              <div class="border rounded-xl w-full h-[80%] absolute left-[50%] top-[20%] translate-x-[-40%] "></div>
-              <div class="border rounded-xl w-full h-[50%] absolute left-[50%] top-[50%] translate-x-[-30%] "></div>
+            <div
+              class="border rounded-xl size-full absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]"
+            ></div>
+            <div
+              class="border rounded-xl w-full h-[80%] absolute left-[50%] top-[20%] translate-x-[-40%]"
+            ></div>
+            <div
+              class="border rounded-xl w-full h-[50%] absolute left-[50%] top-[50%] translate-x-[-30%]"
+            ></div>
           </div>
           <div class="flex-1 pl-[1px]">
-            <div class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200">
-            <div class="w-[24px] text-center font-bold text-red-500">1</div>
-            <div class="flex-1 overflow-hidden">
-              <div class="text-sm font-medium truncate group-hover:text-primary transition-colors">Shower - Rapeter</div>
+            <div
+              class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200"
+            >
+              <div class="w-[24px] text-center font-bold text-red-500">1</div>
+              <div class="flex-1 overflow-hidden">
+                <div
+                  class="text-sm font-medium truncate group-hover:text-primary transition-colors"
+                >
+                  Shower - Rapeter
+                </div>
+              </div>
+              <div class="text-xs text-green-500">新</div>
+              <div class="opacity-0 group-hover:opacity-100 transition-opacity">
+                <span
+                  class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"
+                ></span>
+              </div>
             </div>
-            <div class="text-xs text-green-500">新</div>
-            <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-              <span class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"></span>
+            <div
+              class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200"
+            >
+              <div class="w-[24px] text-center font-bold text-red-400">2</div>
+              <div class="flex-1 overflow-hidden">
+                <div
+                  class="text-sm font-medium truncate group-hover:text-primary transition-colors"
+                >
+                  我要搞摇滚 - 孙天宇/蒋易/土豆
+                </div>
+              </div>
+              <div class="text-xs text-green-500">新</div>
+              <div class="opacity-0 group-hover:opacity-100 transition-opacity">
+                <span
+                  class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"
+                ></span>
+              </div>
             </div>
-          </div>
-          <div class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200">
-            <div class="w-[24px] text-center font-bold text-red-400">2</div>
-            <div class="flex-1 overflow-hidden">
-              <div class="text-sm font-medium truncate group-hover:text-primary transition-colors">我要搞摇滚 - 孙天宇/蒋易/土豆</div>
+            <div
+              class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200"
+            >
+              <div class="w-[24px] text-center font-bold text-red-300">3</div>
+              <div class="flex-1 overflow-hidden">
+                <div
+                  class="text-sm font-medium truncate group-hover:text-primary transition-colors"
+                >
+                  Zoo (From "Zootopia 2")
+                </div>
+              </div>
+              <div class="text-xs text-red-500 flex items-center">
+                <svg
+                  class="w-3 h-3"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 12H19"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M12 5L19 12L12 19"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+              <div class="opacity-0 group-hover:opacity-100 transition-opacity">
+                <span
+                  class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"
+                ></span>
+              </div>
             </div>
-            <div class="text-xs text-green-500">新</div>
-            <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-              <span class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"></span>
-            </div>
-          </div>
-          <div class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200">
-            <div class="w-[24px] text-center font-bold text-red-300">3</div>
-            <div class="flex-1 overflow-hidden">
-              <div class="text-sm font-medium truncate group-hover:text-primary transition-colors">Zoo (From "Zootopia 2")</div>
-            </div>
-            <div class="text-xs text-red-500 flex items-center">
-              <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M12 5L19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-              <span class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"></span>
-            </div>
-          </div>
           </div>
         </div>
       </div>
-      
+
       <!-- 新歌榜 -->
-      <div class="border rounded-xl p-[10px] bg-card/20 backdrop-blur-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-2px]">
+      <div
+        class="border rounded-xl p-[10px] bg-card/20 backdrop-blur-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-2px]"
+      >
         <div class="flex justify-between items-center mb-[10px]">
           <div class="flex items-center gap-[5px]">
-            <div class="w-[20px] h-[20px] rounded-full bg-green-500 text-white flex items-center justify-center text-xs font-bold">榜</div>
+            <div
+              class="w-[20px] h-[20px] rounded-full bg-green-500 text-white flex items-center justify-center text-xs font-bold"
+            >
+              榜
+            </div>
             <h3 class="font-bold">新歌榜</h3>
           </div>
           <span class="text-xs text-gray-400">刚刚更新</span>
         </div>
         <div class="space-y-[8px] flex gap-[10px]">
           <div class="w-[15%] relative">
-              <div class="border rounded-xl size-full absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]"></div>
-              <div class="border rounded-xl w-full h-[80%] absolute left-[50%] top-[20%] translate-x-[-40%] "></div>
-              <div class="border rounded-xl w-full h-[50%] absolute left-[50%] top-[50%] translate-x-[-30%] "></div>
+            <div
+              class="border rounded-xl size-full absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]"
+            ></div>
+            <div
+              class="border rounded-xl w-full h-[80%] absolute left-[50%] top-[20%] translate-x-[-40%]"
+            ></div>
+            <div
+              class="border rounded-xl w-full h-[50%] absolute left-[50%] top-[50%] translate-x-[-30%]"
+            ></div>
           </div>
           <div class="flex-1 pl-[1px]">
-            <div class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200">
-            <div class="w-[24px] text-center font-bold text-red-500">1</div>
-            <div class="flex-1 overflow-hidden">
-              <div class="text-sm font-medium truncate group-hover:text-primary transition-colors">Shower - Rapeter</div>
+            <div
+              class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200"
+            >
+              <div class="w-[24px] text-center font-bold text-red-500">1</div>
+              <div class="flex-1 overflow-hidden">
+                <div
+                  class="text-sm font-medium truncate group-hover:text-primary transition-colors"
+                >
+                  Shower - Rapeter
+                </div>
+              </div>
+              <div class="text-xs text-green-500">新</div>
+              <div class="opacity-0 group-hover:opacity-100 transition-opacity">
+                <span
+                  class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"
+                ></span>
+              </div>
             </div>
-            <div class="text-xs text-green-500">新</div>
-            <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-              <span class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"></span>
+            <div
+              class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200"
+            >
+              <div class="w-[24px] text-center font-bold text-red-400">2</div>
+              <div class="flex-1 overflow-hidden">
+                <div
+                  class="text-sm font-medium truncate group-hover:text-primary transition-colors"
+                >
+                  我要搞摇滚 - 孙天宇/蒋易/土豆
+                </div>
+              </div>
+              <div class="text-xs text-green-500">新</div>
+              <div class="opacity-0 group-hover:opacity-100 transition-opacity">
+                <span
+                  class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"
+                ></span>
+              </div>
             </div>
-          </div>
-          <div class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200">
-            <div class="w-[24px] text-center font-bold text-red-400">2</div>
-            <div class="flex-1 overflow-hidden">
-              <div class="text-sm font-medium truncate group-hover:text-primary transition-colors">我要搞摇滚 - 孙天宇/蒋易/土豆</div>
+            <div
+              class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200"
+            >
+              <div class="w-[24px] text-center font-bold text-red-300">3</div>
+              <div class="flex-1 overflow-hidden">
+                <div
+                  class="text-sm font-medium truncate group-hover:text-primary transition-colors"
+                >
+                  Zoo (From "Zootopia 2")
+                </div>
+              </div>
+              <div class="text-xs text-red-500 flex items-center">
+                <svg
+                  class="w-3 h-3"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 12H19"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M12 5L19 12L12 19"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+              <div class="opacity-0 group-hover:opacity-100 transition-opacity">
+                <span
+                  class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"
+                ></span>
+              </div>
             </div>
-            <div class="text-xs text-green-500">新</div>
-            <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-              <span class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"></span>
-            </div>
-          </div>
-          <div class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200">
-            <div class="w-[24px] text-center font-bold text-red-300">3</div>
-            <div class="flex-1 overflow-hidden">
-              <div class="text-sm font-medium truncate group-hover:text-primary transition-colors">Zoo (From "Zootopia 2")</div>
-            </div>
-            <div class="text-xs text-red-500 flex items-center">
-              <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M12 5L19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-              <span class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"></span>
-            </div>
-          </div>
           </div>
         </div>
       </div>
-      
+
       <!-- 热歌榜 -->
-      <div class="border rounded-xl p-[10px] bg-card/20 backdrop-blur-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-2px]">
+      <div
+        class="border rounded-xl p-[10px] bg-card/20 backdrop-blur-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-2px]"
+      >
         <div class="flex justify-between items-center mb-[10px]">
           <div class="flex items-center gap-[5px]">
-            <div class="w-[20px] h-[20px] rounded-full bg-orange-500 text-white flex items-center justify-center text-xs font-bold">榜</div>
+            <div
+              class="w-[20px] h-[20px] rounded-full bg-orange-500 text-white flex items-center justify-center text-xs font-bold"
+            >
+              榜
+            </div>
             <h3 class="font-bold">热歌榜</h3>
           </div>
           <span class="text-xs text-gray-400">刚刚更新</span>
         </div>
-       <div class="space-y-[8px] flex gap-[10px]">
+        <div class="space-y-[8px] flex gap-[10px]">
           <div class="w-[15%] relative">
-              <div class="border rounded-xl size-full absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]"></div>
-              <div class="border rounded-xl w-full h-[80%] absolute left-[50%] top-[20%] translate-x-[-40%] "></div>
-              <div class="border rounded-xl w-full h-[50%] absolute left-[50%] top-[50%] translate-x-[-30%] "></div>
+            <div
+              class="border rounded-xl size-full absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]"
+            ></div>
+            <div
+              class="border rounded-xl w-full h-[80%] absolute left-[50%] top-[20%] translate-x-[-40%]"
+            ></div>
+            <div
+              class="border rounded-xl w-full h-[50%] absolute left-[50%] top-[50%] translate-x-[-30%]"
+            ></div>
           </div>
           <div class="flex-1 pl-[1px]">
-            <div class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200">
-            <div class="w-[24px] text-center font-bold text-red-500">1</div>
-            <div class="flex-1 overflow-hidden">
-              <div class="text-sm font-medium truncate group-hover:text-primary transition-colors">Shower - Rapeter</div>
+            <div
+              class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200"
+            >
+              <div class="w-[24px] text-center font-bold text-red-500">1</div>
+              <div class="flex-1 overflow-hidden">
+                <div
+                  class="text-sm font-medium truncate group-hover:text-primary transition-colors"
+                >
+                  Shower - Rapeter
+                </div>
+              </div>
+              <div class="text-xs text-green-500">新</div>
+              <div class="opacity-0 group-hover:opacity-100 transition-opacity">
+                <span
+                  class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"
+                ></span>
+              </div>
             </div>
-            <div class="text-xs text-green-500">新</div>
-            <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-              <span class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"></span>
+            <div
+              class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200"
+            >
+              <div class="w-[24px] text-center font-bold text-red-400">2</div>
+              <div class="flex-1 overflow-hidden">
+                <div
+                  class="text-sm font-medium truncate group-hover:text-primary transition-colors"
+                >
+                  我要搞摇滚 - 孙天宇/蒋易/土豆
+                </div>
+              </div>
+              <div class="text-xs text-green-500">新</div>
+              <div class="opacity-0 group-hover:opacity-100 transition-opacity">
+                <span
+                  class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"
+                ></span>
+              </div>
             </div>
-          </div>
-          <div class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200">
-            <div class="w-[24px] text-center font-bold text-red-400">2</div>
-            <div class="flex-1 overflow-hidden">
-              <div class="text-sm font-medium truncate group-hover:text-primary transition-colors">我要搞摇滚 - 孙天宇/蒋易/土豆</div>
+            <div
+              class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200"
+            >
+              <div class="w-[24px] text-center font-bold text-red-300">3</div>
+              <div class="flex-1 overflow-hidden">
+                <div
+                  class="text-sm font-medium truncate group-hover:text-primary transition-colors"
+                >
+                  Zoo (From "Zootopia 2")
+                </div>
+              </div>
+              <div class="text-xs text-red-500 flex items-center">
+                <svg
+                  class="w-3 h-3"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 12H19"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M12 5L19 12L12 19"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+              <div class="opacity-0 group-hover:opacity-100 transition-opacity">
+                <span
+                  class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"
+                ></span>
+              </div>
             </div>
-            <div class="text-xs text-green-500">新</div>
-            <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-              <span class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"></span>
-            </div>
-          </div>
-          <div class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200">
-            <div class="w-[24px] text-center font-bold text-red-300">3</div>
-            <div class="flex-1 overflow-hidden">
-              <div class="text-sm font-medium truncate group-hover:text-primary transition-colors">Zoo (From "Zootopia 2")</div>
-            </div>
-            <div class="text-xs text-red-500 flex items-center">
-              <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M12 5L19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-              <span class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"></span>
-            </div>
-          </div>
           </div>
         </div>
       </div>
-      
+
       <!-- 原创榜 -->
-      <div class="border rounded-xl p-[10px] bg-card/20 backdrop-blur-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-2px]">
+      <div
+        class="border rounded-xl p-[10px] bg-card/20 backdrop-blur-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-2px]"
+      >
         <div class="flex justify-between items-center mb-[10px]">
           <div class="flex items-center gap-[5px]">
-            <div class="w-[20px] h-[20px] rounded-full bg-purple-500 text-white flex items-center justify-center text-xs font-bold">榜</div>
+            <div
+              class="w-[20px] h-[20px] rounded-full bg-purple-500 text-white flex items-center justify-center text-xs font-bold"
+            >
+              榜
+            </div>
             <h3 class="font-bold">原创榜</h3>
           </div>
           <span class="text-xs text-gray-400">每周四更新</span>
         </div>
         <div class="space-y-[8px] flex gap-[10px]">
           <div class="w-[15%] relative">
-              <div class="border rounded-xl size-full absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]"></div>
-              <div class="border rounded-xl w-full h-[80%] absolute left-[50%] top-[20%] translate-x-[-40%] "></div>
-              <div class="border rounded-xl w-full h-[50%] absolute left-[50%] top-[50%] translate-x-[-30%] "></div>
+            <div
+              class="border rounded-xl size-full absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]"
+            ></div>
+            <div
+              class="border rounded-xl w-full h-[80%] absolute left-[50%] top-[20%] translate-x-[-40%]"
+            ></div>
+            <div
+              class="border rounded-xl w-full h-[50%] absolute left-[50%] top-[50%] translate-x-[-30%]"
+            ></div>
           </div>
           <div class="flex-1 pl-[1px]">
-            <div class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200">
-            <div class="w-[24px] text-center font-bold text-red-500">1</div>
-            <div class="flex-1 overflow-hidden">
-              <div class="text-sm font-medium truncate group-hover:text-primary transition-colors">Shower - Rapeter</div>
+            <div
+              class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200"
+            >
+              <div class="w-[24px] text-center font-bold text-red-500">1</div>
+              <div class="flex-1 overflow-hidden">
+                <div
+                  class="text-sm font-medium truncate group-hover:text-primary transition-colors"
+                >
+                  Shower - Rapeter
+                </div>
+              </div>
+              <div class="text-xs text-green-500">新</div>
+              <div class="opacity-0 group-hover:opacity-100 transition-opacity">
+                <span
+                  class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"
+                ></span>
+              </div>
             </div>
-            <div class="text-xs text-green-500">新</div>
-            <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-              <span class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"></span>
+            <div
+              class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200"
+            >
+              <div class="w-[24px] text-center font-bold text-red-400">2</div>
+              <div class="flex-1 overflow-hidden">
+                <div
+                  class="text-sm font-medium truncate group-hover:text-primary transition-colors"
+                >
+                  我要搞摇滚 - 孙天宇/蒋易/土豆
+                </div>
+              </div>
+              <div class="text-xs text-green-500">新</div>
+              <div class="opacity-0 group-hover:opacity-100 transition-opacity">
+                <span
+                  class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"
+                ></span>
+              </div>
             </div>
-          </div>
-          <div class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200">
-            <div class="w-[24px] text-center font-bold text-red-400">2</div>
-            <div class="flex-1 overflow-hidden">
-              <div class="text-sm font-medium truncate group-hover:text-primary transition-colors">我要搞摇滚 - 孙天宇/蒋易/土豆</div>
+            <div
+              class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200"
+            >
+              <div class="w-[24px] text-center font-bold text-red-300">3</div>
+              <div class="flex-1 overflow-hidden">
+                <div
+                  class="text-sm font-medium truncate group-hover:text-primary transition-colors"
+                >
+                  Zoo (From "Zootopia 2")
+                </div>
+              </div>
+              <div class="text-xs text-red-500 flex items-center">
+                <svg
+                  class="w-3 h-3"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 12H19"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M12 5L19 12L12 19"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+              <div class="opacity-0 group-hover:opacity-100 transition-opacity">
+                <span
+                  class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"
+                ></span>
+              </div>
             </div>
-            <div class="text-xs text-green-500">新</div>
-            <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-              <span class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"></span>
-            </div>
-          </div>
-          <div class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200">
-            <div class="w-[24px] text-center font-bold text-red-300">3</div>
-            <div class="flex-1 overflow-hidden">
-              <div class="text-sm font-medium truncate group-hover:text-primary transition-colors">Zoo (From "Zootopia 2")</div>
-            </div>
-            <div class="text-xs text-red-500 flex items-center">
-              <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M12 5L19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-              <span class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"></span>
-            </div>
-          </div>
           </div>
         </div>
       </div>
@@ -380,7 +652,7 @@
       <span class="iconfont icon-remen text-primary"></span>热门单曲
     </div>
     <div
-      class="h-[70%] bg-card/30 backdrop-blur-2xl border  shrink-0 !w-[calc(100%-20px)] ml-[20px] overflow-auto rounded-[12px] shadow"
+      class="h-[70%] bg-card/30 backdrop-blur-2xl border shrink-0 !w-[calc(100%-20px)] ml-[20px] overflow-auto rounded-[12px] shadow"
     >
       <Table>
         <TableHeader class="h-[40px]">
@@ -461,7 +733,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@/components/ui/carousel";
+} from "@/components/ui/carousel"; //引入轮播图
 import music from "@/common/img/home/music.svg";
 const plugin = Autoplay({
   delay: 3000,
