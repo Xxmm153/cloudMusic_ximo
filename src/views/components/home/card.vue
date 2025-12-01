@@ -2,7 +2,7 @@
 <!-- name:card组件 -->
 <!-- path:false -->
 <template>
-  <div class="card relative overflow-hidden h-[100%] w-[100%] bg-card/30 rounded-[6px] shrink-0 shadow p-[10px] backdrop-blur-2xl hover:translate-y-[-10px] transition-all duration-400">
+  <div class="card relative overflow-hidden h-[100%] w-[100%] bg-card/30 rounded-[12px] shrink-0 shadow p-[10px] backdrop-blur-2xl hover:translate-y-[-10px] transition-all duration-400">
       <div class="w-full h-[80%] border rounded overflow-hidden">
         <img class="w-full h-[100%] object-cover transition duration-400" src="../../../common/img/img.png" alt="">
       </div>
