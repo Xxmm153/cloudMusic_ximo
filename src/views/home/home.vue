@@ -55,7 +55,7 @@
             <CarouselContent class="w-full h-full">
               <CarouselItem
                 class="w-full h-full cursor-pointer"
-                v-for="(_, index) in 5"
+                v-for="(i, index) in bannerData"
                 :key="index"
               >
                 <div class="p-1 w-full h-full">
@@ -63,23 +63,29 @@
                     <CardContent
                       class="aspect-square w-full h-full p-0 relative"
                     >
-                      <div
+                      <!-- <div
                         class="absolute top-[50%] left-[5%] translate-y-[-50%] text-[#fff] flex flex-col gap-[20px]"
                       >
-                        <div class="text-2xl font-bold title">新歌首发</div>
+                        <div class="text-2xl font-bold title">{{ i.typeTitle }}</div>
                         <div class="more">为你推荐新的精彩内容</div>
                         <div
                           class="but w-[120px] h-[40px] text-primary bg-[#ffffffd9] border border-primary rounded-[6px] shadow flex justify-center items-center"
                         >
                           立即播放
                         </div>
-                      </div>
-
-                      <img
-                        src="../../common/img/img4.png"
+                      </div> -->
+                         <div
+                          class="absolute bottom-1 left-1 but w-25 h-8 text-primary bg-card/60  backdrop-blur-2xl border border-primary rounded-full shadow flex justify-center items-center"
+                        >
+                          {{ i.typeTitle }}
+                        </div>
+                      <a :href="i.url">
+                        <img
+                        :src="i.bigImageUrl"
                         alt=""
                         class="object-cover size-full opacity-[1] rounded-2xl"
                       />
+                      </a>
                     </CardContent>
                   </Card>
                 </div>
@@ -710,16 +716,20 @@
     </div>
     <div class="h-[10px]"></div>
   </div>
+
 </template>
 
 <script setup lang="ts">
 //#region 引入import
-import { ref, onMounted } from "vue"; //引入vue
+import { ref, onMounted, nextTick } from "vue"; //引入vue
 import Autoplay from "embla-carousel-autoplay"; //引入自动播放插件
 import { Card, CardContent } from "@/components/ui/card"; //引入card组件
 import card from "@/views/components/home/card.vue"; //card组件
 import { Heart, ArrowDownToLine, Play, Info } from "lucide-vue-next"; //引入lucide-vue图标库
-import { gsap } from "gsap";
+import { gsap } from "gsap";//引入gsap
+import { homeapi } from '@/api'//引入api
+import music from "@/common/img/home/music.svg";
+import type {getBannerParamsDataListType,getBannerParamsDataType} from '@/api/type'//引入api的类型
 import {
   Table,
   TableBody,
@@ -734,7 +744,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"; //引入轮播图
-import music from "@/common/img/home/music.svg";
+
 const plugin = Autoplay({
   delay: 3000,
   stopOnMouseEnter: true,
@@ -743,6 +753,7 @@ const plugin = Autoplay({
 //#endregion 引入import
 
 //#region 响应式数据 ref、reactive、watch、computed...
+const bannerData=ref<getBannerParamsDataListType[]>()//当前轮播图的数据
 const tableData = ref([
   {
     id: 1,
@@ -854,22 +865,49 @@ const tableData = ref([
 
 //#region 生命周期
 onMounted(() => {
-  gaspShow();
+  gaspShow();//执行gasp动画
+  getBannerData()//获取轮播数据
 });
 //#endregion 生命周期
 
 //#region 事件函数
+
+//获取轮播数据
+const getBannerData = async() => {
+  try {
+    const rudata:getBannerParamsDataType = await homeapi.getBanner({ type: 0 })
+    if (rudata.code == 200) {
+      bannerData.value = rudata.banners
+      nextTick(() => {
+        gaspShow()
+      })
+      console.log('barnnerDara.value',bannerData.value)
+    }
+  } catch (error) {
+    console.error("获取banner失败！",error)
+  }
+}
+//gasp动画
 const gaspShow = () => {
   gsap.fromTo(
     ".imground",
+    { y: -100,opacity:1},
+    {
+      duration: 0.5, y: 0, opacity: 1, ease: "linear",
+      onComplete() {
+        gsap.fromTo(
+    ".imground",
     { rotate: 0, y: 20 },
-    { rotate: 360, duration: 5, repeat: -1, y: 0, ease: "linear" }
-  );
+    { rotate: 360, duration: 5, repeat: -1, y: 0, ease: "linear" },
+  )
   gsap.fromTo(
     ".imground",
     { y: 20 },
     { duration: 1.5, repeat: -1, y: 0, ease: "linear", yoyo: true }
-  );
+  )
+    }}
+  )
+
 
   // 音乐符号动画
   // 设置初始位置
@@ -954,12 +992,12 @@ const gaspShow = () => {
       ease: "easeInOut",
     }
   );
-
-  gsap
-    .timeline()
-    .fromTo(".title", { y: 20, opacity: 0 }, { y: 0, opacity: 1 })
-    .fromTo(".more", { y: 20, opacity: 0 }, { y: 0, opacity: 1 })
-    .fromTo(".but", { y: 20, opacity: 0 }, { y: 0, opacity: 1 });
+    gsap.fromTo(".but", { x: -20, opacity: 0 }, { x: 0, opacity: 2 });
+  // gsap
+  //   .timeline()
+  //   .fromTo(".title", { y: 20, opacity: 0 }, { y: 0, opacity: 1 })
+  //   .fromTo(".more", { y: 20, opacity: 0 }, { y: 0, opacity: 1 })
+  //   .fromTo(".but", { y: 20, opacity: 0 }, { y: 0, opacity: 1 });
 };
 //#endregion 事件函数
 

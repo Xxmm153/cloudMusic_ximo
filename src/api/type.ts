@@ -1,0 +1,1 @@
+export * from './home/type'//首页类型

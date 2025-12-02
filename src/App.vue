@@ -36,11 +36,11 @@
 </script>
 
 <style>
-/* * {
+* {
   font-family: 'Ximo';
   user-select: none;
   box-sizing: border-box;
-} */
+}
 ::-webkit-scrollbar{
   height: 3px;
   width: 3px;

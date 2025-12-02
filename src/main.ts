@@ -8,3 +8,4 @@ import App from './App.vue'//当前入口
 const app = createApp(App)//创建app实例
 app.use(router)//使用路由
 app.mount('#app')//挂载在app元素上
+app.config.globalProperties.$message = message;
