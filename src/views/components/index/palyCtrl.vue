@@ -523,7 +523,13 @@ nextTick(()=>{
   gsap.fromTo('#showlinear1', { scale: 0 }, { scale: 1, duration: 1 })
   gsap.fromTo('#showlinear2', { scale: 0 }, { scale: 1, duration: 1 })
   gsap.fromTo('#showlinear3', { scale: 0 }, { scale: 1, duration: 1 })
-  gsap.fromTo('#user', { y: 100 ,opacity: 0}, { y: 0,opacity: 1, duration: 1 })
+  gsap.fromTo('#user', { y: 100, opacity: 0 }, { y: 0, opacity: 1, duration: 1 })
+  gsap.timeline()
+    .fromTo('#bu5', { x:-100,opacity: 0  }, { x: 0, opacity: 1, duration: 0.3 })
+    .fromTo('#bu4', { x:-100,opacity: 0  }, { x: 0, opacity: 1, duration: 0.3 })
+    .fromTo('#bu3', { x:-100,opacity: 0  }, { x: 0, opacity: 1, duration: 0.3 })
+    .fromTo('#bu2', { x:-100,opacity: 0  }, { x: 0, opacity: 1, duration: 0.3 })
+    .fromTo('#bu1', { x:-100,opacity: 0  }, { x: 0, opacity: 1, duration: 0.3 })  
 })
   
 }
