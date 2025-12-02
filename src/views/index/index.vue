@@ -44,7 +44,5 @@ import Nav from "@/views/components/index/nav.vue";
 </script>
 
 <style lang="scss">
-* {
-  font-family: "Ximo", "Aa喵不可言";
-}
+
 </style>

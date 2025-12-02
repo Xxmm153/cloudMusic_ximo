@@ -1,0 +1,13 @@
+/* 字体文件导入 */
+@font-face {
+  font-family: 'Ximo';
+  src: url('./12f831f18cf5f2b82f525bc4583fee56.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 确保字体全局可用 */
+body {
+  font-family: 'Ximo', sans-serif;
+}
