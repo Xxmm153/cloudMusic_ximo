@@ -515,11 +515,8 @@ onMounted(() => {
 //gsap动画
 const showGsap = () => {
 nextTick(()=>{
-    console.log('111')
-  console.log('111',document.querySelector('#so'))
-  
   // 修复语法错误并使用正确的缓动函数
-  gsap.fromTo('#so', { scale: 0 }, { scale: 1, duration: 1, ease: "power2.out" })
+  gsap.fromTo('#so', { scale: 0 }, { scale: 1.1, duration: 1, ease: "back.out(2)" })
   gsap.fromTo('#showlinear1', { scale: 0 }, { scale: 1, duration: 1 })
   gsap.fromTo('#showlinear2', { scale: 0 }, { scale: 1, duration: 1 })
   gsap.fromTo('#showlinear3', { scale: 0 }, { scale: 1, duration: 1 })

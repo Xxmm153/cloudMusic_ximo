@@ -1,6 +1,8 @@
 import axios from 'axios'//引入axios
 // 创建axios实例
+console.log(import.meta.env.VITE_server)
 const request = axios.create({
+    baseURL: import.meta.env.MODE === 'dev' ? '/api' : import.meta.env.VITE_server,
     timeout: 5000//相应延迟
 })
 //请求拦截器

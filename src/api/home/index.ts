@@ -3,22 +3,22 @@ import type { getBannerParamsType, getBannerParamsDataType,getCellphoneParamsTyp
 
 //生成二维码的key
 const getQrkey= () => {
-    return request.get<any,any>(`/api/login/qr/key?timestamp=${Date.now()}` )
+    return request.get<any,any>(`/login/qr/key?timestamp=${Date.now()}` )
 }
 
 //生成二维码
 const getCreatQr= (key:string) => {
-    return request.get<any,any>(`/api/login/qr/create?key=${key}&qrimg=11&timestamp=${Date.now()}`)
+    return request.get<any,any>(`/login/qr/create?key=${key}&qrimg=11&timestamp=${Date.now()}`)
 }
 
 //监测二维码
 const getCheckQr= (key:string) => {
-    return request.get<any,any>(`/api/login/qr/check?key=${key}&timestamp=${Date.now()}`)
+    return request.get<any,any>(`/login/qr/check?key=${key}&timestamp=${Date.now()}`)
 }
 
 //手机号/邮箱登录
 const getCellphone = (params:getCellphoneParamsType) => {
-    return request.get<any,any>("/api/login/cellphone",
+    return request.get<any,any>("/login/cellphone",
         {
             params
         }
@@ -27,7 +27,7 @@ const getCellphone = (params:getCellphoneParamsType) => {
 
 //获取首页轮播 数据
 const getBanner = (params:getBannerParamsType) => {
-    return request.get<any,getBannerParamsDataType>("/api/banner",
+    return request.get<any,getBannerParamsDataType>("/banner",
         {
             params
         }
