@@ -18,37 +18,37 @@
             "
           >
             <div
-              class="imground absolute z-50 right-[5%] top-[50%] translate-y-[-50%] bg-card/20 backdrop-blur-xl p-[10px] rounded-full"
+              class="imground absolute z-50 right-[5%] top-[85%] translate-y-[-50%] bg-card/20 backdrop-blur-xl p-2 rounded-full"
             >
               <div
-                class="size-[110px] bg-primary rounded-full flex justify-center items-center"
+                class="size-[45px] bg-primary rounded-full flex justify-center items-center"
               >
-                <img :src="music" alt="" class="size-[60px]" />
+                <img :src="music" alt="" class="size-[30px]" />
               </div>
             </div>
             <!-- 音乐符号动画 -->
             <div
-              class="music-note music-note-1 text-red-500 absolute z-[100] text-3xl"
+              class="music-note music-note-1 text-red-500 absolute z-[100] text-xl"
             >
               ♪
             </div>
             <div
-              class="music-note music-note-2 text-blue-400 absolute z-[100] text-2xl"
+              class="music-note music-note-2 text-blue-400 absolute z-[100] text-xl"
             >
               ♫
             </div>
             <div
-              class="music-note music-note-3 text-green-400 absolute z-[100] text-xl"
+              class="music-note music-note-3 text-green-400 absolute z-[100] text-sm"
             >
               ♬
             </div>
             <div
-              class="music-note music-note-4 text-yellow-400 absolute z-[100] text-2xl"
+              class="music-note music-note-4 text-yellow-400 absolute z-[100] text-xl"
             >
               ♭
             </div>
             <div
-              class="music-note music-note-5 text-purple-400 absolute z-[100] text-3xl"
+              class="music-note music-note-5 text-purple-400 absolute z-[100] text-xl"
             >
               ♯
             </div>
@@ -75,7 +75,7 @@
                         </div>
                       </div> -->
                          <div
-                          class="absolute bottom-1 left-1 but w-25 h-8 text-primary bg-card/60  backdrop-blur-2xl border border-primary rounded-full shadow flex justify-center items-center"
+                          class="absolute text-[0.65rem] bottom-1 left-1 but w-20 h-6  border-foreground bg-card/60  backdrop-blur-2xl rounded-full shadow flex justify-center items-center"
                         >
                           {{ i.typeTitle }}
                         </div>
@@ -168,7 +168,7 @@
     </div>
     <!-- 精选推荐 -->
     <div class="pl-[20px] font-bold">
-      <span class="iconfont icon-bofanggedan text-primary"></span> 精选推荐
+      <span class="iconfont icon-bofanggedan"></span> 精选推荐
     </div>
     <div class="h-[40%] w-full shrink-0 flex gap-[5px] ml-[20px]">
       <Carousel class="relative w-full group overflow-visible">
@@ -193,7 +193,7 @@
     </div>
     <!-- 热门歌单 -->
     <div class="pl-[20px] font-bold">
-      <span class="iconfont icon-bofanggedan text-primary"></span> 热门歌单
+      <span class="iconfont icon-bofanggedan"></span> 热门歌单
     </div>
     <div class="h-[40%] w-full shrink-0 flex gap-[5px] ml-[20px]">
       <Carousel class="relative w-full group overflow-visible">
@@ -218,7 +218,7 @@
     </div>
     <!-- 榜单竞选 -->
     <div class="pl-[20px] font-bold mb-[10px]">
-      <span class="iconfont icon-bofanggedan text-primary"></span> 榜单竞选
+      <span class="iconfont icon-bofanggedan"></span> 榜单竞选
     </div>
     <div class="grid grid-cols-2 gap-[10px] pl-[20px] mb-[20px]">
       <!-- 飙升榜 -->
@@ -655,7 +655,7 @@
     </div>
     <!-- 热门单曲 -->
     <div class="pl-[20px] font-bold">
-      <span class="iconfont icon-remen text-primary"></span>热门单曲
+      <span class="iconfont icon-remen"></span>热门单曲
     </div>
     <div
       class="h-[70%] bg-card/30 backdrop-blur-2xl border shrink-0 !w-[calc(100%-20px)] ml-[20px] overflow-auto rounded-[12px] shadow"
@@ -676,7 +676,7 @@
           <TableRow
             v-for="(i, index) in tableData"
             :key="i"
-            class="hover:bg-parimary-hover h-[60px] cursor-pointer group"
+            class=" h-[60px] cursor-pointer group"
           >
             <TableCell>{{ index + 1 }}</TableCell>
             <TableCell class="flex items-center gap-[5px]">
@@ -897,25 +897,25 @@ const gaspShow = () => {
       onComplete() {
         gsap.fromTo(
     ".imground",
-    { rotate: 0, y: 20 },
-    { rotate: 360, duration: 5, repeat: -1, y: 0, ease: "linear" },
+    { rotate: 0 },
+    { rotate: 360, duration: 5, repeat: -1    , ease: "linear" },
   )
-  gsap.fromTo(
-    ".imground",
-    { y: 20 },
-    { duration: 1.5, repeat: -1, y: 0, ease: "linear", yoyo: true }
-  )
+  // gsap.fromTo(
+  //   ".imground",
+  //   { y: 20 },
+  //   { duration: 1.5, repeat: -1, y: 0, ease: "linear", yoyo: true }
+  // )
     }}
   )
 
 
   // 音乐符号动画
   // 设置初始位置
-  gsap.set(".music-note-1", { right: "15%", top: "35%", opacity: 0.6 });
-  gsap.set(".music-note-2", { right: "8%", top: "30%", opacity: 0.5 });
-  gsap.set(".music-note-3", { right: "12%", top: "60%", opacity: 0.5 });
-  gsap.set(".music-note-4", { right: "5%", top: "45%", opacity: 0.6 });
-  gsap.set(".music-note-5", { right: "20%", top: "48%", opacity: 0.5 });
+  gsap.set(".music-note-1", { right: "15%", top: "75%", opacity: 0.6 });
+  gsap.set(".music-note-2", { right: "8%", top: "70%", opacity: 0.5 });
+  gsap.set(".music-note-3", { right: "12%", top: "80%", opacity: 0.5 });
+  gsap.set(".music-note-4", { right: "5%", top: "73%", opacity: 0.6 });
+  gsap.set(".music-note-5", { right: "20%", top: "78%", opacity: 0.5 });
 
   // 为每个音符添加不同的动画效果，增大移动幅度和视觉变化
   gsap.fromTo(

@@ -3,7 +3,7 @@
     <!-- 音乐容器 -->
     <div
        id="drawerid"
-      class=" h-[95%] w-[85%] rounded-[16px] bg-card/30 border-border backdrop-filter-[blur(20px)] px-[15px] py-[10px] flex flex-col gap-[10px] border overflow-hidden shadow-lg"
+      class=" h-[95%] w-[85%] rounded-[16px] bg-card/70 border-border backdrop-filter-[blur(20px)] px-[15px] py-[10px] flex flex-col gap-[10px] border overflow-hidden shadow-lg"
     >
       <!-- 头部 -->
       <div class="h-[6.5%] rounded-[12px] border shadow"><Title /></div>

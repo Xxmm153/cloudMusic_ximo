@@ -32,7 +32,11 @@
 </template>
 
 <script setup lang="ts">
-
+import { onMounted } from 'vue';
+onMounted(() => {
+  const theme = localStorage.getItem('themeXimo') || 'rose'
+  document.documentElement.className = theme
+})
 </script>
 
 <style>

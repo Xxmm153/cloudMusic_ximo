@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "637760",
+      "name": "对号",
+      "font_class": "duihao",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "15685215",
+      "name": "主题_调色盘",
+      "font_class": "zhuti_tiaosepan",
+      "unicode": "e6d7",
+      "unicode_decimal": 59095
+    },
+    {
+      "icon_id": "34453352",
+      "name": "绿色环保会场",
+      "font_class": "lvsehuanbaohuichang",
+      "unicode": "e87a",
+      "unicode_decimal": 59514
+    },
+    {
       "icon_id": "4075983",
       "name": "音乐",
       "font_class": "yinle",

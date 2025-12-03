@@ -8,29 +8,31 @@
         <!-- 左侧logo处 -->
          <!-- 图标 -->
           <!-- 随着主题颜色变换logo  繁体字体样式 -->
-          <div class="iconfont icon-wangyi  text-primary" style="font-size:30px;"></div>
+          <div class="iconfont icon-wangyi  text-primary !text-2xl"></div>
            <!-- 随着主题颜色变换logo  图标样式-->
           <!-- <div class="iconfont icon-wangyiyunyinle  text-primary" style="font-size:30px;"></div> -->
           <!-- 固定颜色logo -->
             <!-- <img :src="logoImage" alt="" class="h-[50%]"> -->
             <!-- 名称 -->
-            <div class="text-[18px] font-bold">Ximo Muisc Player</div>
+            <div class="text-[18px] font-bold">Ximo Muisc <span class="text-primary">Player</span></div>
             <!-- 首页按钮 -->
-            <Button variant="outline" size="sm" class="ml-[20px] h-[60%] text-[13px] hover:text-primary">
+            <Button variant="outline" size="sm" class="ml-[20px] h-[65%] text-[13px] hover:text-primary" @click="goRouter('/')">
                 首页
             </Button>
             <!-- 前进按钮 -->
-             <Button variant="outline" size="sm"  class="h-[60%]  hover:text-primary">
+             <Button variant="outline" size="sm"  class="h-[65%]  hover:text-primary" @click="goRouter(1)">
                <ChevronLeft class="size-[13px]" />
             </Button>
             <!-- 回退按钮 -->
-             <Button variant="outline" size="sm" class="h-[60%] hover:text-primary">
+             <Button variant="outline" size="sm" class="h-[65%] hover:text-primary" @click="goRouter(-1)">
                <ChevronRight class="size-[13px]"/>
             </Button>
             <!-- 项目仓库按钮 -->
-              <Button variant="outline" size="sm"  class="ml-[20px] gap-[5px] h-[60%] text-[13px] hover:text-primary" >
+             <a href="https://github.com/Xxmm153/cloudMusic_ximo" class="h-[65%]" target="_blank">
+                 <Button variant="outline" size="sm"  class="ml-[20px] gap-[5px] h-full text-[13px] hover:text-primary" >
                <Github class="size-[12px]"/>项目仓库<ArrowUpRight class="size-[13px]"/>
             </Button>
+             </a>
          </div>
          <!-- 中间 -->
          <div class="flex-1 h-[100%] px-[80px] relative overflow-hidden">
@@ -39,17 +41,18 @@
           <!-- 右侧输入框 登录 -->
          <div class="flex gap-[10px] h-full items-center">
             <!-- 收缩框 -->
-            <InputGroup>
+            <InputGroup class="!h-[65%]">
                <InputGroupInput  placeholder="搜索音乐、歌手、专辑..." />
                <InputGroupAddon>
                  <Search class="size-[13px]" />
                </InputGroupAddon>
             </InputGroup>
+            <Button  @click="showThemDialog" variant="outline" size="sm" class="h-[65%] hover:text-primary" ><Sparkles class="size-[13px] text-primary " /><span class=" text-[13px]">切换主题</span></Button>
             <!-- 登录按钮 -->
-            <Button  @click="showLogin" variant="outline" size="sm" class="h-[60%] hover:text-primary" ><User class="size-[13px]" /><span class=" text-[13px]">登录</span></Button>
+            <Button  @click="showLogin" variant="outline" size="sm" class="h-[65%] hover:text-primary" ><User class="size-[13px]" /><span class=" text-[13px]">登录</span></Button>
          </div>
     </div>
-       <Dialog v-model:open="loginDialogShow" @update:open="closeDialog">
+  <Dialog v-model:open="loginDialogShow" @update:open="closeDialog">
     <form>
       <DialogContent class="sm:max-w-1/4 transition-all duration-300" @click="DialogContentClick">
         <DialogHeader>
@@ -122,16 +125,169 @@
     </form>
        
   </Dialog>
-
+ <Dialog v-model:open="themShow" @update:open="themShowDialogClose">
+      <DialogContent class="sm:max-w-1/4 transition-all duration-300">
+        <DialogHeader>
+          <DialogTitle>切换主题</DialogTitle>
+          <DialogDescription>
+          </DialogDescription>
+        </DialogHeader>
+        <div class="thembox py-4 px-5 m-h-1/3" >
+      <!-- <div class="thembox-t h-fit text-3xl font-bold">
+        <div class="t-t-l"><span class="text-primary">Variable</span> <span class="text-primary">Themes</span></div>
+        <div class="t-t-r iconfont icon-zhuti_tiaosepan !text-2xl text-primary"></div>
+      </div> -->
+       <div class="thembox-t h-fit text-3xl font-bold">
+        <div class="t-t-l"><span class="">VariableThemes</span></div>
+        <div class="t-t-r iconfont icon-zhuti_tiaosepan !text-2xl text-primary"></div>
+      </div>
+      <div class=" mt-0">
+        Cycle between 9 themes and choose your favorite theme to apply~.
+      </div>
+      <!-- 这里主题可以写数组进行循环 当时主题少所以就一个个加上去了  随后变多了hhh  你可以优化成数组改一下 -->
+      <div class="them-con my-6">
+        <!-- Rose Theme -->
+        <div class="them-con-item rose bg-primary" :class="{'them-ac':currentThem==='rose'}" @click="changeThem('rose')">
+          <div class="top">
+            <div class="h-5"></div>
+          </div>
+          <div class="tm-show">
+            <div style="background-color: var(--primary)"></div>
+            <div style="background-color: var(--parimary-hover)"></div>
+            <div style="background-color: var(--foreground)"></div>
+            <div style="background-color: var(--background)"></div>
+          </div>
+        </div>
+        
+        <!-- Purple Theme -->
+        <div class="them-con-item Purple bg-primary" :class="{'them-ac':currentThem==='Purple'}" @click="changeThem('Purple')">
+         <div class="top">
+            <div class="h-5"></div>
+          </div>
+          <div class="tm-show">
+            <div style="background-color: var(--primary)"></div>
+            <div style="background-color: var(--parimary-hover)"></div>
+            <div style="background-color: var(--foreground)"></div>
+            <div style="background-color: var(--background)"></div>
+          </div>
+        </div>
+        
+        <!-- Green Theme -->
+        <div class="them-con-item green bg-primary" :class="{'them-ac':currentThem==='green'}" @click="changeThem('green')">
+         <div class="top">
+            <div class="h-5"></div>
+          </div>
+          <div class="tm-show">
+            <div style="background-color: var(--primary)"></div>
+            <div style="background-color: var(--parimary-hover)"></div>
+            <div style="background-color: var(--foreground)"></div>
+            <div style="background-color: var(--background)"></div>
+          </div>
+        </div>
+        
+        <!-- Dark Theme -->
+        <div class="them-con-item dark bg-background" :class="{'them-ac':currentThem==='dark'}" @click="changeThem('dark')">
+          <div class="top">
+            <div class="h-5"></div>
+          </div>
+          <div class="tm-show">
+            <div style="background-color: var(--primary)"></div>
+            <div style="background-color: var(--parimary-hover)"></div>
+            <div style="background-color: var(--foreground)"></div>
+            <div style="background-color: var(--background)"></div> 
+          </div>
+        </div>
+        
+        <!-- Red Theme -->
+        <div class="them-con-item red bg-primary" :class="{'them-ac':currentThem==='red'}" @click="changeThem('red')">
+          <div class="top">
+            <div class="h-5"></div>
+          </div>
+          <div class="tm-show">
+            <div style="background-color: var(--primary)"></div>
+            <div style="background-color: var(--parimary-hover)"></div>
+            <div style="background-color: var(--foreground)"></div>
+            <div style="background-color: var(--background)"></div>
+          </div>
+        </div>
+        
+        <!-- Orange Theme -->
+        <div class="them-con-item orange bg-primary" :class="{'them-ac':currentThem==='orange'}" @click="changeThem('orange')">
+        <div class="top">
+            <div class="h-5"></div>
+          </div>
+          <div class="tm-show">
+            <div style="background-color: var(--primary)"></div>
+            <div style="background-color: var(--parimary-hover)"></div>
+            <div style="background-color: var(--foreground)"></div>
+            <div style="background-color: var(--background)"></div>
+          </div>
+        </div>
+        
+        <!-- Blue Theme -->
+        <div class="them-con-item blue bg-primary" :class="{'them-ac':currentThem==='blue'}" @click="changeThem('blue')">
+        <div class="top">
+            <div class="h-5"></div>
+          </div>
+          <div class="tm-show">
+            <div style="background-color: var(--primary)"></div>
+            <div style="background-color: var(--parimary-hover)"></div>
+            <div style="background-color: var(--foreground)"></div>
+            <div style="background-color: var(--background)"></div>
+          </div>
+        </div>
+        
+        <!-- Yellow Theme -->
+        <div class="them-con-item yellow bg-primary" :class="{'them-ac':currentThem==='yellow'}" @click="changeThem('yellow')">
+          <div class="top">
+            <div class="h-5"></div>
+          </div>
+          <div class="tm-show">
+            <div style="background-color: var(--primary)"></div>
+            <div style="background-color: var(--parimary-hover)"></div>
+            <div style="background-color: var(--foreground)"></div>
+            <div style="background-color: var(--background)"></div>
+          </div>
+        </div>
+        
+        <!-- DeepPink Theme -->
+        <div class="them-con-item deeppink bg-primary" :class="{'them-ac':currentThem==='deeppink'}" @click="changeThem('deeppink')">
+          <!-- <div class="top">
+            <div class="iconfont icon-lvsehuanbaohuichang"></div>
+            deeppink
+          </div> -->
+          <div class="top">
+            <div class="h-5"></div>
+          </div>
+          <div class="tm-show">
+            <div style="background-color: var(--primary)"></div>
+            <div style="background-color: var(--parimary-hover)"></div>
+            <div style="background-color: var(--foreground)"></div>
+            <div style="background-color: var(--background)"></div>
+          </div>
+        </div>
+      </div>
+      <div class="bu">
+            <Button variant="outline" @click="themShowDialogClose">
+            Concal
+          </Button>
+        <Button @click="themShowDialogOk">
+              Cycle Theme
+            </Button>
+      </div>
+      </div>
+      </DialogContent>
+  </Dialog>
 </template>
 
 <script setup lang='ts'>
 
 //#region 引入import
 import { ref, computed } from 'vue'//引入vue
-import {homeapi } from '@/api'//引入api
-import { ChevronLeft, ChevronRight, Github, ArrowUpRight, User, Search } from 'lucide-vue-next'//使用lucide图标
-import vueQr from 'vue-qr/src/packages/vue-qr.vue'
+import { homeapi } from '@/api'//引入api
+import { useRouter } from 'vue-router'//引入路由
+import { ChevronLeft, ChevronRight, Github, ArrowUpRight, User, Search,Sparkles } from 'lucide-vue-next'//使用lucide图标
+// import vueQr from 'vue-qr/src/packages/vue-qr.vue'
 import { Button } from '@/components/ui/button'//引入shadcn组件button
 import {
   InputGroup,
@@ -158,6 +314,9 @@ interface loginTypeType{
     value:'phone'|'email'|'qr'
 }
 //#region 响应式数据 ref、reactive、watch、computed...
+const router = useRouter()//使用路由
+const themShow = ref<boolean>(false)//主题弹窗显示
+const currentThem=ref(localStorage.getItem('themeXimo')||'rose')
 const loginType = ref<loginTypeType>({ text: '手机号登录', value: 'phone' })//登录方式
 const uerWarning=ref<boolean>(false)//账号警告
 const passwordWarning=ref<boolean>(false)//密码警告
@@ -190,6 +349,29 @@ const loginTypeOther=computed(()=>{
 //#endregion 生命周期
 
 //#region 事件函数
+//主题弹窗确定
+const themShowDialogOk = () => {
+  localStorage.setItem('themeXimo', currentThem.value)
+  document.documentElement.className = currentThem.value
+  themShow.value=false
+}
+//当主题弹窗打开是时候触发
+const themShowDialogClose = () => {
+  currentThem.value=localStorage.getItem('themeXimo')||'rose'
+}
+//改变主题
+const changeThem = (theme: string) => {
+  currentThem.value=theme
+}
+//打开主题切换弹窗
+const showThemDialog = () => {
+    themShow.value=true
+}
+//路由跳转
+const goRouter = (path: string | number) => {
+  typeof path === 'number' && router.go(path)
+  typeof path === 'string' && router.push({path})
+}
 //关闭当前二维码查询事件
 const closeQrInterval = () => {
   if (!currentQrSetTimeInterval.value) return
@@ -319,6 +501,116 @@ const showLogin = () => {
 
 </script>
 <style lang='scss' scoped>
+.them-ac {
+  position: relative;
+  border: 3px solid #c0ab92;
+  &::after {
+    position: absolute;
+    content: "\e60b";
+    font-family: "iconfont" !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 12px;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: #c0ab92;
+  }
+}
+//使用我其他项目写的样式
+.thembox {
+  position: absolute;
+  z-index: 999;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 10px;
+  background-color: var(--color-card);
+  overflow: hidden;
+  .bu {
+    display: flex;
+    justify-content: end;
+    gap: 20px;
+    padding-left: 10px;
+    margin-top: 10px;
+    > div {
+      cursor: pointer;
+
+      width: 150px;
+      height: 40px;
+      background-color: #b6ab90;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 1s;
+      &:hover {
+        transform: scale(1.03);
+      }
+    }
+    .color {
+      background-color: var(--primary);
+      color:#fff
+    }
+  }
+  .thembox-t {
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .thembox-con {
+    height: 40px;
+    line-height: 40px;
+    color: var(--primary);
+  }
+  .them-con {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    width: 100%;
+    gap: 20px;
+    justify-items: center;
+    align-items: center;
+    .them-con-item {
+      box-sizing:content-box;
+      cursor: pointer;
+      height: 5rem;
+      width: 8rem;
+      border-radius: 0.6rem;
+      padding: 0.5rem 0.5rem 0 0.5rem;
+      .top {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        font-size: 0.8rem;
+      }
+      .tm-show {
+        height: 60px;
+        display: flex;
+        align-items: center;
+        padding-left: 20px;
+        > div {
+          height: 25px;
+          width: 25px;
+          border-radius: 50%;
+          border: 1px solid #b7b7b7;
+        }
+        div:nth-child(n + 1) {
+          margin-left: -10px;
+        }
+      }
+    }
+  }
+}
+//
 :deep(.border-input){
     height: 60%;
     font-size: 14px;

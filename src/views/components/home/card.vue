@@ -2,12 +2,14 @@
 <!-- name:card组件 -->
 <!-- path:false -->
 <template>
-  <div class="card relative overflow-hidden h-[100%] w-[100%] bg-card/30 rounded-[12px] shrink-0 shadow p-[10px] backdrop-blur-2xl hover:translate-y-[-10px] transition-all duration-400">
+  <div class="card relative overflow-hidden h-[100%] w-[100%] bg-card/30 rounded-[12px] shrink-0 shadow p-[10px] backdrop-blur-2xl hover:translate-y-[-7px] transition-all duration-400">
       <div class="w-full h-[80%] border rounded overflow-hidden">
         <img class="w-full h-[100%] object-cover transition duration-400" src="../../../common/img/img.png" alt="">
       </div>
-      <div class="text-[13px] line-clamp-1">站内收藏超千万的欧美热曲安利</div>
-      <div class="text-[13px] text-primary">31首歌曲</div>
+      <div class="h-[20%] flex-col justify-center mt-2">
+        <div class="text-[13px] line-clamp-1">站内收藏超千万的欧美热曲安利</div>
+        <div class="text-[13px] ">31首歌曲</div>
+      </div>
       <div class="flex justify-center items-center bg-[rgba(0,0,0,0.2)] size-full absolute top-0 left-0 opacity-0 hover:opacity-100 transition-opacity duration-400">
         <div class="size-[40px] rounded-xl bg-card/70 flex justify-center items-center">
            <Play/>
