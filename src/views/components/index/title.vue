@@ -47,6 +47,9 @@
                  <Search class="size-[13px]" />
                </InputGroupAddon>
             </InputGroup>
+            <Button  @click="drakMode"  variant="outline" size="sm" class="h-[65%] hover:text-primary" >
+              <MoonStar v-if="!isDrak" class="size-[13px]" /> <Sun v-else class="size-[13px]" /><span class=" text-[13px]"> {{ !isDrak?'黑夜':'白天' }}</span>
+            </Button>
             <Button  @click="showThemDialog" variant="outline" size="sm" class="h-[65%] hover:text-primary" ><Sparkles class="size-[13px] text-primary " /><span class=" text-[13px]">切换主题</span></Button>
             <!-- 登录按钮 -->
             <Button  @click="showLogin" variant="outline" size="sm" class="h-[65%] hover:text-primary" ><User class="size-[13px]" /><span class=" text-[13px]">登录</span></Button>
@@ -56,7 +59,7 @@
     <form>
       <DialogContent class="sm:max-w-1/4 transition-all duration-300" @click="DialogContentClick">
         <DialogHeader>
-          <DialogTitle>登录Login</DialogTitle>
+          <DialogTitle class="text-2xl">登录Login</DialogTitle>
           <DialogDescription>
             当前登录方式为<span class="text-primary">{{ loginType.text }}</span>,当然你也可以选择剩下两种登录方式( <span v-for="(i,index) in loginTypeOther" :key="i.value" class="text-primary">{{ i.text }} <span v-if="!index">、</span></span> )
           </DialogDescription>
@@ -105,7 +108,7 @@
           
         <DialogFooter>
          <div class="flex-1 flex items-end gap-4 ">
-           <span v-for="i in loginTypeOther" @click="changeLogin(i)" class="text-[13px] items-end text-primary hover:underline cursor-pointer transition-all">
+           <span v-for="i in loginTypeOther" @click="changeLogin(i)" class="text-[13px] items-end hover:underline cursor-pointer transition-all">
             {{ i.text }}
            </span>
            <!-- <span  class="text-[13px] items-end text-primary hover:underline cursor-pointer transition-all">
@@ -137,12 +140,16 @@
         <div class="t-t-l"><span class="text-primary">Variable</span> <span class="text-primary">Themes</span></div>
         <div class="t-t-r iconfont icon-zhuti_tiaosepan !text-2xl text-primary"></div>
       </div> -->
-       <div class="thembox-t h-fit text-3xl font-bold">
-        <div class="t-t-l"><span class="">VariableThemes</span></div>
+       <div class="thembox-t h-fit font-bold">
+        <!-- <div class="t-t-l"><span class="">VariableThemes</span></div> -->
+        <div class="t-t-l"><span class="text-2xl">可变主题  </span></div>
         <div class="t-t-r iconfont icon-zhuti_tiaosepan !text-2xl text-primary"></div>
       </div>
-      <div class=" mt-0">
+      <!-- <div class=" mt-0">
         Cycle between 9 themes and choose your favorite theme to apply~.
+      </div> -->
+       <div class=" mt-0">
+        在9个主题之间循环，选择你最喜欢的主题来使用吧~。
       </div>
       <!-- 这里主题可以写数组进行循环 当时主题少所以就一个个加上去了  随后变多了hhh  你可以优化成数组改一下 -->
       <div class="them-con my-6">
@@ -269,10 +276,10 @@
       </div>
       <div class="bu">
             <Button variant="outline" @click="themShowDialogClose">
-            Concal
+            不要
           </Button>
-        <Button @click="themShowDialogOk">
-              Cycle Theme
+          <Button @click="themShowDialogOk">
+              就要就要
             </Button>
       </div>
       </div>
@@ -286,7 +293,7 @@
 import { ref, computed } from 'vue'//引入vue
 import { homeapi } from '@/api'//引入api
 import { useRouter } from 'vue-router'//引入路由
-import { ChevronLeft, ChevronRight, Github, ArrowUpRight, User, Search,Sparkles } from 'lucide-vue-next'//使用lucide图标
+import { ChevronLeft, ChevronRight, Github, ArrowUpRight, User, Search,Sparkles,MoonStar,Sun} from 'lucide-vue-next'//使用lucide图标
 // import vueQr from 'vue-qr/src/packages/vue-qr.vue'
 import { Button } from '@/components/ui/button'//引入shadcn组件button
 import {
@@ -316,6 +323,7 @@ interface loginTypeType{
 //#region 响应式数据 ref、reactive、watch、computed...
 const router = useRouter()//使用路由
 const themShow = ref<boolean>(false)//主题弹窗显示
+const isDrak=ref<any>(localStorage.getItem('isDrak') || false)//是否为暗黑模式
 const currentThem=ref(localStorage.getItem('themeXimo')||'rose')
 const loginType = ref<loginTypeType>({ text: '手机号登录', value: 'phone' })//登录方式
 const uerWarning=ref<boolean>(false)//账号警告
@@ -349,6 +357,24 @@ const loginTypeOther=computed(()=>{
 //#endregion 生命周期
 
 //#region 事件函数
+//切换暗黑
+const drakMode = () => {
+  isDrak.value = !isDrak.value
+  localStorage.setItem('isDrak',isDrak.value )
+  if (isDrak.value){
+      // start吧主题存储一份 进行替换
+  const themeOther = localStorage.getItem('themeXimo') || 'rose'
+  localStorage.setItem('themeOther',themeOther)
+  //end吧主题存储一份 进行替换
+  currentThem.value = 'dark'
+    localStorage.setItem('themeXimo', 'dark')
+    document.documentElement.className =  'dark'
+  return
+  }
+   currentThem.value = localStorage.getItem('themeOther') || 'rose'
+  localStorage.setItem('themeXimo', localStorage.getItem('themeOther') || 'rose')
+    document.documentElement.className =  localStorage.getItem('themeOther') || 'rose'
+}
 //主题弹窗确定
 const themShowDialogOk = () => {
   localStorage.setItem('themeXimo', currentThem.value)
@@ -357,7 +383,8 @@ const themShowDialogOk = () => {
 }
 //当主题弹窗打开是时候触发
 const themShowDialogClose = () => {
-  currentThem.value=localStorage.getItem('themeXimo')||'rose'
+  currentThem.value = localStorage.getItem('themeXimo') || 'rose'
+  themShow.value=false
 }
 //改变主题
 const changeThem = (theme: string) => {
@@ -582,8 +609,8 @@ const showLogin = () => {
     .them-con-item {
       box-sizing:content-box;
       cursor: pointer;
-      height: 5rem;
-      width: 8rem;
+      height: 4rem;
+      width: 6rem;
       border-radius: 0.6rem;
       padding: 0.5rem 0.5rem 0 0.5rem;
       .top {
@@ -598,8 +625,8 @@ const showLogin = () => {
         align-items: center;
         padding-left: 20px;
         > div {
-          height: 25px;
-          width: 25px;
+          height:1.3rem;
+          width: 1.3rem;
           border-radius: 50%;
           border: 1px solid #b7b7b7;
         }
