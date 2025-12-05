@@ -6,10 +6,10 @@
   <div class="h-full z-50 flex items-center px-4" @click="showDrawer">
     <!-- 背景渐变装饰 -->
     <!-- 歌曲信息区域 -->
-    <div class="w-[240px] flex items-center gap-3 group">
+    <div class="w-60 flex items-center gap-3 group">
       <!-- 封面图带有旋转动画 -->
       <div
-        class="cursor-pointer w-12 h-12 rounded-md overflow-hidden shadow-lg bg-gray-700 flex items-center justify-center group relative"
+        class="cursor-pointer size-13 rounded-md overflow-hidden shadow-lg bg-gray-700 flex items-center justify-center group relative"
       >
         <!-- 封面装饰效果 -->
         <div

@@ -5,12 +5,12 @@
   <!-- home content -->
   <div class="size-full overflow-auto flex flex-col gap-[10px] pr-[10px]">
     <!-- 轮播 -->
-    <div class="flex w-full h-[42%] gap-[10px]">
-      <div class="w-[50%] h-full pl-[20px]">
+    <div class="flex w-full h-[37%] gap-[10px]">
+      <div class="w-[50%] h-full pl-2.5">
         <!-- 轮播图 -->
         <div class="w-full h-full overflow-hidden shrink-0 relative">
           <Carousel
-            class="w-full h-full pl-[20px] relative"
+            class="w-full h-full pl-2.5 relative"
             :plugins="[plugin]"
             @mouseenter="plugin.stop"
             @mouseleave="
@@ -18,7 +18,7 @@
             "
           >
             <div
-              class="imground absolute z-50 right-[5%] top-[85%] translate-y-[-50%] bg-card/20 backdrop-blur-xl p-2 rounded-full"
+              class="imground absolute z-50 right-[5%] top-[80%] translate-y-[-50%] bg-card/20 backdrop-blur-xl p-2 rounded-full"
             >
               <div
                 class="size-[45px] bg-primary rounded-full flex justify-center items-center"
@@ -81,7 +81,7 @@
                         </div>
                       <a :href="i.url">
                         <img
-                        :src="i.bigImageUrl"
+                        :src="i.bigImageUrl + '?param=800y400'"
                         alt=""
                         class="object-cover size-full opacity-[1] rounded-2xl"
                       />
@@ -97,15 +97,15 @@
         </div>
       </div>
       <div
-        class="w-[50%] h-full border rounded-2xl p-[10px] bg-card/20 backdrop-blur-sm flex flex-col"
+        class="w-[50%] h-full border rounded-2xl px-4 py-5 bg-card/20 backdrop-blur-sm flex flex-col"
       >
-        <div class="flex justify-between items-center pb-[5px]">
-          <h3 class="font-bold text-lg">
-            <span class="text-primary font-bold">下午好</span> ，猜你最近喜欢听
+        <div class="flex justify-between items-center">
+          <h3 class="font-bold text-sm">
+            <span class="text-primary font-bold text-[1.3rem]">{{getTimePeriod()}}</span>,猜你最近喜欢听
           </h3>
         </div>
-        <div class="flex flex-col gap-[10px] flex-1 overflow-auto">
-          <div class="grid grid-cols-2 gap-[10px] h-full">
+        <div class="flex flex-col flex-1 overflow-auto">
+          <div class="grid grid-cols-4 gap-3 h-full pt-4">
             <div
               class="h-[100%] relative rounded-xl overflow-hidden cursor-pointer group transition-all"
             >
@@ -117,7 +117,7 @@
               <div
                 class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-[10px]"
               >
-                <span class="text-white text-sm truncate">歌单</span>
+                <span class="text-white text-sm truncate">每日推荐</span>
               </div>
             </div>
             <div
@@ -131,7 +131,7 @@
               <div
                 class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-[10px]"
               >
-                <span class="text-white text-sm truncate">歌单</span>
+                <span class="text-white text-sm truncate">热歌榜</span>
               </div>
             </div>
             <div
@@ -167,552 +167,166 @@
       </div>
     </div>
     <!-- 精选推荐 -->
-    <div class="pl-[20px] font-bold">
-      <span class="iconfont icon-bofanggedan"></span> 精选推荐
+    <div class="pl-2.5 font-bold flex items-center justify-between">
+      <div><span class="iconfont icon-bofanggedan"></span> 精选推荐</div>
+      <div class="text-foreground/50 text-sm flex items-center gap-0.5 cursor-pointer hover:scale-[1.02] hover:text-foreground">查看全部 <ArrowRight class="size-4" /> </div>
     </div>
-    <div class="h-[40%] w-full shrink-0 flex gap-[5px] ml-[20px]">
-      <Carousel class="relative w-full group overflow-visible">
-        <CarouselContent class="h-[100%] w-[100%]">
-          <CarouselItem
-            class="h-[100%] w-full cursor-pointer flex grid grid-cols-7 grid-rows-1"
-            v-for="(_, index) in 2"
-            :key="index"
+    <div class="h-[44%] w-full shrink-0 flex gap-[5px]  box-border">
+       <div
+            class="h-[100%] w-full cursor-pointer grid grid-cols-10 grid-rows-2 gap-2 pl-2.5"
           >
-            <div class="p-1 h-[100%] w-[100%]" v-for="i in 7">
-              <card></card>
-            </div>
-          </CarouselItem>
-        </CarouselContent>
-        <CarouselPrevious
-          class="left-[5px] hidden group-hover:inline-block group-hover:flex group-hover:items-center size-[35px] text-primary"
-        />
-        <CarouselNext
-          class="right-[20px] hidden group-hover:inline-block group-hover:flex group-hover:items-center size-[35px] text-primary"
-        />
-      </Carousel>
+              <cardTwo v-for="(i, index) in topPlaylisttData" :key="index" :data="i"></cardTwo>
+          </div>
     </div>
-    <!-- 热门歌单 -->
-    <div class="pl-[20px] font-bold">
-      <span class="iconfont icon-bofanggedan"></span> 热门歌单
+    <!-- 热门歌手 -->
+   <div class="pl-2.5 font-bold flex items-center justify-between">
+      <div><span class="iconfont icon-bofanggedan"></span> 热门歌手</div>
+      <div class="text-foreground/50 text-sm flex items-center gap-0.5 cursor-pointer hover:scale-[1.02] hover:text-foreground">查看全部 <ArrowRight class="size-4" /> </div>
     </div>
-    <div class="h-[40%] w-full shrink-0 flex gap-[5px] ml-[20px]">
-      <Carousel class="relative w-full group overflow-visible">
-        <CarouselContent class="h-[100%] w-[100%]">
-          <CarouselItem
-            class="h-[100%] w-full cursor-pointer flex grid grid-cols-7 grid-rows-1"
-            v-for="(_, index) in 2"
-            :key="index"
-          >
-            <div class="p-1 h-[100%] w-[100%]" v-for="i in 7">
-              <card></card>
-            </div>
-          </CarouselItem>
-        </CarouselContent>
-        <CarouselPrevious
-          class="left-[5px] hidden group-hover:inline-block group-hover:flex group-hover:items-center size-[35px] text-primary"
-        />
-        <CarouselNext
-          class="right-[20px] hidden group-hover:inline-block group-hover:flex group-hover:items-center size-[35px] text-primary"
-        />
-      </Carousel>
+    <div class="h-fit w-full  grid grid-cols-12 pl-2.5 py-2 gap-1">
+         <div v-for="(i,index) in hotSonger" :key="index" class="size-full flex flex-col justify-center items-center gap-1.5   content-center justify-items-center">
+            <img :src="i.picUrl + '?param=100y100'" alt=""   class="size-22  rounded-full object-cover  hover:border-2 border-primary cursor-pointer">
+            <div class="text-sm">{{ i.name}}</div>
+         </div>
     </div>
     <!-- 榜单竞选 -->
-    <div class="pl-[20px] font-bold mb-[10px]">
-      <span class="iconfont icon-bofanggedan"></span> 榜单竞选
+    <div class="pl-2.5 font-bold flex items-center justify-between">
+      <div><span class="iconfont icon-bofanggedan"></span> 榜单竞选</div>
+      <div class="text-foreground/50 text-sm flex items-center gap-0.5 cursor-pointer hover:scale-[1.02] hover:text-foreground">查看全部 <ArrowRight class="size-4" /> </div>
     </div>
-    <div class="grid grid-cols-2 gap-[10px] pl-[20px] mb-[20px]">
+    <div class="grid grid-cols-2 gap-1.5 pl-2.5 mb-[20px]">
       <!-- 飙升榜 -->
       <div
+      v-for="i in ToplistData.slice(0,6)" :key="i.id"
         class="border rounded-xl p-[10px] bg-card/20 backdrop-blur-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-2px]"
       >
         <div class="flex justify-between items-center mb-[10px]">
           <div class="flex items-center gap-[5px]">
             <div
-              class="w-[20px] h-[20px] rounded-full bg-red-500 text-white flex items-center justify-center text-xs font-bold"
+              class="w-4 h-4 rounded-full bg-red-500 text-white flex items-center justify-center text-xs font-bold"
             >
               榜
             </div>
-            <h3 class="font-bold">飙升榜</h3>
+            <h3 class="font-bold">{{ i.name }}</h3>
           </div>
-          <span class="text-xs text-gray-400">刚刚更新</span>
+          <span class="text-xs text-gray-400"></span>
         </div>
         <div class="space-y-[8px] flex gap-[10px]">
-          <div class="w-[15%] relative">
+          <div class="size-24 relative" >
             <div
-              class="border rounded-xl size-full absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]"
-            ></div>
+              class="border z-30 rounded-xl size-full absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] overflow-hidden"
+            >
+            <img :src="i.tracks[0].al.picUrl" alt="" class="size-full">
+            </div>
             <div
-              class="border rounded-xl w-full h-[80%] absolute left-[50%] top-[20%] translate-x-[-40%]"
-            ></div>
+              class="border z-20 rounded-xl w-full h-[80%] absolute left-[50%] top-[20%] translate-x-[-40%] overflow-hidden"
+            >
+          <img :src="i.tracks[1].al.picUrl" alt="" class="size-full"></div>
             <div
-              class="border rounded-xl w-full h-[50%] absolute left-[50%] top-[50%] translate-x-[-30%]"
-            ></div>
+              class="border rounded-xl w-full h-[50%] absolute left-[50%] top-[50%] translate-x-[-30%] overflow-hidden"
+            >
+          <img :src="i.tracks[2].al.picUrl" alt="" class="size-full"></div>
           </div>
-          <div class="flex-1 pl-[1px]">
+          <div class="flex-1 pl-6 overflow-hidden">
             <div
+            v-for="(items,index) in i.tracks.slice(0,3)"
               class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200"
             >
-              <div class="w-[24px] text-center font-bold text-red-500">1</div>
+              <div class="w-[24px] text-center font-bold text-red-500">{{index+1 }}</div>
               <div class="flex-1 overflow-hidden">
                 <div
-                  class="text-sm font-medium truncate group-hover:text-primary transition-colors"
+                  class="text-sm w-full font-medium truncate group-hover:text-primary transition-colors line-clamp-1"
                 >
-                  Shower - Rapeter
+                 {{ items.name }}
+                 <span class="text-foreground/60">-{{ items.ar[0].name }}</span>
                 </div>
               </div>
-              <div class="text-xs text-green-500">新</div>
+              <!-- <div class="text-xs text-green-500 w-3">新</div>
               <div class="opacity-0 group-hover:opacity-100 transition-opacity">
                 <span
-                  class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"
+                  class="iconfont icon-bofang1 text-primary w-2.5 h-2.5 rounded-full bg-white/20 flex items-center justify-center"
                 ></span>
-              </div>
-            </div>
-            <div
-              class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200"
-            >
-              <div class="w-[24px] text-center font-bold text-red-400">2</div>
-              <div class="flex-1 overflow-hidden">
-                <div
-                  class="text-sm font-medium truncate group-hover:text-primary transition-colors"
-                >
-                  我要搞摇滚 - 孙天宇/蒋易/土豆
-                </div>
-              </div>
-              <div class="text-xs text-green-500">新</div>
-              <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-                <span
-                  class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"
-                ></span>
-              </div>
-            </div>
-            <div
-              class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200"
-            >
-              <div class="w-[24px] text-center font-bold text-red-300">3</div>
-              <div class="flex-1 overflow-hidden">
-                <div
-                  class="text-sm font-medium truncate group-hover:text-primary transition-colors"
-                >
-                  Zoo (From "Zootopia 2")
-                </div>
-              </div>
-              <div class="text-xs text-red-500 flex items-center">
-                <svg
-                  class="w-3 h-3"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M5 12H19"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M12 5L19 12L12 19"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </div>
-              <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-                <span
-                  class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"
-                ></span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 新歌榜 -->
-      <div
-        class="border rounded-xl p-[10px] bg-card/20 backdrop-blur-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-2px]"
-      >
-        <div class="flex justify-between items-center mb-[10px]">
-          <div class="flex items-center gap-[5px]">
-            <div
-              class="w-[20px] h-[20px] rounded-full bg-green-500 text-white flex items-center justify-center text-xs font-bold"
-            >
-              榜
-            </div>
-            <h3 class="font-bold">新歌榜</h3>
-          </div>
-          <span class="text-xs text-gray-400">刚刚更新</span>
-        </div>
-        <div class="space-y-[8px] flex gap-[10px]">
-          <div class="w-[15%] relative">
-            <div
-              class="border rounded-xl size-full absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]"
-            ></div>
-            <div
-              class="border rounded-xl w-full h-[80%] absolute left-[50%] top-[20%] translate-x-[-40%]"
-            ></div>
-            <div
-              class="border rounded-xl w-full h-[50%] absolute left-[50%] top-[50%] translate-x-[-30%]"
-            ></div>
-          </div>
-          <div class="flex-1 pl-[1px]">
-            <div
-              class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200"
-            >
-              <div class="w-[24px] text-center font-bold text-red-500">1</div>
-              <div class="flex-1 overflow-hidden">
-                <div
-                  class="text-sm font-medium truncate group-hover:text-primary transition-colors"
-                >
-                  Shower - Rapeter
-                </div>
-              </div>
-              <div class="text-xs text-green-500">新</div>
-              <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-                <span
-                  class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"
-                ></span>
-              </div>
-            </div>
-            <div
-              class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200"
-            >
-              <div class="w-[24px] text-center font-bold text-red-400">2</div>
-              <div class="flex-1 overflow-hidden">
-                <div
-                  class="text-sm font-medium truncate group-hover:text-primary transition-colors"
-                >
-                  我要搞摇滚 - 孙天宇/蒋易/土豆
-                </div>
-              </div>
-              <div class="text-xs text-green-500">新</div>
-              <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-                <span
-                  class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"
-                ></span>
-              </div>
-            </div>
-            <div
-              class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200"
-            >
-              <div class="w-[24px] text-center font-bold text-red-300">3</div>
-              <div class="flex-1 overflow-hidden">
-                <div
-                  class="text-sm font-medium truncate group-hover:text-primary transition-colors"
-                >
-                  Zoo (From "Zootopia 2")
-                </div>
-              </div>
-              <div class="text-xs text-red-500 flex items-center">
-                <svg
-                  class="w-3 h-3"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M5 12H19"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M12 5L19 12L12 19"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </div>
-              <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-                <span
-                  class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"
-                ></span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 热歌榜 -->
-      <div
-        class="border rounded-xl p-[10px] bg-card/20 backdrop-blur-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-2px]"
-      >
-        <div class="flex justify-between items-center mb-[10px]">
-          <div class="flex items-center gap-[5px]">
-            <div
-              class="w-[20px] h-[20px] rounded-full bg-orange-500 text-white flex items-center justify-center text-xs font-bold"
-            >
-              榜
-            </div>
-            <h3 class="font-bold">热歌榜</h3>
-          </div>
-          <span class="text-xs text-gray-400">刚刚更新</span>
-        </div>
-        <div class="space-y-[8px] flex gap-[10px]">
-          <div class="w-[15%] relative">
-            <div
-              class="border rounded-xl size-full absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]"
-            ></div>
-            <div
-              class="border rounded-xl w-full h-[80%] absolute left-[50%] top-[20%] translate-x-[-40%]"
-            ></div>
-            <div
-              class="border rounded-xl w-full h-[50%] absolute left-[50%] top-[50%] translate-x-[-30%]"
-            ></div>
-          </div>
-          <div class="flex-1 pl-[1px]">
-            <div
-              class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200"
-            >
-              <div class="w-[24px] text-center font-bold text-red-500">1</div>
-              <div class="flex-1 overflow-hidden">
-                <div
-                  class="text-sm font-medium truncate group-hover:text-primary transition-colors"
-                >
-                  Shower - Rapeter
-                </div>
-              </div>
-              <div class="text-xs text-green-500">新</div>
-              <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-                <span
-                  class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"
-                ></span>
-              </div>
-            </div>
-            <div
-              class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200"
-            >
-              <div class="w-[24px] text-center font-bold text-red-400">2</div>
-              <div class="flex-1 overflow-hidden">
-                <div
-                  class="text-sm font-medium truncate group-hover:text-primary transition-colors"
-                >
-                  我要搞摇滚 - 孙天宇/蒋易/土豆
-                </div>
-              </div>
-              <div class="text-xs text-green-500">新</div>
-              <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-                <span
-                  class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"
-                ></span>
-              </div>
-            </div>
-            <div
-              class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200"
-            >
-              <div class="w-[24px] text-center font-bold text-red-300">3</div>
-              <div class="flex-1 overflow-hidden">
-                <div
-                  class="text-sm font-medium truncate group-hover:text-primary transition-colors"
-                >
-                  Zoo (From "Zootopia 2")
-                </div>
-              </div>
-              <div class="text-xs text-red-500 flex items-center">
-                <svg
-                  class="w-3 h-3"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M5 12H19"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M12 5L19 12L12 19"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </div>
-              <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-                <span
-                  class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"
-                ></span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 原创榜 -->
-      <div
-        class="border rounded-xl p-[10px] bg-card/20 backdrop-blur-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-2px]"
-      >
-        <div class="flex justify-between items-center mb-[10px]">
-          <div class="flex items-center gap-[5px]">
-            <div
-              class="w-[20px] h-[20px] rounded-full bg-purple-500 text-white flex items-center justify-center text-xs font-bold"
-            >
-              榜
-            </div>
-            <h3 class="font-bold">原创榜</h3>
-          </div>
-          <span class="text-xs text-gray-400">每周四更新</span>
-        </div>
-        <div class="space-y-[8px] flex gap-[10px]">
-          <div class="w-[15%] relative">
-            <div
-              class="border rounded-xl size-full absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]"
-            ></div>
-            <div
-              class="border rounded-xl w-full h-[80%] absolute left-[50%] top-[20%] translate-x-[-40%]"
-            ></div>
-            <div
-              class="border rounded-xl w-full h-[50%] absolute left-[50%] top-[50%] translate-x-[-30%]"
-            ></div>
-          </div>
-          <div class="flex-1 pl-[1px]">
-            <div
-              class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200"
-            >
-              <div class="w-[24px] text-center font-bold text-red-500">1</div>
-              <div class="flex-1 overflow-hidden">
-                <div
-                  class="text-sm font-medium truncate group-hover:text-primary transition-colors"
-                >
-                  Shower - Rapeter
-                </div>
-              </div>
-              <div class="text-xs text-green-500">新</div>
-              <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-                <span
-                  class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"
-                ></span>
-              </div>
-            </div>
-            <div
-              class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200"
-            >
-              <div class="w-[24px] text-center font-bold text-red-400">2</div>
-              <div class="flex-1 overflow-hidden">
-                <div
-                  class="text-sm font-medium truncate group-hover:text-primary transition-colors"
-                >
-                  我要搞摇滚 - 孙天宇/蒋易/土豆
-                </div>
-              </div>
-              <div class="text-xs text-green-500">新</div>
-              <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-                <span
-                  class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"
-                ></span>
-              </div>
-            </div>
-            <div
-              class="flex items-center gap-[10px] cursor-pointer group hover:bg-gray-100/20 p-[5px] rounded-lg transition-all duration-200"
-            >
-              <div class="w-[24px] text-center font-bold text-red-300">3</div>
-              <div class="flex-1 overflow-hidden">
-                <div
-                  class="text-sm font-medium truncate group-hover:text-primary transition-colors"
-                >
-                  Zoo (From "Zootopia 2")
-                </div>
-              </div>
-              <div class="text-xs text-red-500 flex items-center">
-                <svg
-                  class="w-3 h-3"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M5 12H19"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M12 5L19 12L12 19"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </div>
-              <div class="opacity-0 group-hover:opacity-100 transition-opacity">
-                <span
-                  class="iconfont icon-bofang1 text-primary w-[20px] h-[20px] rounded-full bg-white/20 flex items-center justify-center"
-                ></span>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
       </div>
     </div>
-    <!-- 热门单曲 -->
-    <div class="pl-[20px] font-bold">
-      <span class="iconfont icon-remen"></span>热门单曲
+    <!-- 华语新歌 -->
+    <div class="pl-2.5 font-bold flex items-center justify-between">
+      <div><span class="iconfont icon-bofanggedan"></span> 华语新歌</div>
+      <div class="text-foreground/50 text-sm flex items-center gap-0.5 cursor-pointer hover:scale-[1.02] hover:text-foreground">查看全部 <ArrowRight class="size-4" /> </div>
     </div>
     <div
-      class="h-[70%] bg-card/30 backdrop-blur-2xl border shrink-0 !w-[calc(100%-20px)] ml-[20px] overflow-auto rounded-[12px] shadow"
+      class=" !w-[calc(100%-20px)] ml-2.5  grid grid-cols-4 gap-3 "
     >
-      <Table>
-        <TableHeader class="h-[40px]">
-          <TableRow>
-            <TableCell class="w-1">#</TableCell>
-            <TableCell class="">标题</TableCell>
-            <TableCell class="w-[20%]">作者</TableCell>
-            <TableCell class="w-[20%]">专辑</TableCell>
-            <TableCell class="w-[20%]">时长</TableCell>
-            <TableCell class="w-[10%]">喜欢</TableCell>
-            <TableCell class="w-[10%]"></TableCell>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow
-            v-for="(i, index) in tableData"
-            :key="i"
-            class=" h-[60px] cursor-pointer group"
-          >
-            <TableCell>{{ index + 1 }}</TableCell>
-            <TableCell class="flex items-center gap-[5px]">
-              <img
-                src="../../common/img/img.png"
-                class="size-[40px] object-cover rounded"
-                alt=""
-              />
-              <div>{{ i.title }}</div>
-            </TableCell>
-            <TableCell>{{ i.author }}</TableCell>
-            <TableCell>{{ i.album }}</TableCell>
-            <TableCell>{{ i.time }}</TableCell>
-            <TableCell
-              ><Heart
-                class="size-[15px] hover:scale-[1.1] transition-all hover:text-primary"
-              />
-            </TableCell>
-            <TableCell>
-              <div
-                class="size-full gap-[10px] hidden group-hover:block group-hover:flex"
-              >
-                <Info
-                  class="size-[15px] hover:scale-[1.1] transition-all hover:text-primary"
-                />
-                <Play
-                  class="size-[15px] hover:scale-[1.1] transition-all hover:text-primary"
-                />
-                <ArrowDownToLine
-                  class="size-[15px] hover:scale-[1.1] transition-all hover:text-primary"
-                />
-              </div>
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
+      <div class="flex gap-1.5 px-2.5  bg-card/20 backdrop-blur-sm py-2 rounded-xl overflow-hidden  hover:shadow-xl transition-all shadow group" v-for="i in newFast.slice(0,12)" :key="i.id">
+          <div class="size-16 border rounded-sm relative cursor-pointer">
+            <img :src="i.album.picUrl" alt="" class="size-16  rounded-sm absolute z-10 left-0 top-0" />
+            <div class="bg-[rgba(0,0,0,0.2)] size-full absolute z-20 left-0 top-0 flex items-center justify-center hidden group-hover:flex">
+               <div class="p-1.5 bg-card rounded-full">
+                 <Play class="size-3.5 text-primary"/>
+               </div>
+            </div>
+          </div>
+          <div class="flex-1 flex justify-between items-center">
+            <div class="flex flex-col justify-center gap-1">
+                <div class="text-sm line-clamp-1">{{ i.name }}</div>
+                <div  class="text-[0.7rem] line-clamp-1">{{ i.artistsName }}</div>
+            </div>
+            <div>
+                <Ellipsis class="size-3 cursor-pointer" />
+            </div>
+          </div>
+      </div>
+    </div>
+     <!-- 网易出品mv -->
+   <div class="pl-2.5 font-bold flex items-center justify-between">
+      <div><span class="iconfont icon-bofanggedan"></span> 网易出品mv</div>
+      <div class="text-foreground/50 text-sm flex items-center gap-0.5 cursor-pointer hover:scale-[1.02] hover:text-foreground">查看全部 <ArrowRight class="size-4" /> </div>
+    </div>
+    <div class="ml-2.5 w-full grid grid-cols-4 gap-1">
+         <div v-for="i in giveWyMv" :key="i.id" class="w-full h-35 cursor-pointer">
+          <cardTwo  :data="i"/>
+         </div>
+    </div>
+      <!-- 欧美新歌 -->
+   <div class="pl-2.5 font-bold flex items-center justify-between">
+      <div><span class="iconfont icon-bofanggedan"></span> 欧美新歌</div>
+      <div class="text-foreground/50 text-sm flex items-center gap-0.5 cursor-pointer hover:scale-[1.02] hover:text-foreground">查看全部 <ArrowRight class="size-4" /> </div>
+    </div>
+    <div
+      class=" !w-[calc(100%-20px)] ml-2.5  grid grid-cols-4 gap-3 "
+    >
+      <div class="flex gap-1.5 px-2.5  bg-card/20 backdrop-blur-sm py-2 rounded-xl overflow-hidden  hover:shadow-xl transition-all shadow group" v-for="i in newFastOM.slice(0,12)" :key="i.id">
+          <div class="size-16 border rounded-sm relative cursor-pointer">
+            <img :src="i.album.picUrl" alt="" class="size-16  rounded-sm absolute z-10 left-0 top-0" />
+            <div class="bg-[rgba(0,0,0,0.2)] size-full absolute z-20 left-0 top-0 flex items-center justify-center hidden group-hover:flex">
+               <div class="p-1.5 bg-card rounded-full">
+                 <Play class="size-3.5 text-primary"/>
+               </div>
+            </div>
+          </div>
+          <div class="flex-1 flex justify-between items-center">
+            <div class="flex flex-col justify-center gap-1">
+                <div class="text-sm line-clamp-1">{{ i.name }}</div>
+                <div  class="text-[0.7rem] line-clamp-1">{{ i.artistsName }}</div>
+            </div>
+            <div>
+                <Ellipsis class="size-3 cursor-pointer" />
+            </div>
+          </div>
+      </div>
+    </div>
+     <!-- 推荐mv -->
+   <div class="pl-2.5 font-bold flex items-center justify-between">
+      <div><span class="iconfont icon-bofanggedan"></span> 推荐mv</div>
+      <div class="text-foreground/50 text-sm flex items-center gap-0.5 cursor-pointer hover:scale-[1.02] hover:text-foreground">查看全部 <ArrowRight class="size-4" /> </div>
+    </div>
+    <div class="ml-2.5 w-full grid grid-cols-4 gap-1">
+         <div v-for="i in giveMv" :key="i.id" class="w-full h-35 cursor-pointer">
+          <cardTwo  :data="i"/>
+         </div>
     </div>
     <div class="h-[10px]"></div>
   </div>
@@ -725,24 +339,17 @@ import { ref, onMounted, nextTick } from "vue"; //引入vue
 import Autoplay from "embla-carousel-autoplay"; //引入自动播放插件
 import { Card, CardContent } from "@/components/ui/card"; //引入card组件
 import card from "@/views/components/home/card.vue"; //card组件
-import { Heart, ArrowDownToLine, Play, Info } from "lucide-vue-next"; //引入lucide-vue图标库
+import { getTimePeriod } from '@/utils'//引入工具
+import cardTwo from "@/views/components/home/cardTwo.vue"; //cardTwo组件
+import { Heart, ArrowDownToLine, Play, Info ,ArrowRight,Ellipsis} from "lucide-vue-next"; //引入lucide-vue图标库
 import { gsap } from "gsap";//引入gsap
 import { homeapi } from '@/api'//引入api
 import music from "@/common/img/home/music.svg";
 import type {getBannerParamsDataListType,getBannerParamsDataType} from '@/api/type'//引入api的类型
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"; //tabel组件
-import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel"; //引入轮播图
 
 const plugin = Autoplay({
@@ -753,125 +360,135 @@ const plugin = Autoplay({
 //#endregion 引入import
 
 //#region 响应式数据 ref、reactive、watch、computed...
+const topPlaylisttData = ref<any>([])//当前网友精选歌单
+const hotSonger = ref<any>([])//热门歌手
+const ToplistData = ref<any>([])//榜单
+const newFast = ref<any[]>([])//华语的新歌速递
+const newFastOM = ref<any[]>([])//欧美的新歌速递
+const giveMv = ref<any[]>([])//推荐的mv
+const giveWyMv=ref<any[]>([])//网易出品mv
 const bannerData=ref<getBannerParamsDataListType[]>()//当前轮播图的数据
-const tableData = ref([
-  {
-    id: 1,
-    title: "呼吸兮沒",
-    author: "ximo",
-    album: "你真的不懂",
-    time: "5:20",
-  },
-  {
-    id: 1,
-    title: "呼吸兮沒",
-    author: "ximo",
-    album: "你真的不懂",
-    time: "5:20",
-  },
-  {
-    id: 1,
-    title: "呼吸兮沒",
-    author: "ximo",
-    album: "你真的不懂",
-    time: "5:20",
-  },
-  {
-    id: 1,
-    title: "呼吸兮沒",
-    author: "ximo",
-    album: "你真的不懂",
-    time: "5:20",
-  },
-  {
-    id: 1,
-    title: "呼吸兮沒",
-    author: "ximo",
-    album: "你真的不懂",
-    time: "5:20",
-  },
-  {
-    id: 1,
-    title: "呼吸兮沒",
-    author: "ximo",
-    album: "你真的不懂",
-    time: "5:20",
-  },
-  {
-    id: 1,
-    title: "呼吸兮沒",
-    author: "ximo",
-    album: "你真的不懂",
-    time: "5:20",
-  },
-  {
-    id: 1,
-    title: "呼吸兮沒",
-    author: "ximo",
-    album: "你真的不懂",
-    time: "5:20",
-  },
-  {
-    id: 1,
-    title: "呼吸兮沒",
-    author: "ximo",
-    album: "你真的不懂",
-    time: "5:20",
-  },
-  {
-    id: 1,
-    title: "呼吸兮沒",
-    author: "ximo",
-    album: "你真的不懂",
-    time: "5:20",
-  },
-  {
-    id: 1,
-    title: "呼吸兮沒",
-    author: "ximo",
-    album: "你真的不懂",
-    time: "5:20",
-  },
-  {
-    id: 1,
-    title: "呼吸兮沒",
-    author: "ximo",
-    album: "你真的不懂",
-    time: "5:20",
-  },
-  {
-    id: 1,
-    title: "呼吸兮沒",
-    author: "ximo",
-    album: "你真的不懂",
-    time: "5:20",
-  },
-  {
-    id: 1,
-    title: "呼吸兮沒",
-    author: "ximo",
-    album: "你真的不懂",
-    time: "5:20",
-  },
-  {
-    id: 1,
-    title: "呼吸兮沒",
-    author: "ximo",
-    album: "你真的不懂",
-    time: "5:20",
-  },
-]);
 //#endregion 响应式数据 ref、reactive、watch、computed...
 
 //#region 生命周期
 onMounted(() => {
   gaspShow();//执行gasp动画
   getBannerData()//获取轮播数据
+  getTopPlaylisttData()//获取热门歌单
+  getTopaArtistslist()//获取热门歌手
+  getToplistData()//获取榜单
+  topSongHy()//新歌速递
+  getPersonalizedMvData()//获取推荐mv
+  getExclusivedRcmdMvData()//获取网易出品mv
 });
 //#endregion 生命周期
 
 //#region 事件函数
-
+//网易出品mv
+const getExclusivedRcmdMvData = async () => {
+  try {
+    const rudata = await homeapi.exclusivedRcmdMv({limit:8,offset:1})
+    giveWyMv.value = rudata.data.map((e: any) => {
+      return {
+        ...e,
+        coverImgUrl:e.cover
+      }
+    })
+  } catch (error) {
+     console.error('获取网易出品mv失败',error)
+  }
+}
+//推荐mv
+const getPersonalizedMvData = async () => {
+  try {
+    const rudata = await homeapi.personalizedMv()
+    giveMv.value=rudata.result
+  } catch (error) {
+     console.error('获取推荐mv失败',error)
+  }
+}
+//获取华语
+const topSongHy = async () => {
+    try {
+      const rudata = await homeapi.topSong({ type: 7 })
+      const rudataOM = await homeapi.topSong({ type: 96 })
+       newFastOM.value = rudataOM.data.map((i:any) => {
+        return {
+          ...i,
+          artistsName:i.artists.map((e:any)=>e.name).join('-'),
+        }
+      })
+      newFast.value = rudata.data.map((i:any) => {
+        return {
+          ...i,
+          artistsName:i.artists.map((e:any)=>e.name).join('-'),
+        }
+      })
+    } catch (error) {
+        console.log('获取新歌速递失败',error)
+    }
+}
+//获取榜单
+const getToplistData = async () => {
+  try {
+    const toplistreslut = await homeapi.toplist()
+    const rudata =  homeapi.playlistDetail(toplistreslut.list[0].id)
+    const rudata2 =  homeapi.playlistDetail(toplistreslut.list[1].id)
+    const rudata3 =  homeapi.playlistDetail(toplistreslut.list[2].id)
+    const rudata4 =  homeapi.playlistDetail(toplistreslut.list[3].id)
+    const rudata5 =  homeapi.playlistDetail(toplistreslut.list[4].id)
+    const rudata6 =  homeapi.playlistDetail(toplistreslut.list[5].id)
+    const [res1,res2,res3,res4,res5,res6]=await Promise.allSettled([rudata,rudata2,rudata3,rudata4,rudata5,rudata6])
+    ToplistData.value = [
+      {
+        name: res1.value.playlist.name,
+        tracks:res1.value.playlist.tracks,
+      },
+       {
+        name: res2.value.playlist.name,
+        tracks:res2.value.playlist.tracks,
+     },
+       {
+        name: res3.value.playlist.name,
+        tracks:res3.value.playlist.tracks,
+     },
+       {
+        name: res4.value.playlist.name,
+        tracks:res4.value.playlist.tracks,
+     },
+       {
+        name: res5.value.playlist.name,
+        tracks:res5.value.playlist.tracks,
+      },
+       {
+        name: res6.value.playlist.name,
+        tracks:res6.value.playlist.tracks,
+     },
+    ]
+    console.error('rudata', ToplistData.value)
+  } catch (error) {
+    console.error('获取榜单失败',error)
+  }
+}
+//获取热门歌手
+const getTopaArtistslist = async () => {
+  try {
+    const rudata = await homeapi.topaArtistslist({ limit: 12, offset: 1 })
+    hotSonger.value = rudata.artists
+    console.log(rudata)
+  } catch (error) {
+    console.error('获取热门歌手失败',error)
+  }
+}
+//获取热门歌单
+const getTopPlaylisttData = async()=> {
+  try {
+    const rudata = await homeapi.topPlaylist({ limit: 20, offset: 1 })
+    topPlaylisttData.value=rudata.playlists
+  } catch (error) {
+    console.error('获取热门歌单失败',error)
+  }
+}
 //获取轮播数据
 const getBannerData = async() => {
   try {
