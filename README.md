@@ -18,3 +18,7 @@
 
 ## 后端接口 
 - **接口文档**: 采用开源node项目https://github.com/XiangZi7/NeteaseCloudMusicApi
+![alt text](image.png)
+![alt text](image-1.png)
+![alt text](image-2.png)
+![alt text](image-3.png)
