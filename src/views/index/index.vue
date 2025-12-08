@@ -21,7 +21,7 @@
       </div>
 
       <!-- 播放控制器 -->
-      <div class="h-[10%] rounded-[12px] border shadow overflow-hidden">
+      <div class="h-[10%] rounded-[12px] border shadow overflow-hidden" v-if="usePlaySetStore.playList.length">
         <PalyCtrl />
       </div>
 
@@ -35,10 +35,11 @@ import { ref } from "vue";
 import Title from "@/views/components/index/title.vue";
 import PalyCtrl from "@/views/components/index/palyCtrl.vue";
 import Nav from "@/views/components/index/nav.vue";
+import playSetStore from '@/store/palySet'//引入播放设置商店
 
 
 // 响应式数据
-
+const usePlaySetStore=playSetStore()//使用store
 // 事件函数
 
 </script>

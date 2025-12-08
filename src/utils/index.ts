@@ -19,3 +19,27 @@ export function getTimePeriod(): string {
   if (hour >= 18 && hour < 24) return '已入夜早点休息~';
   return '已经很晚啦，面对生活的前提是好的身体！';
 }
+// 秒转换为 00:00:00 格式
+export function formatSecondsToTime(totalSeconds: number): string {
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = Math.floor(totalSeconds % 60);
+  const milliseconds = Math.floor((totalSeconds % 1) * 1000);
+  const pad = (n: number, len: number = 2) => n.toString().padStart(len, '0');
+  return `${pad(minutes)}:${pad(seconds)}:${pad(milliseconds, 3)}`;
+}
+// 传入一个时间字符串 分:秒.毫秒 如 00:01.123 转换为毫秒
+export function formatTimeToSeconds(time: string): number {
+  // 移除空格并按“:”拆分
+  const parts = time.trim().split(':');
+  if (parts.length < 2) return 0; // 格式不正确时返回 0
+
+  // 解析分钟
+  const minutes = Number(parts[0]);
+  // 解析秒与毫秒（秒部分可能包含小数）
+  const secParts = parts[1].split('.');
+  const seconds = Number(secParts[0]);
+  const milliseconds = secParts.length > 1 ? Number(secParts[1]) : 0;
+
+  // 计算总毫秒
+  return minutes * 60 * 1000 + seconds * 1000 + milliseconds;
+}

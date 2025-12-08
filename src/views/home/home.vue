@@ -260,7 +260,7 @@
     <div
       class=" !w-[calc(100%-20px)] ml-2.5  grid grid-cols-4 gap-3 "
     >
-      <div class="flex gap-1.5 px-2.5  bg-card/20 backdrop-blur-sm py-2 rounded-xl overflow-hidden  hover:shadow-xl transition-all shadow group" v-for="i in newFast.slice(0,12)" :key="i.id">
+      <div class="flex gap-1.5 px-2.5  bg-card/20 backdrop-blur-sm py-2 rounded-xl overflow-hidden  hover:shadow-xl transition-all shadow group" @click="playMusic(i)" v-for="i in newFast.slice(0,12)" :key="i.id">
           <div class="size-16 border rounded-sm relative cursor-pointer">
             <img :src="i.album.picUrl" alt="" class="size-16  rounded-sm absolute z-10 left-0 top-0" />
             <div class="bg-[rgba(0,0,0,0.2)] size-full absolute z-20 left-0 top-0 flex items-center justify-center hidden group-hover:flex">
@@ -345,7 +345,9 @@ import { Heart, ArrowDownToLine, Play, Info ,ArrowRight,Ellipsis} from "lucide-v
 import { gsap } from "gsap";//引入gsap
 import { homeapi } from '@/api'//引入api
 import music from "@/common/img/home/music.svg";
-import type {getBannerParamsDataListType,getBannerParamsDataType} from '@/api/type'//引入api的类型
+import type { getBannerParamsDataListType, getBannerParamsDataType } from '@/api/type'//引入api的类型
+import playSetStore from '@/store/palySet'//引入播放设置商店
+// 创建store实例
 import {
   Carousel,
   CarouselContent,
@@ -367,7 +369,8 @@ const newFast = ref<any[]>([])//华语的新歌速递
 const newFastOM = ref<any[]>([])//欧美的新歌速递
 const giveMv = ref<any[]>([])//推荐的mv
 const giveWyMv=ref<any[]>([])//网易出品mv
-const bannerData=ref<getBannerParamsDataListType[]>()//当前轮播图的数据
+const bannerData = ref<getBannerParamsDataListType[]>()//当前轮播图的数据
+const usePlaySetStore=playSetStore()//使用store
 //#endregion 响应式数据 ref、reactive、watch、computed...
 
 //#region 生命周期
@@ -384,6 +387,10 @@ onMounted(() => {
 //#endregion 生命周期
 
 //#region 事件函数
+//播放音乐
+const playMusic = async (data: any) => {
+  await usePlaySetStore.addPlayList(data, true)
+}
 //网易出品mv
 const getExclusivedRcmdMvData = async () => {
   try {

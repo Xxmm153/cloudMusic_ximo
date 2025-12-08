@@ -20,7 +20,7 @@
         />
 
         <img
-          src="https://p3-flow-sign.byteimg.com/tos-cn-i-ik7evvg4ik/supertask_file_39746626-6e4a-4c0a-bd11-8f81a9f13723?rk3s=4e0a0f58&x-expires=1752705409&x-signature=JxZSYh9b0QJn75%2F895Zt%2F4B1Ujw%3D"
+        :src="usePlaySetStore.getCurrentPlayMusicInfo.album.blurPicUrl"
           alt="歌曲封面"
           class="w-full h-full object-cover album-cover-animation"
         />
@@ -31,9 +31,9 @@
         <div
           class="text-sm font-medium truncate group-hover:text-primary transition-colors"
         >
-          爱太空
+          {{ usePlaySetStore.getCurrentPlayMusicInfo.name }}
         </div>
-        <div class="text-xs truncate transition-colors">周芷莹</div>
+        <div class="text-xs truncate transition-colors">{{ usePlaySetStore.getCurrentPlayMusicInfo.artists.map(i=>i.name).join('-') }}</div>
       </div>
 
       <!-- 收藏按钮 -->
@@ -53,11 +53,13 @@
       <div class="flex items-center gap-6 mb-2 relative z-10">
         <!-- 上一首按钮 -->
         <ChevronLeft
+             @click.stop="usePlaySetStore.pre"
           class="w-5 h-5 hover:text-primary cursor-pointer transition-all duration-300 hover:scale-110"
         />
 
         <!-- 播放/暂停按钮 -->
         <button
+         @click.stop="playMusic(true)" v-if="!usePlaySetStore.isPlay"
           class="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-primary flex items-center justify-center text-white hover:scale-105 transition-all duration-300"
         >
           <!-- 播放图标带光晕效果 -->
@@ -65,10 +67,21 @@
             <div class="absolute -inset-1 bg-white/20 rounded-full blur-sm" />
             <Play class="w-4 h-4 ml-0.5 relative z-10" />
           </div>
+        </button >
+          <button
+           @click.stop="playMusic(false)" v-else
+          class="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-primary flex items-center justify-center text-white hover:scale-105 transition-all duration-300"
+        >
+          <!-- 播放图标带光晕效果 -->
+          <div class="relative">
+            <div class="absolute -inset-1 bg-white/20 rounded-full blur-sm" />
+            <Pause class="w-4 h-4 ml-0.5 relative z-10" />
+          </div>
         </button>
 
         <!-- 下一首按钮 -->
         <ChevronRight
+                  @click.stop="usePlaySetStore.next"
           class="w-5 h-5 hover:text-primary cursor-pointer transition-all duration-300 hover:scale-110"
         />
       </div>
@@ -171,13 +184,13 @@
       <div class="size-full relative" id="drawid">
         <div class="absolute size-full">
           <img
-            src="../../../common/img/img4.png"
+            :src="usePlaySetStore.getCurrentPlayMusicInfo.album.blurPicUrl"
             alt=""
             class="object-cover size-full"
           />
         </div>
         <div
-          class="absolute size-full z-50 bg-card/20 backdrop-blur-3xl flex flex-col"
+          class="absolute size-full z-50 bg-card/10 backdrop-blur-3xl flex flex-col"
         >
           <div class="h-14  flex items-center justify-between px-5">
             <div class="flex h-full items-center justify-center gap-4">
@@ -238,7 +251,7 @@
             
             </div>
           </div>
-          <div class="flex-1  flex">
+          <div class="flex-1  flex overflow-hidden">
             <div
               class="flex-4  p-6 flex flex-col items-center justify-center relative overflow-hidden"
             >
@@ -255,8 +268,9 @@
                 <div class="relative mb-8 flex flex-col items-center music">
                   <!-- 唱针 -->
                   <div
-                    class="w-24 h-48 absolute -top-12 right-8 flex flex-col items-center z-20 rotate-310 zhen"
+                    class="w-24 h-48 absolute -top-12 right-8 flex flex-col items-center rotate-310 z-20 zhen "
                     style="transform-origin: top"
+                    :class="{zhen2:usePlaySetStore.isPlay}"
                   >
                     <!-- 唱针杆 -->
                     <div class="w-2 h-36 bg-gray-700 rounded-full relative">
@@ -274,7 +288,8 @@
                   <!-- 黑胶唱片 -->
                   <div
                   id="so"
-                    class="w-56 h-56 rounded-full bg-black shadow-2xl relative overflow-hidden animate-spin-slow song"
+                    class="w-56 h-56 rounded-full bg-black shadow-2xl relative overflow-hidden  song animate-spin-slow"
+                    :style="{ animationPlayState: usePlaySetStore.isPlay ? 'running' : 'paused' }"
                   >
                     <!-- 唱片纹理 -->
                     <div
@@ -298,7 +313,7 @@
                         class="size-35 rounded-full overflow-hidden border-8 border-gray-900"
                       >
                         <img
-                          src="../../../common/img/img2.png"
+                          :src="usePlaySetStore.getCurrentPlayMusicInfo.album.blurPicUrl"
                           alt="歌曲封面"
                           class="w-full h-full object-cover"
                         />
@@ -318,8 +333,8 @@
 
                 <!-- 歌曲信息 -->
                 <div class="text-center mb-6" id="user">
-                  <h2 class="text-xl font-bold text-white mb-1">爱太空</h2>
-                  <p class="text-green-300 text-sm">周芷莹</p>
+                  <h2 class="text-xl font-bold text-white mb-1">{{  usePlaySetStore.getCurrentPlayMusicInfo.name }}</h2>
+                  <p class="text-green-300 text-sm font-bold">{{ usePlaySetStore.getCurrentPlayMusicInfo.artists.map(i=>i.name).join('-') }}</p>
                 </div>
 
                 <!-- 进度条 -->
@@ -336,36 +351,47 @@
                   </div>
                   <span class="text-xs text-gray-400">04:15</span>
                 </div>
-
+             
                 <!-- 控制按钮 -->
                 <div class="flex items-center justify-center gap-6">
                   <button
                   id="bu1"
-                    class="w-9 h-9 bg-card/1 backdrop-blur-2xl rounded-full flex items-center justify-center text-white hover:text-white transition-colors"
+                    class="w-9 h-9 bg-card/30 backdrop-blur-2xl rounded-full flex items-center justify-center text-white hover:text-white transition-colors"
                   >
                     <Shuffle  class="w-3 h-3" />
                   </button>
                   <button
+                  @click.stop="usePlaySetStore.pre"
                   id="bu2"
-                    class="w-11 h-11 rounded-full flex items-center justify-center text-white hover:text-white transition-colors hover:text-primary cursor-pointer hover:translate-y-[-1px] transition-all flex items-center bg-card/1 backdrop-blur-2xl"
+                    class="w-11 h-11 rounded-full flex items-center justify-center text-white hover:text-white transition-colors hover:text-primary cursor-pointer hover:translate-y-[-1px] transition-all flex items-center bg-card/30 backdrop-blur-2xl"
                   >
                     <ChevronLeft  class="w-5 h-5" />
                   </button>
                   <button
+                  @click.stop="playMusic(true)"  v-if="!usePlaySetStore.isPlay"
                   id="bu3"
-                    class="hover:translate-y-[-1px] transition-all flex items-center bg-card/1 backdrop-blur-2xl w-14 h-14 rounded-full bg-primary flex items-center justify-center text-white hover:scale-105 transition-all shadow-lg"
+                    class="hover:translate-y-[-1px] transition-all flex items-center bg-card/30 backdrop-blur-2xl w-14 h-14 rounded-full bg-primary flex items-center justify-center text-white hover:scale-105 transition-all shadow-lg"
                   >
                     <Play  class="w-6 h-6 ml-1" />
                   </button>
+                   <button
+                    
+                    @click.stop="playMusic(false)" v-else
+                  id="bu3"
+                    class="hover:translate-y-[-1px] transition-all flex items-center bg-card/30 backdrop-blur-2xl w-14 h-14 rounded-full bg-primary flex items-center justify-center text-white hover:scale-105 transition-all shadow-lg"
+                  >
+                    <Pause class="w-6 h-6 ml-1" />
+                  </button>
                   <button
+                  @click.stop="usePlaySetStore.next"
                   id="bu4"
-                    class="hover:translate-y-[-1px] transition-all flex items-center bg-card/1 backdrop-blur-2xl w-11 h-11 rounded-full flex items-center justify-center text-white hover:text-white transition-colors"
+                    class="hover:translate-y-[-1px] transition-all flex items-center bg-card/30 backdrop-blur-2xl w-11 h-11 rounded-full flex items-center justify-center text-white hover:text-white transition-colors"
                   >
                     <ChevronRight  class="w-5 h-5" />
                   </button>
                   <button
                    id="bu5"
-                    class="hover:translate-y-[-1px] transition-all flex items-center bg-card/1 backdrop-blur-2xl w-9 h-9 rounded-full flex items-center justify-center text-white hover:text-white transition-colors"
+                    class="hover:translate-y-[-1px] transition-all flex items-center bg-card/30 backdrop-blur-2xl w-9 h-9 rounded-full flex items-center justify-center text-white hover:text-white transition-colors"
                   >
                     <ListMusic class="w-3 h-3" />
                   </button>
@@ -426,19 +452,26 @@
                 </div>
               </div>
             </div>
-            <div class="flex-6 flex justify-center items-center text-xl text-white">
-               暂无开发歌词
+            <div class="flex-6 flex justify-center items-center text-xl text-white ">
+                <div class="flex flex-col overflow-auto  h-9/10  w-4/5   items-center gcClass">
+                  <div class="h-1/2  shrink-0"></div>
+                  <div  class="w-full text-center flex items-center justify-center shrink-0 h-13 transition-all" :class="{'isActive !text-primary text-2xl bg-parimary-hover font-bold':isActive(i,index)}" v-for="(i,index) in usePlaySetStore.currentLyric">{{ i[1] }}</div>
+                  <div class="h-1/2  shrink-0"></div>
+                </div>
             </div>
           </div>
         </div>
       </div>
     </DrawerContent>
   </Drawer>
+  <audio :src="usePlaySetStore.getCurrentPlayMusic" ref="audioRef" class="" style="visibility: hidden;" @timeupdate="updateCurrentTime"  @ended="ended"> </audio>
 </template>
 
 <script setup lang="ts">
 //#region 引入import
-import { ref, onMounted,watch, nextTick } from "vue"; //引入vue
+import { ref, onMounted, watch, nextTick ,useTemplateRef} from "vue"; //引入vue
+import playSetStore from '@/store/palySet'//引入播放设置商店
+import {formatTimeToSeconds} from '@/utils'//引入工具
 import {
   MessageSquareDot,
   Heart,
@@ -456,6 +489,7 @@ import {
   PartyPopper,
   HopOff,
   Shuffle,
+  Pause
 } from "lucide-vue-next"; //引入lucide图标
 import {
   Drawer,
@@ -467,10 +501,13 @@ import { gsap } from "gsap";
 //#endregion 引入import
 
 //#region 响应式数据 ref、reactive、watch、computed...
+const audioRef =useTemplateRef<HTMLAudioElement | any>('audioRef')
+const usePlaySetStore=playSetStore()//使用store
 const isShowDrawer = ref(false);
 // 从localStorage读取爱心显示状态，如果没有则默认为false
 const isHeartEnabled = ref(localStorage.getItem('isHeartEnabled') === 'true'); 
-
+const currentTime = ref<string>('0')//当前播放的时分秒
+const currentTransfrom=ref<number>(0)//当前播放的进度条位置
 // 监听爱心显示状态变化，保存到localStorage
 watch(isHeartEnabled, (newValue) => {
   if (!newValue) {
@@ -503,7 +540,27 @@ watch(isShowDrawer, () => {
         window.heartAnimationInterval = null;
       }
     }
-  });
+});
+
+//监听播放
+watch(()=>usePlaySetStore.isPlay, (newValue) => {
+  if (newValue) {
+    audioRef.value.play()
+  } else {
+    audioRef.value.pause()
+  }
+})
+
+watch(currentTransfrom, () => {
+    if (!document.querySelector('.gcClass'))return
+      // 歌词行高度为h-13(52px)，滚动到当前歌词居中位置
+      const lyricLineHeight = 52; // h-13 in pixels
+      const container = document.querySelector('.gcClass');
+      if (container) {
+        const scrollPosition = currentTransfrom.value * lyricLineHeight;
+        container.scrollTop = Math.max(0, scrollPosition);
+      }
+  })
 //#endregion 响应式数据 ref、reactive、watch、computed...
 
 //#region 生命周期
@@ -512,6 +569,45 @@ onMounted(() => {
 //#endregion 生命周期
 
 //#region 事件函数
+// 播放完毕后
+const ended = () => {
+  // 确保 audioRef 存在且已加载
+  if (!audioRef.value) return
+
+  // 根据播放模式决定下一首逻辑
+  if (usePlaySetStore.sequence === 0) {
+    // 列表循环：自动下一首
+    usePlaySetStore.next()
+  } else if (usePlaySetStore.sequence === 1) {
+    // 随机播放：随机下一首
+    usePlaySetStore.random()
+  } else {
+    // 单曲循环：重置当前时间并继续播放
+    audioRef.value.currentTime = 0
+  }
+}
+//isActive
+const isActive = (i: any, index: number) => {
+  if(index==usePlaySetStore.currentLyric.length-1 && (currentTime.value * 1000)>=formatTimeToSeconds(i[0])){
+    return true
+  }
+   if((currentTime.value * 1000)>formatTimeToSeconds(i[0])&&(currentTime.value * 1000)<formatTimeToSeconds(usePlaySetStore.currentLyric[index+1][0])){
+    return true
+  }
+   return false
+}
+//音频播放中动画
+const updateCurrentTime = () => {
+  // console.log('e',(e.timeStamp/1000).toFixed(0))  
+  currentTime.value = audioRef.value?.currentTime
+  currentTransfrom.value=Array.from(document.querySelector('.gcClass')?.children).findIndex((i: any) => {
+    return i == document.querySelector('.isActive')
+  })
+}
+//播放动画
+const playMusic = (status: boolean) => {
+  usePlaySetStore.isPlay=status
+}
 //gsap动画
 const showGsap = () => {
 nextTick(()=>{
@@ -595,15 +691,8 @@ function showHeartAnimation(toggleState = true) {
       createHeart(container, () => isActive && isHeartEnabled.value);
       heartCount++;
       
-      // 最多生成50个爱心，避免性能问题
-      if (heartCount > 50) {
-        isActive = false;
-        clearInterval(window.heartAnimationInterval);
-        // 30秒后重置计数器，允许再次点击生成
-        setTimeout(() => {
-          heartCount = 0;
-        }, 30000);
-      }
+      // 移除爱心数量限制，允许持续生成爱心
+      // 如果需要限制数量，可以在这里添加新的逻辑
     }
   }, 2000); // 每2000毫秒生成一个新爱心
 }
@@ -749,9 +838,11 @@ const showDrawer = () => {
 }
 
 /* 添加黑胶唱片旋转动画 */
-// .animate-spin-slow {
-//   animation: spin-slow 20s linear infinite;
-// }
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+  /* 初始状态为暂停 */
+  animation-play-state: paused;
+}
 
 @keyframes spin-slow {
   from {
@@ -821,6 +912,9 @@ button:active {
 .music:hover .zhen {
   transform: rotate(5deg);
   cursor: pointer;
+}
+.zhen2{
+  transform: rotate(30deg);
 }
 .music:hover .song {
   cursor: pointer;
