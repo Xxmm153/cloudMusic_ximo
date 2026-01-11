@@ -20,9 +20,9 @@
         />
 
         <img
-        :src="usePlaySetStore.getCurrentPlayMusicInfo.album.blurPicUrl"
+          :src="usePlaySetStore.getCurrentPlayMusicInfo.album.blurPicUrl"
           alt="歌曲封面"
-          class="w-full h-full object-cover album-cover-animation"
+          class="w-full h-full object-cover"
         />
       </div>
 
@@ -33,7 +33,13 @@
         >
           {{ usePlaySetStore.getCurrentPlayMusicInfo.name }}
         </div>
-        <div class="text-xs truncate transition-colors">{{ usePlaySetStore.getCurrentPlayMusicInfo.artists.map(i=>i.name).join('-') }}</div>
+        <div class="text-xs truncate transition-colors">
+          {{
+            usePlaySetStore.getCurrentPlayMusicInfo.artists
+              .map((i) => i.name)
+              .join("-")
+          }}
+        </div>
       </div>
 
       <!-- 收藏按钮 -->
@@ -53,13 +59,14 @@
       <div class="flex items-center gap-6 mb-2 relative z-10">
         <!-- 上一首按钮 -->
         <ChevronLeft
-             @click.stop="usePlaySetStore.pre"
+          @click.stop="usePlaySetStore.pre"
           class="w-5 h-5 hover:text-primary cursor-pointer transition-all duration-300 hover:scale-110"
         />
 
         <!-- 播放/暂停按钮 -->
         <button
-         @click.stop="playMusic(true)" v-if="!usePlaySetStore.isPlay"
+          @click.stop="playMusic(true)"
+          v-if="!usePlaySetStore.isPlay"
           class="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-primary flex items-center justify-center text-white hover:scale-105 transition-all duration-300"
         >
           <!-- 播放图标带光晕效果 -->
@@ -67,9 +74,10 @@
             <div class="absolute -inset-1 bg-white/20 rounded-full blur-sm" />
             <Play class="w-4 h-4 ml-0.5 relative z-10" />
           </div>
-        </button >
-          <button
-           @click.stop="playMusic(false)" v-else
+        </button>
+        <button
+          @click.stop="playMusic(false)"
+          v-else
           class="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-primary flex items-center justify-center text-white hover:scale-105 transition-all duration-300"
         >
           <!-- 播放图标带光晕效果 -->
@@ -81,18 +89,19 @@
 
         <!-- 下一首按钮 -->
         <ChevronRight
-                  @click.stop="usePlaySetStore.next"
+          @click.stop="usePlaySetStore.next"
           class="w-5 h-5 hover:text-primary cursor-pointer transition-all duration-300 hover:scale-110"
         />
       </div>
 
       <!-- 进度条 -->
       <div class="flex items-center gap-2 w-full max-w-3xl">
-        <span class="text-xs">03:13</span>
+        <span class="text-xs">{{ currentTimeFrommater }}</span>
 
         <!-- 增强版进度条 -->
         <div
-          class="flex-1 h-1.5 bg-gray-700/50 rounded-full overflow-hidden relative group cursor-pointer hover:bg-gray-700 transition-colors"
+          @click.stop="changeCurrentTime($event, 'linePlay')"
+          class="linePlay flex-1 h-1.5 bg-gray-700/50 rounded-full overflow-hidden relative group cursor-pointer hover:bg-gray-700 transition-colors"
         >
           <!-- 背景装饰条纹 -->
           <div class="absolute inset-0 flex">
@@ -105,7 +114,8 @@
 
           <!-- 已播放部分带发光效果 -->
           <div
-            class="absolute left-0 top-0 h-full w-[50%] bg-gradient-to-r from-primary primary to-primary rounded-full"
+            :style="{ width: currentTransfromBlock + '%' }"
+            class="absolute left-0 top-0 h-full bg-gradient-to-r from-primary primary to-primary rounded-full transition-all"
           >
             <!-- 播放状态动画指示器 -->
             <div
@@ -115,21 +125,43 @@
           </div>
 
           <!-- 进度指示器 -->
-          <div
+          <!-- <div
             class="absolute left-[50%] top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-[0_0_10px_rgba(255,255,255,0.6)] hover:scale-110"
-          />
+          /> -->
         </div>
 
-        <span class="text-xs">05:14</span>
+        <span class="text-xs">{{ duration }}</span>
       </div>
     </div>
 
     <!-- 音量控制区域 -->
     <div class="w-[240px] flex items-center justify-end gap-4 relative">
-      <!-- 重复播放按钮 -->
-      <Repeat
-        class="w-4 h-4 hover:text-primary cursor-pointer transition-all duration-300 hover:scale-110 hover:rotate-12"
-      />
+      <div @click.stop="changePlayMode" class="mt-1">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <!-- 重复播放按钮 -->
+              <Repeat
+                v-if="usePlaySetStore.sequence === 0"
+                class="w-4 h-4 hover:text-primary cursor-pointer transition-all duration-300 hover:scale-110 hover:rotate-12" />
+              <Shuffle
+                v-else-if="usePlaySetStore.sequence === 1"
+                class="w-4 h-4 hover:text-primary cursor-pointer transition-all duration-300 hover:scale-110 hover:rotate-12"
+              ></Shuffle>
+              <Repeat1
+                v-else
+                class="w-4 h-4 hover:text-primary cursor-pointer transition-all duration-300 hover:scale-110 hover:rotate-12"
+              ></Repeat1
+            ></TooltipTrigger>
+            <TooltipContent>
+              <p v-if="usePlaySetStore.sequence === 0">顺序播放</p>
+              <p v-else-if="usePlaySetStore.sequence === 1">随机播放</p>
+              <p v-else>循环播放</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
+
       <!-- 右侧装饰元素 -->
       <div
         class="absolute -right-10 top-1/2 -translate-y-1/2 w-16 h-16 bg-pink-500/5 rounded-full blur-xl"
@@ -143,18 +175,24 @@
       <!-- 音量控制 -->
       <div class="flex items-center gap-2 group">
         <!-- 音量图标带光晕效果 -->
-        <div class="relative">
+        <div @click.stop="isHasVolumn" class="relative cursor-pointer">
           <div
             class="absolute -inset-1 bg-white/5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
           />
+          <Volume1
+            v-if="!muted"
+            class="w-4 h-4 group-hover:text-primary cursor-pointer transition-all duration-300 hover:scale-110"
+          ></Volume1>
           <VolumeX
+            v-else
             class="w-4 h-4 group-hover:text-primary cursor-pointer transition-all duration-300 hover:scale-110"
           />
         </div>
 
         <!-- 音量滑块 -->
         <div
-          class="w-[60px] h-1.5 bg-gray-700/50 rounded-full overflow-hidden cursor-pointer hover:bg-gray-700 transition-colors relative"
+          @click.stop="changeVolumn($event, 'volumn1')"
+          class="volumn1 w-[60px] h-1.5 bg-gray-700/50 rounded-full overflow-hidden cursor-pointer hover:bg-gray-700 transition-colors relative"
         >
           <!-- 音量轨道装饰 -->
           <div class="absolute inset-0 flex">
@@ -167,7 +205,10 @@
 
           <!-- 音量填充 -->
           <div
-            class="h-full w-1/3 bg-gradient-to-r from-gray-300 to-gray-100 rounded-full relative overflow-hidden"
+            :style="{
+              width: volumnWitdh + '%',
+            }"
+            class="h-full bg-gradient-to-r from-gray-300 to-gray-100 rounded-full relative overflow-hidden"
           >
             <!-- 音量填充内部的光效 -->
             <div
@@ -192,7 +233,7 @@
         <div
           class="absolute size-full z-50 bg-card/10 backdrop-blur-3xl flex flex-col"
         >
-          <div class="h-14  flex items-center justify-between px-5">
+          <div class="h-14 flex items-center justify-between px-5">
             <div class="flex h-full items-center justify-center gap-4">
               <div
                 class="border border-[#fff]/30 h-5/7 w-32 rounded-xl flex items-center justify-between px-3 text-sm bg-card/1 backdrop-blur-sm text-[#fff] hover:translate-y-[-1px] transition-all"
@@ -200,12 +241,12 @@
                 <div
                   class="hover:text-primary cursor-pointer hover:translate-y-[-1px] transition-all flex items-center"
                 >
-                 小      <ArrowDown class="size-[11px]" />
+                  小 <ArrowDown class="size-[11px]" />
                 </div>
                 <div
                   class="hover:text-primary cursor-pointer hover:translate-y-[-1px] transition-all flex items-center"
                 >
-                 大    <ArrowUp class="size-[11px]" />
+                  大 <ArrowUp class="size-[11px]" />
                 </div>
                 <div class="flex gap-2 items-center justify-center">
                   <div class="opacity-[0.3]">|</div>
@@ -242,23 +283,20 @@
                 <PartyPopper class="size-[15px]" />
               </div>
               <DrawerClose>
-                  <div
-                class="cursor-pointer hover:translate-y-[-1px] hover:text-primary transition-all border border-card/30 bg-card/1 backdrop-blur-xl rounded-full size-8 flex items-center justify-center text-white font-bold ml-4"
-              >
-                <ChevronDown class="size-[15px]" />
-              </div>
+                <div
+                  class="cursor-pointer hover:translate-y-[-1px] hover:text-primary transition-all border border-card/30 bg-card/1 backdrop-blur-xl rounded-full size-8 flex items-center justify-center text-white font-bold ml-4"
+                >
+                  <ChevronDown class="size-[15px]" />
+                </div>
               </DrawerClose>
-            
             </div>
           </div>
-          <div class="flex-1  flex overflow-hidden">
+          <div class="flex-1 flex overflow-hidden">
             <div
-              class="flex-4  p-6 flex flex-col items-center justify-center relative overflow-hidden"
+              class="flex-4 p-6 flex flex-col items-center justify-center relative overflow-hidden"
             >
               <!-- 背景渐变效果 -->
               <div class="absolute inset-0 z-0"></div>
-
-             
 
               <!-- 主要内容容器 -->
               <div
@@ -268,9 +306,9 @@
                 <div class="relative mb-8 flex flex-col items-center music">
                   <!-- 唱针 -->
                   <div
-                    class="w-24 h-48 absolute -top-12 right-8 flex flex-col items-center rotate-310 z-20 zhen "
+                    class="w-24 h-48 absolute -top-12 right-8 flex flex-col items-center rotate-310 z-20 zhen"
                     style="transform-origin: top"
-                    :class="{zhen2:usePlaySetStore.isPlay}"
+                    :class="{ zhen2: usePlaySetStore.isPlay }"
                   >
                     <!-- 唱针杆 -->
                     <div class="w-2 h-36 bg-gray-700 rounded-full relative">
@@ -287,9 +325,13 @@
 
                   <!-- 黑胶唱片 -->
                   <div
-                  id="so"
-                    class="w-56 h-56 rounded-full bg-black shadow-2xl relative overflow-hidden  song animate-spin-slow"
-                    :style="{ animationPlayState: usePlaySetStore.isPlay ? 'running' : 'paused' }"
+                    id="so"
+                    class="w-56 h-56 rounded-full bg-black shadow-2xl relative overflow-hidden song animate-spin-slow"
+                    :style="{
+                      animationPlayState: usePlaySetStore.isPlay
+                        ? 'running'
+                        : 'paused',
+                    }"
                   >
                     <!-- 唱片纹理 -->
                     <div
@@ -301,8 +343,7 @@
                         height: `${100 - i * 6}%`,
                         top: `${i * 3}%`,
                         left: `${i * 3}%`,
-                      }
-                "
+                      }"
                     ></div>
 
                     <!-- 中心封面 -->
@@ -313,7 +354,10 @@
                         class="size-35 rounded-full overflow-hidden border-8 border-gray-900"
                       >
                         <img
-                          :src="usePlaySetStore.getCurrentPlayMusicInfo.album.blurPicUrl"
+                          :src="
+                            usePlaySetStore.getCurrentPlayMusicInfo.album
+                              .blurPicUrl
+                          "
                           alt="歌曲封面"
                           class="w-full h-full object-cover"
                         />
@@ -333,64 +377,106 @@
 
                 <!-- 歌曲信息 -->
                 <div class="text-center mb-6" id="user">
-                  <h2 class="text-xl font-bold text-white mb-1">{{  usePlaySetStore.getCurrentPlayMusicInfo.name }}</h2>
-                  <p class="text-green-300 text-sm font-bold">{{ usePlaySetStore.getCurrentPlayMusicInfo.artists.map(i=>i.name).join('-') }}</p>
+                  <h2 class="text-xl font-bold text-white mb-1">
+                    {{ usePlaySetStore.getCurrentPlayMusicInfo.name }}
+                  </h2>
+                  <p class="text-green-300 text-sm font-bold">
+                    {{
+                      usePlaySetStore.getCurrentPlayMusicInfo.artists
+                        .map((i) => i.name)
+                        .join("-")
+                    }}
+                  </p>
                 </div>
 
                 <!-- 进度条 -->
                 <div
-                  class="w-full flex items-center justify-between mb-6 cursor-pointer"
+                  @click.stop="changeCurrentTime($event, 'linePlay2')"
+                  class="linePlay2 w-full flex items-center justify-between mb-6 cursor-pointer"
                 >
-                  <span class="text-xs text-gray-400">00:00</span>
+                  <span class="text-xs text-gray-400">{{
+                    currentTimeFrommater
+                  }}</span>
                   <div
                     class="flex-1 mx-3 h-1 bg-gray-700/50 rounded-full overflow-hidden"
                   >
                     <div
-                      class="h-full w-1/4 bg-primary"
+                      :style="{ width: currentTransfromBlock + '%' }"
+                      class="h-full bg-primary transition-all"
                     ></div>
                   </div>
-                  <span class="text-xs text-gray-400">04:15</span>
+                  <span class="text-xs text-gray-400">{{ duration }}</span>
                 </div>
-             
+
                 <!-- 控制按钮 -->
                 <div class="flex items-center justify-center gap-6">
                   <button
-                  id="bu1"
+                    @click.stop="changePlayMode"
+                    id="bu1"
                     class="w-9 h-9 bg-card/30 backdrop-blur-2xl rounded-full flex items-center justify-center text-white hover:text-white transition-colors"
                   >
-                    <Shuffle  class="w-3 h-3" />
+                    <div>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <!-- 重复播放按钮 -->
+                            <Repeat
+                              v-if="usePlaySetStore.sequence === 0"
+                              class="w-3 h-3 cursor-pointer transition-all duration-300" />
+                            <Shuffle
+                              v-else-if="usePlaySetStore.sequence === 1"
+                              class="w-3 h-3 cursor-pointer transition-all duration-300"
+                            ></Shuffle>
+                            <Repeat1
+                              v-else
+                              class="w-3 h-3 cursor-pointer transition-all duration-300"
+                            ></Repeat1
+                          ></TooltipTrigger>
+                          <TooltipContent>
+                            <p v-if="usePlaySetStore.sequence === 0">
+                              顺序播放
+                            </p>
+                            <p v-else-if="usePlaySetStore.sequence === 1">
+                              随机播放
+                            </p>
+                            <p v-else>循环播放</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
                   </button>
                   <button
-                  @click.stop="usePlaySetStore.pre"
-                  id="bu2"
+                    @click.stop="usePlaySetStore.pre"
+                    id="bu2"
                     class="w-11 h-11 rounded-full flex items-center justify-center text-white hover:text-white transition-colors hover:text-primary cursor-pointer hover:translate-y-[-1px] transition-all flex items-center bg-card/30 backdrop-blur-2xl"
                   >
-                    <ChevronLeft  class="w-5 h-5" />
+                    <ChevronLeft class="w-5 h-5" />
                   </button>
                   <button
-                  @click.stop="playMusic(true)"  v-if="!usePlaySetStore.isPlay"
-                  id="bu3"
+                    @click.stop="playMusic(true)"
+                    v-if="!usePlaySetStore.isPlay"
+                    id="bu3"
                     class="hover:translate-y-[-1px] transition-all flex items-center bg-card/30 backdrop-blur-2xl w-14 h-14 rounded-full bg-primary flex items-center justify-center text-white hover:scale-105 transition-all shadow-lg"
                   >
-                    <Play  class="w-6 h-6 ml-1" />
+                    <Play class="w-6 h-6 ml-1" />
                   </button>
-                   <button
-                    
-                    @click.stop="playMusic(false)" v-else
-                  id="bu3"
+                  <button
+                    @click.stop="playMusic(false)"
+                    v-else
+                    id="bu3"
                     class="hover:translate-y-[-1px] transition-all flex items-center bg-card/30 backdrop-blur-2xl w-14 h-14 rounded-full bg-primary flex items-center justify-center text-white hover:scale-105 transition-all shadow-lg"
                   >
                     <Pause class="w-6 h-6 ml-1" />
                   </button>
                   <button
-                  @click.stop="usePlaySetStore.next"
-                  id="bu4"
+                    @click.stop="usePlaySetStore.next"
+                    id="bu4"
                     class="hover:translate-y-[-1px] transition-all flex items-center bg-card/30 backdrop-blur-2xl w-11 h-11 rounded-full flex items-center justify-center text-white hover:text-white transition-colors"
                   >
-                    <ChevronRight  class="w-5 h-5" />
+                    <ChevronRight class="w-5 h-5" />
                   </button>
                   <button
-                   id="bu5"
+                    id="bu5"
                     class="hover:translate-y-[-1px] transition-all flex items-center bg-card/30 backdrop-blur-2xl w-9 h-9 rounded-full flex items-center justify-center text-white hover:text-white transition-colors"
                   >
                     <ListMusic class="w-3 h-3" />
@@ -401,32 +487,43 @@
                 <div class="mt-6 text-sm text-white flex gap-25 items-center">
                   <div class="flex items-center justify-center gap-1">
                     <div
-                    id="showlinear1"
-                      class=" mr-4 flex items-center justify-center gap-2 bg-card/1 backdrop-blur-2xl h-10 px-4 rounded-xl cursor-pointer hover:scale-[1.01] transition-all hover:text-primary"
+                      id="showlinear1"
+                      class="mr-4 flex items-center justify-center gap-2 bg-card/1 backdrop-blur-2xl h-10 px-4 rounded-xl cursor-pointer hover:scale-[1.01] transition-all hover:text-primary"
                     >
                       <MessageSquareDot class="size-[12px]" />2468评论
                     </div>
-                   
-                    <div  id="showlinear2" class=" p-3 bg-card/1 backdrop-blur-2xl rounded-full cursor-pointer hover:scale-[1.01] transition-all hover:text-primary">
+
+                    <div
+                      id="showlinear2"
+                      class="p-3 bg-card/1 backdrop-blur-2xl rounded-full cursor-pointer hover:scale-[1.01] transition-all hover:text-primary"
+                    >
                       <Heart class="size-[16px]" />
                     </div>
                   </div>
                   <div id="showlinear3">
-                    
-                    <div  class=" flex items-center gap-2 group">
+                    <div class="flex items-center gap-2 group">
                       <!-- 音量图标带光晕效果 -->
-                      <div class="relative">
+                      <div
+                        class="relative cursor-pointer"
+                        @click.stop="isHasVolumn"
+                      >
                         <div
                           class="absolute -inset-1 bg-white/5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                         />
+                        <Volume1
+                          v-if="!muted"
+                          class="w-4 h-4 group-hover:text-primary cursor-pointer transition-all duration-300 hover:scale-110"
+                        ></Volume1>
                         <VolumeX
+                          v-else
                           class="w-4 h-4 group-hover:text-primary cursor-pointer transition-all duration-300 hover:scale-110"
                         />
                       </div>
 
                       <!-- 音量滑块 -->
                       <div
-                        class="w-[60px] h-1.5 bg-gray-700/50 rounded-full overflow-hidden cursor-pointer hover:bg-gray-700 transition-colors relative"
+                        @click.stop="changeVolumn($event, 'volumn2')"
+                        class="volumn2 w-[60px] h-1.5 bg-gray-700/50 rounded-full overflow-hidden cursor-pointer hover:bg-gray-700 transition-colors relative"
                       >
                         <!-- 音量轨道装饰 -->
                         <div class="absolute inset-0 flex">
@@ -439,6 +536,7 @@
 
                         <!-- 音量填充 -->
                         <div
+                          :style="{ width: volumnWitdh + '%' }"
                           class="h-full w-1/3 bg-gradient-to-r from-gray-300 to-gray-100 rounded-full relative overflow-hidden"
                         >
                           <!-- 音量填充内部的光效 -->
@@ -452,26 +550,56 @@
                 </div>
               </div>
             </div>
-            <div class="flex-6 flex justify-center items-center text-xl text-white ">
-                <div class="flex flex-col overflow-auto  h-9/10  w-4/5   items-center gcClass">
-                  <div class="h-1/2  shrink-0"></div>
-                  <div  class="w-full text-center flex items-center justify-center shrink-0 h-13 transition-all" :class="{'isActive !text-primary text-2xl bg-parimary-hover font-bold':isActive(i,index)}" v-for="(i,index) in usePlaySetStore.currentLyric">{{ i[1] }}</div>
-                  <div class="h-1/2  shrink-0"></div>
+            <div
+              class="flex-6 flex justify-center items-center text-xl text-white"
+            >
+              <div
+                class="flex flex-col overflow-auto h-9/10 w-4/5 items-center gcClass"
+              >
+                <div class="h-1/2 shrink-0"></div>
+                <div
+                  class="w-full text-center flex items-center justify-center shrink-0 h-13 transition-all"
+                  :class="{
+                    'isActive !text-primary text-2xl bg-parimary-hover font-bold':
+                      isActive(i, index),
+                  }"
+                  v-for="(i, index) in usePlaySetStore.currentLyric"
+                >
+                  {{ i[1] }}
                 </div>
+                <div class="h-1/2 shrink-0"></div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </DrawerContent>
   </Drawer>
-  <audio :src="usePlaySetStore.getCurrentPlayMusic" ref="audioRef" class="" style="visibility: hidden;" @timeupdate="updateCurrentTime"  @ended="ended"> </audio>
+  <audio
+    :src="usePlaySetStore.getCurrentPlayMusic"
+    :volume="volumn"
+    ref="audioRef"
+    :muted="muted"
+    class=""
+    style="visibility: hidden"
+    @timeupdate="updateCurrentTime"
+    @play="played"
+    @ended="ended"
+  ></audio>
 </template>
 
 <script setup lang="ts">
 //#region 引入import
-import { ref, onMounted, watch, nextTick ,useTemplateRef} from "vue"; //引入vue
-import playSetStore from '@/store/palySet'//引入播放设置商店
-import {formatTimeToSeconds} from '@/utils'//引入工具
+import {
+  ref,
+  onMounted,
+  watch,
+  nextTick,
+  useTemplateRef,
+  onUnmounted,
+} from "vue"; //引入vue
+import playSetStore from "@/store/palySet"; //引入播放设置商店
+import { formatTimeToSeconds, formatMsOrSecToMinutesSeconds } from "@/utils"; //引入工具
 import {
   MessageSquareDot,
   Heart,
@@ -479,6 +607,7 @@ import {
   Play,
   ChevronRight,
   Repeat,
+  Repeat1,
   VolumeX,
   ListMusic,
   ArrowDown,
@@ -489,7 +618,8 @@ import {
   PartyPopper,
   HopOff,
   Shuffle,
-  Pause
+  Pause,
+  Volume1,
 } from "lucide-vue-next"; //引入lucide图标
 import {
   Drawer,
@@ -497,135 +627,262 @@ import {
   DrawerContent,
   DrawerTrigger,
 } from "@/components/ui/drawer"; //引入抽屉组件
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"; //引入工具提示组件
 import { gsap } from "gsap";
 //#endregion 引入import
 
 //#region 响应式数据 ref、reactive、watch、computed...
-const audioRef =useTemplateRef<HTMLAudioElement | any>('audioRef')
-const usePlaySetStore=playSetStore()//使用store
+const audioRef = useTemplateRef<HTMLAudioElement | any>("audioRef");
+const usePlaySetStore = playSetStore(); //使用store
 const isShowDrawer = ref(false);
+const currentTimeFrommater = ref<string>("00:00");
 // 从localStorage读取爱心显示状态，如果没有则默认为false
-const isHeartEnabled = ref(localStorage.getItem('isHeartEnabled') === 'true'); 
-const currentTime = ref<string>('0')//当前播放的时分秒
-const currentTransfrom=ref<number>(0)//当前播放的进度条位置
+const isHeartEnabled = ref(localStorage.getItem("isHeartEnabled") === "true");
+const currentTime = ref<number>(0); //当前播放的时分秒
+const currentTransfrom = ref<number>(
+  JSON.parse(localStorage.getItem("currentTransfrom") || "{}")
+    .currentTransfrom || 0
+); //当前播放的进度条位置
+const currentTransfromBlock = ref<number>(
+  JSON.parse(localStorage.getItem("currentTransfromBlock") || "{}")
+    .currentTransfromBlock || 0
+); //当前播放的进度条位置百分比
+const duration = ref<string>("00:00"); //当前音乐总时长
+const volumn = ref<number>(
+  JSON.parse(localStorage.getItem("volumn") || "{}").volumn || 0.1
+); //当前音量
+const volumnWitdh = ref<number>(
+  JSON.parse(localStorage.getItem("volumn") || "{}").volumnWitdh || 0
+); //当前音乐的音乐长度显示
+const muted = ref<boolean>(false); //是否静音
+watch(volumn, (newValue) => {
+  console.log("newValue", newValue);
+});
 // 监听爱心显示状态变化，保存到localStorage
 watch(isHeartEnabled, (newValue) => {
   if (!newValue) {
-    
   }
-  localStorage.setItem('isHeartEnabled', newValue.toString());
-  
+  localStorage.setItem("isHeartEnabled", newValue.toString());
 });
-
 watch(isShowDrawer, () => {
-    if(isShowDrawer.value) {
-      showGsap()//调用gsap
-      // 正确地将localStorage中的字符串转换为布尔值
-      isHeartEnabled.value = localStorage.getItem('isHeartEnabled') === 'true';
-      console.log('爱心功能状态:', isHeartEnabled.value)
-      
-      // 使用nextTick确保DOM完全渲染后再执行
-      nextTick(() => {
-        // 如果爱心功能已启用，则自动显示爱心
-        if(isHeartEnabled.value) {
-          console.log('调用爱心动画函数')
-          // 直接调用动画函数，传入false表示不切换状态
-          showHeartAnimation(false);
-        }
-      });
-    } else {
-      // 弹窗关闭时清除定时器以避免内存泄漏
-      if (window.heartAnimationInterval) {
-        clearInterval(window.heartAnimationInterval);
-        window.heartAnimationInterval = null;
+  if (isShowDrawer.value) {
+    showGsap(); //调用gsap
+    // 正确地将localStorage中的字符串转换为布尔值
+    isHeartEnabled.value = localStorage.getItem("isHeartEnabled") === "true";
+    console.log("爱心功能状态:", isHeartEnabled.value);
+
+    // 使用nextTick确保DOM完全渲染后再执行
+    nextTick(() => {
+      // 如果爱心功能已启用，则自动显示爱心
+      if (isHeartEnabled.value) {
+        console.log("调用爱心动画函数");
+        // 直接调用动画函数，传入false表示不切换状态
+        showHeartAnimation(false);
       }
+    });
+  } else {
+    // 弹窗关闭时清除定时器以避免内存泄漏
+    if (window.heartAnimationInterval) {
+      clearInterval(window.heartAnimationInterval);
+      window.heartAnimationInterval = null;
     }
+  }
 });
 
 //监听播放
-watch(()=>usePlaySetStore.isPlay, (newValue) => {
-  if (newValue) {
-    audioRef.value.play()
-  } else {
-    audioRef.value.pause()
+watch(
+  () => usePlaySetStore.isPlay,
+  (newValue) => {
+    if (newValue) {
+      audioRef.value.play();
+    } else {
+      audioRef.value.pause();
+    }
   }
-})
+);
 
 watch(currentTransfrom, () => {
-    if (!document.querySelector('.gcClass'))return
-      // 歌词行高度为h-13(52px)，滚动到当前歌词居中位置
-      const lyricLineHeight = 52; // h-13 in pixels
-      const container = document.querySelector('.gcClass');
-      if (container) {
-        const scrollPosition = currentTransfrom.value * lyricLineHeight;
-        container.scrollTop = Math.max(0, scrollPosition);
-      }
-  })
+  if (!document.querySelector(".gcClass")) return;
+  // 歌词行高度为h-13(52px)，滚动到当前歌词居中位置
+  const lyricLineHeight = 52; // h-13 in pixels
+  const container = document.querySelector(".gcClass");
+  if (container) {
+    const scrollPosition = currentTransfrom.value * lyricLineHeight;
+    container.scrollTop = Math.max(0, scrollPosition);
+  }
+});
+//当前播放的时长来判断当前百分比
+watch(currentTime, (newValue) => {
+  if (!audioRef.value?.duration) return;
+  currentTransfromBlock.value = Math.floor(
+    (newValue / audioRef.value?.duration) * 100
+  );
+});
 //#endregion 响应式数据 ref、reactive、watch、computed...
 
 //#region 生命周期
 onMounted(() => {
-})
+  audioRef.value.currentTime =
+    JSON.parse(localStorage.getItem("currentTransfromBlock") || "{}")
+      .currentTime || 0;
+});
+// 监听页面刷新事件
+window.addEventListener("beforeunload", () => {
+  usePlaySetStore.isPlay = false;
+  console.log("页面刷新，停止播放");
+});
 //#endregion 生命周期
 
 //#region 事件函数
+//改变当前播放方式
+const changePlayMode = () => {
+  usePlaySetStore.toggleSequence();
+};
+//静音
+const isHasVolumn = () => {
+  muted.value = !muted.value;
+};
+//点击音乐
+const changeVolumn = (e: any, element: string) => {
+  const { left, width } = (
+    document.querySelector(`.${element}`) as HTMLDivElement
+  ).getBoundingClientRect();
+  const clickX = e.clientX - left;
+  const percent = (clickX / width) * 100;
+  volumnWitdh.value = percent;
+  volumn.value = (clickX / width) * 0.5; //音量范围0-0.5
+  localStorage.setItem(
+    "volumn",
+    JSON.stringify({ volumn: volumn.value, volumnWitdh: volumnWitdh.value })
+  );
+  console.log(volumn.value, volumnWitdh.value);
+};
+//点击进度条
+const changeCurrentTime = (e: any, linePlay: string) => {
+  const { left, width } = (
+    document.querySelector(`.${linePlay}`) as HTMLDivElement
+  )?.getBoundingClientRect();
+  const clickX = e.clientX - left;
+  currentTransfromBlock.value = Math.floor((clickX / width) * 100);
+  audioRef.value.currentTime = audioRef.value?.duration * (clickX / width);
+  localStorage.setItem(
+    "currentTransfromBlock",
+    JSON.stringify({
+      currentTransfromBlock: currentTransfromBlock.value,
+      currentTransfrom: currentTransfrom.value,
+      currentTime: audioRef.value?.duration * (clickX / width),
+    })
+  );
+};
+//播放开始
+const played = () => {};
 // 播放完毕后
 const ended = () => {
   // 确保 audioRef 存在且已加载
-  if (!audioRef.value) return
+  if (!audioRef.value) return;
 
   // 根据播放模式决定下一首逻辑
   if (usePlaySetStore.sequence === 0) {
     // 列表循环：自动下一首
-    usePlaySetStore.next()
+    usePlaySetStore.next();
   } else if (usePlaySetStore.sequence === 1) {
     // 随机播放：随机下一首
-    usePlaySetStore.random()
+    usePlaySetStore.random();
   } else {
     // 单曲循环：重置当前时间并继续播放
-    audioRef.value.currentTime = 0
+    audioRef.value.currentTime = 0;
   }
-}
+};
 //isActive
 const isActive = (i: any, index: number) => {
-  if(index==usePlaySetStore.currentLyric.length-1 && (currentTime.value * 1000)>=formatTimeToSeconds(i[0])){
-    return true
+  if (
+    index == usePlaySetStore.currentLyric.length - 1 &&
+    currentTime.value * 1000 >= formatTimeToSeconds(i[0])
+  ) {
+    return true;
   }
-   if((currentTime.value * 1000)>formatTimeToSeconds(i[0])&&(currentTime.value * 1000)<formatTimeToSeconds(usePlaySetStore.currentLyric[index+1][0])){
-    return true
+  if (
+    currentTime.value * 1000 > formatTimeToSeconds(i[0]) &&
+    currentTime.value * 1000 <
+      formatTimeToSeconds(usePlaySetStore.currentLyric[index + 1][0])
+  ) {
+    return true;
   }
-   return false
-}
+  return false;
+};
 //音频播放中动画
-const updateCurrentTime = () => {
-  // console.log('e',(e.timeStamp/1000).toFixed(0))  
-  currentTime.value = audioRef.value?.currentTime
-  currentTransfrom.value=Array.from(document.querySelector('.gcClass')?.children).findIndex((i: any) => {
-    return i == document.querySelector('.isActive')
-  })
-}
+const updateCurrentTime = (e) => {
+  duration.value = formatMsOrSecToMinutesSeconds(
+    audioRef.value?.duration,
+    false
+  );
+  currentTime.value = audioRef.value?.currentTime;
+  currentTimeFrommater.value = formatMsOrSecToMinutesSeconds(
+    audioRef.value?.currentTime,
+    false
+  );
+  if (!isShowDrawer.value) return;
+  currentTransfrom.value = Array.from(
+    document.querySelector(".gcClass")?.children
+  ).findIndex((i: any) => {
+    return i == document.querySelector(".isActive");
+  });
+};
 //播放动画
 const playMusic = (status: boolean) => {
-  usePlaySetStore.isPlay=status
-}
+  usePlaySetStore.isPlay = status;
+};
 //gsap动画
 const showGsap = () => {
-nextTick(()=>{
-  // 修复语法错误并使用正确的缓动函数
-  gsap.fromTo('#so', { scale: 0 }, { scale: 1.1, duration: 1, ease: "back.out(2)" })
-  gsap.fromTo('#showlinear1', { scale: 0 }, { scale: 1, duration: 1 })
-  gsap.fromTo('#showlinear2', { scale: 0 }, { scale: 1, duration: 1 })
-  gsap.fromTo('#showlinear3', { scale: 0 }, { scale: 1, duration: 1 })
-  gsap.fromTo('#user', { y: 100, opacity: 0 }, { y: 0, opacity: 1, duration: 1 })
-  gsap.timeline()
-    .fromTo('#bu5', { x:-100,opacity: 0  }, { x: 0, opacity: 1, duration: 0.3 })
-    .fromTo('#bu4', { x:-100,opacity: 0  }, { x: 0, opacity: 1, duration: 0.3 })
-    .fromTo('#bu3', { x:-100,opacity: 0  }, { x: 0, opacity: 1, duration: 0.3 })
-    .fromTo('#bu2', { x:-100,opacity: 0  }, { x: 0, opacity: 1, duration: 0.3 })
-    .fromTo('#bu1', { x:-100,opacity: 0  }, { x: 0, opacity: 1, duration: 0.3 })  
-})
-  
-}
+  nextTick(() => {
+    // 修复语法错误并使用正确的缓动函数
+    gsap.fromTo(
+      "#so",
+      { scale: 0 },
+      { scale: 1.1, duration: 1, ease: "back.out(2)" }
+    );
+    gsap.fromTo("#showlinear1", { scale: 0 }, { scale: 1, duration: 1 });
+    gsap.fromTo("#showlinear2", { scale: 0 }, { scale: 1, duration: 1 });
+    gsap.fromTo("#showlinear3", { scale: 0 }, { scale: 1, duration: 1 });
+    gsap.fromTo(
+      "#user",
+      { y: 100, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1 }
+    );
+    gsap
+      .timeline()
+      .fromTo(
+        "#bu5",
+        { x: -100, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.3 }
+      )
+      .fromTo(
+        "#bu4",
+        { x: -100, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.3 }
+      )
+      .fromTo(
+        "#bu3",
+        { x: -100, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.3 }
+      )
+      .fromTo(
+        "#bu2",
+        { x: -100, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.3 }
+      )
+      .fromTo(
+        "#bu1",
+        { x: -100, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.3 }
+      );
+  });
+};
 
 // 创建爱心漂浮动画
 // toggleState: 是否切换状态（用户点击时）
@@ -634,48 +891,48 @@ function showHeartAnimation(toggleState = true) {
   if (toggleState) {
     isHeartEnabled.value = !isHeartEnabled.value;
   }
-  
+
   // 如果关闭爱心功能，则清除现有的动画和定时器
   if (!isHeartEnabled.value) {
     if (window.heartAnimationInterval) {
       clearInterval(window.heartAnimationInterval);
       window.heartAnimationInterval = null;
     }
-    
+
     // 移除所有爱心元素
-    const container = document.getElementById('drawid');
+    const container = document.getElementById("drawid");
     if (container) {
-      const hearts = container.querySelectorAll('div');
-      hearts.forEach(heart => {
-        if (heart.innerHTML === '❤') {
+      const hearts = container.querySelectorAll("div");
+      hearts.forEach((heart) => {
+        if (heart.innerHTML === "❤") {
           heart.remove();
         }
       });
     }
     return;
   }
-  
+
   // 获取drawid容器
-  const container = document.getElementById('drawid');
+  const container = document.getElementById("drawid");
   if (!container) return;
-  
+
   // 清除可能存在的旧定时器
   if (window.heartAnimationInterval) {
     clearInterval(window.heartAnimationInterval);
   }
-  
+
   // 移除之前可能存在的爱心元素
-  const existingHearts = container.querySelectorAll('div');
-  existingHearts.forEach(heart => {
-    if (heart.innerHTML === '❤') {
+  const existingHearts = container.querySelectorAll("div");
+  existingHearts.forEach((heart) => {
+    if (heart.innerHTML === "❤") {
       heart.remove();
     }
   });
-  
+
   // 设置定时器持续生成爱心
   let isActive = true;
   let heartCount = 0;
-  
+
   // 立即生成第一批爱心，间隔时间增加到500ms
   for (let i = 0; i < 5; i++) {
     setTimeout(() => {
@@ -684,13 +941,13 @@ function showHeartAnimation(toggleState = true) {
       }
     }, i * 500);
   }
-  
+
   // 设置间隔生成新爱心，间隔时间增加到1000ms
   window.heartAnimationInterval = setInterval(() => {
     if (isActive && isHeartEnabled.value) {
       createHeart(container, () => isActive && isHeartEnabled.value);
       heartCount++;
-      
+
       // 移除爱心数量限制，允许持续生成爱心
       // 如果需要限制数量，可以在这里添加新的逻辑
     }
@@ -699,28 +956,28 @@ function showHeartAnimation(toggleState = true) {
 
 // 爱心动画函数，改为外部函数以确保正确调用
 function createHeart(container, isActiveChecker) {
-  const heart = document.createElement('div');
-  heart.innerHTML = '❤';
-  
+  const heart = document.createElement("div");
+  heart.innerHTML = "❤";
+
   // 设置基础样式
   Object.assign(heart.style, {
-    position: 'absolute',
-    color: '#ff4757',
+    position: "absolute",
+    color: "#ff4757",
     fontSize: `${Math.random() * 16 + 16}px`,
     left: `${Math.random() * 100}%`,
-    bottom: '-20px',
-    opacity: '0',
-    pointerEvents: 'none',
-    zIndex: '1000',
-    fontWeight: 'bold'
+    bottom: "-20px",
+    opacity: "0",
+    pointerEvents: "none",
+    zIndex: "1000",
+    fontWeight: "bold",
   });
-  
+
   container.appendChild(heart);
-  
+
   // 动画持续时间设置为15-20秒，与用户要求保持一致
   const duration = 20000 - Math.random() * 5000;
   const startTime = Date.now();
-  
+
   function animate() {
     // 检查动画是否仍应继续
     if (!isActiveChecker()) {
@@ -730,27 +987,27 @@ function createHeart(container, isActiveChecker) {
       }
       return;
     }
-    
+
     const elapsed = Date.now() - startTime;
     const progress = Math.min(elapsed / duration, 1);
-    
+
     // 缓动函数 - 使用线性缓动
     const easeProgress = progress;
-    
+
     // 计算当前位置 - 从容器底部向上漂浮
     const currentY = -easeProgress * (container.offsetHeight + 20);
-    
+
     // 计算透明度变化 - 保持持续可见
     const currentOpacity = 1;
-    
+
     // 计算缩放和旋转
     const currentScale = 0.5 + easeProgress * 0.5;
     const currentRotation = Math.sin(progress * Math.PI * 3) * 20;
-    
+
     // 应用样式
     heart.style.transform = `translateY(${currentY}px) scale(${currentScale}) rotate(${currentRotation}deg)`;
     heart.style.opacity = currentOpacity.toString();
-    
+
     // 动画结束处理
     if (progress < 1) {
       requestAnimationFrame(animate);
@@ -765,7 +1022,8 @@ function createHeart(container, isActiveChecker) {
           }
         }
         // 只有当动画仍在激活状态时才创建新爱心
-        if (isActiveChecker() && Math.random() > 0.3) { // 70%概率生成新爱心
+        if (isActiveChecker() && Math.random() > 0.3) {
+          // 70%概率生成新爱心
           setTimeout(() => {
             if (isActiveChecker()) {
               createHeart(container, isActiveChecker);
@@ -775,7 +1033,7 @@ function createHeart(container, isActiveChecker) {
       }, 100);
     }
   }
-  
+
   // 开始动画
   requestAnimationFrame(animate);
 }
@@ -913,7 +1171,7 @@ button:active {
   transform: rotate(5deg);
   cursor: pointer;
 }
-.zhen2{
+.zhen2 {
   transform: rotate(30deg);
 }
 .music:hover .song {
@@ -930,19 +1188,3 @@ button:active {
   transform: scale(1.1);
 }
 </style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

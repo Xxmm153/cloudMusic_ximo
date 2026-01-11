@@ -27,6 +27,22 @@ export function formatSecondsToTime(totalSeconds: number): string {
   const pad = (n: number, len: number = 2) => n.toString().padStart(len, '0');
   return `${pad(minutes)}:${pad(seconds)}:${pad(milliseconds, 3)}`;
 }
+//根据传入的值判断如果是毫秒则将毫秒转换为00：00格式 如果是秒则将秒转换为00：00
+export function formatMsOrSecToMinutesSeconds(value: number, isMilliseconds: boolean = false): string {
+  // 统一转成毫秒处理
+  const totalMs = isMilliseconds ? value : value * 1000;
+  // 计算分钟和秒
+  const minutes = Math.floor(totalMs / 60000);
+  const seconds = Math.floor((totalMs % 60000) / 1000);
+  // 补零
+  const pad = (n: number) => n.toString().padStart(2, '0');
+  if(pad(minutes).toString()=='NaN'  || pad(seconds).toString()=='NaN'){
+    return '00:00'
+  }
+  return `${pad(minutes)}:${pad(seconds)}`;
+}
+
+
 // 传入一个时间字符串 分:秒.毫秒 如 00:01.123 转换为毫秒
 export function formatTimeToSeconds(time: string): number {
   // 移除空格并按“:”拆分

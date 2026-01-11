@@ -77,7 +77,7 @@ const personalizedMv = () => {
 }
 
 //暴露出去
-export const homeapi={
+export {
     getBanner,
     getCellphone,
     getQrkey,

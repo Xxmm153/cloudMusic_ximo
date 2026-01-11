@@ -41,7 +41,7 @@ onMounted(() => {
 
 <style>
 * {
-  font-family: 'Ximo';
+  /* font-family: 'Ximo'; */
   user-select: none;
   box-sizing: border-box;
 }
