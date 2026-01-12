@@ -3,10 +3,10 @@
 <!-- path:false -->
 <template>
   <!-- 音乐播放控制条 -->
-  <div class="h-full z-50 flex items-center px-4" @click="showDrawer">
+  <div class="h-full z-50 flex items-center px-4">
     <!-- 背景渐变装饰 -->
     <!-- 歌曲信息区域 -->
-    <div class="w-60 flex items-center gap-3 group">
+    <div class="w-60 flex items-center gap-3 group" @click="showDrawer">
       <!-- 封面图带有旋转动画 -->
       <div
         class="cursor-pointer size-13 rounded-md overflow-hidden shadow-lg bg-gray-700 flex items-center justify-center group relative"
@@ -43,9 +43,9 @@
       </div>
 
       <!-- 收藏按钮 -->
-      <Heart
+      <!-- <Heart
         class="w-4 h-4 hover:text-primary cursor-pointer transition-all duration-300 hover:scale-110 hover:rotate-12"
-      />
+      /> -->
     </div>
 
     <!-- 播放控制区域 -->
@@ -167,10 +167,155 @@
         class="absolute -right-10 top-1/2 -translate-y-1/2 w-16 h-16 bg-pink-500/5 rounded-full blur-xl"
       />
 
+      <Popover>
+        <PopoverTrigger @click.stop="">
+          <ListMusic
+            class="w-4 h-4 hover:text-primary cursor-pointer transition-all duration-300 hover:scale-110"
+        /></PopoverTrigger>
+        <PopoverContent
+          class="w-[500px] mr-10 p-0 bg-popover/95 backdrop-blur-xl border-border/50 shadow-2xl"
+          side="top"
+          align="end"
+        >
+          <div class="flex flex-col h-[500px]">
+            <!-- Header -->
+            <div class="px-5 py-4 border-b border-border/10">
+              <h3 class="font-bold text-lg mb-1">播放列表</h3>
+              <div
+                class="flex items-center justify-between text-xs text-muted-foreground"
+              >
+                <span>{{ usePlaySetStore.playList.length }} 首歌曲</span>
+                <span>{{ totalDuration }}</span>
+              </div>
+            </div>
+
+            <!-- Action Bar -->
+            <div
+              class="flex items-center gap-6 px-5 py-3 border-b border-border/10 text-sm select-none"
+            >
+              <div
+                class="flex items-center gap-2 cursor-pointer hover:text-primary transition-colors"
+                @click="toggleSelectAll"
+              >
+                <!-- Custom Checkbox -->
+                <div
+                  class="w-4 h-4 rounded border border-muted-foreground/50 flex items-center justify-center transition-colors"
+                  :class="{
+                    'bg-primary border-primary':
+                      selectedList.length === usePlaySetStore.playList.length &&
+                      usePlaySetStore.playList.length > 0,
+                  }"
+                >
+                  <Check
+                    v-if="
+                      selectedList.length === usePlaySetStore.playList.length &&
+                      usePlaySetStore.playList.length > 0
+                    "
+                    class="w-3 h-3 text-primary-foreground"
+                  />
+                </div>
+                <span>全选</span>
+              </div>
+
+              <div class="h-4 w-[1px] bg-border/20"></div>
+
+              <div
+                class="flex items-center gap-2 cursor-pointer hover:text-destructive transition-colors"
+                @click="deleteSelected"
+              >
+                <Trash2 class="w-4 h-4" />
+                <span>删除</span>
+              </div>
+            </div>
+
+            <!-- List -->
+            <div class="flex-1 overflow-y-auto custom-scrollbar p-1">
+              <div
+                v-for="(item, index) in usePlaySetStore.playList"
+                :key="item.id || index"
+                class="group flex items-center gap-3 px-4 py-2 rounded-md hover:bg-muted/50 transition-colors cursor-pointer select-none"
+                :class="{ 'bg-muted/30': index === usePlaySetStore.playIndex }"
+                @dblclick="playMusicItem(index)"
+              >
+                <!-- Checkbox -->
+                <div
+                  class="w-6 flex items-center justify-center"
+                  @click.stop="toggleSelect(item.id)"
+                >
+                  <div
+                    class="w-4 h-4 rounded border border-muted-foreground/30 flex items-center justify-center transition-colors group-hover:border-primary/50"
+                    :class="{
+                      'bg-primary border-primary': selectedList.includes(
+                        item.id
+                      ),
+                    }"
+                  >
+                    <Check
+                      v-if="selectedList.includes(item.id)"
+                      class="w-3 h-3 text-primary-foreground"
+                    />
+                  </div>
+                </div>
+
+                <!-- Playing Indicator -->
+                <div class="w-6 flex justify-center items-center">
+                  <div
+                    v-if="index === usePlaySetStore.playIndex"
+                    class="text-primary animate-pulse"
+                  >
+                    <ListMusic class="w-4 h-4" />
+                  </div>
+                </div>
+
+                <!-- Cover -->
+                <div
+                  class="w-10 h-10 rounded-md overflow-hidden flex-shrink-0 bg-muted shadow-sm"
+                >
+                  <img
+                    :src="item.al?.picUrl || item.album?.blurPicUrl"
+                    class="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+
+                <!-- Info -->
+                <div
+                  class="flex-1 min-w-0 flex flex-col justify-center gap-0.5"
+                >
+                  <div
+                    class="truncate text-sm font-medium"
+                    :class="{
+                      'text-primary': index === usePlaySetStore.playIndex,
+                    }"
+                  >
+                    {{ item.name }}
+                  </div>
+                  <div class="truncate text-xs text-muted-foreground/70">
+                    {{
+                      (item.ar || item.artists)
+                        ?.map((a: any) => a.name)
+                        .join(" / ")
+                    }}
+                  </div>
+                </div>
+
+                <!-- Duration -->
+                <div class="text-xs text-muted-foreground/50 font-mono">
+                  {{ formatMsOrSecToMinutesSeconds(item.dt || 0, true) }}
+                </div>
+              </div>
+
+              <div
+                v-if="usePlaySetStore.playList.length === 0"
+                class="flex flex-col items-center justify-center h-40 text-muted-foreground text-sm"
+              >
+                <span>暂无播放歌曲</span>
+              </div>
+            </div>
+          </div>
+        </PopoverContent>
+      </Popover>
       <!-- 播放列表按钮 -->
-      <ListMusic
-        class="w-4 h-4 hover:text-primary cursor-pointer transition-all duration-300 hover:scale-110"
-      />
 
       <!-- 音量控制 -->
       <div class="flex items-center gap-2 group">
@@ -240,11 +385,13 @@
               >
                 <div
                   class="hover:text-primary cursor-pointer hover:translate-y-[-1px] transition-all flex items-center"
+                  @click="decreaseFontSize"
                 >
                   小 <ArrowDown class="size-[11px]" />
                 </div>
                 <div
                   class="hover:text-primary cursor-pointer hover:translate-y-[-1px] transition-all flex items-center"
+                  @click="increaseFontSize"
                 >
                   大 <ArrowUp class="size-[11px]" />
                 </div>
@@ -252,6 +399,7 @@
                   <div class="opacity-[0.3]">|</div>
                   <div
                     class="size-7 border border-[#fff]/30 rounded-lg flex justify-center items-center hover:text-primary cursor-pointer hover:text-primaryfont-bold transition-all"
+                    @click="resetFontSize"
                   >
                     <RefreshCcw class="size-[11px]" />
                   </div>
@@ -260,21 +408,30 @@
               <div
                 class="flex items-center justify-between border border-[#fff]/30 bg-card/1 rounded-xl w-40 h-5/7 backdrop-blur-sm px-4 text-white text-sm cursor-pointer hover:translate-y-[-1px] transition-all"
               >
-                <div>5:20</div>
+                <div>{{ currentTimeStr }}</div>
                 <div class="flex items-center justify-center gap-0.5">
-                  <div class="size-2 rounded-full bg-green-400"></div>
-                  在线
+                  <div
+                    class="size-2 rounded-full"
+                    :class="isOnline ? 'bg-green-400' : 'bg-red-400'"
+                  ></div>
+                  {{ isOnline ? "在线" : "离线" }}
                 </div>
                 <div class="flex items-center justify-center gap-0.5">
-                  <SmartphoneCharging class="size-[11px]" /> 95%
+                  <component
+                    :is="isCharging ? SmartphoneCharging : Battery"
+                    class="size-[11px]"
+                  />
+                  {{ batteryLevel }}%
                 </div>
               </div>
             </div>
             <div class="flex items-center justify-between h-full">
               <div
-                class="cursor-pointer hover:translate-y-[-1px] hover:text-primary transition-all border border-card/30 bg-card/1 backdrop-blur-xl rounded-2xl h-5/7 px-5 flex items-center justify-center text-white text-sm flex items-center justify-center gap-0.5"
+                class="min-w-20 cursor-pointer hover:translate-y-[-1px] hover:text-primary transition-all border border-card/30 bg-card/1 backdrop-blur-xl rounded-2xl h-5/7 px-5 flex items-center justify-center text-white text-sm gap-0.5"
+                @click="toggleCustomFloat"
               >
-                <HopOff class="size-[15px]" /> 自定义漂浮
+                <HopOff class="size-[15px]" />自定义漂浮:
+                <span class="mt-0.5 ml-0.5">{{ customFloatText }}</span>
               </div>
               <div
                 class="cursor-pointer hover:translate-y-[-1px] hover:text-primary transition-all border border-card/30 bg-card/1 backdrop-blur-xl rounded-full size-8 flex items-center justify-center text-white font-bold ml-4"
@@ -479,7 +636,177 @@
                     id="bu5"
                     class="hover:translate-y-[-1px] transition-all flex items-center bg-card/30 backdrop-blur-2xl w-9 h-9 rounded-full flex items-center justify-center text-white hover:text-white transition-colors"
                   >
-                    <ListMusic class="w-3 h-3" />
+                    <Popover>
+                      <PopoverTrigger @click.stop="">
+                        <ListMusic
+                          class="w-4 h-4 hover:text-primary cursor-pointer transition-all duration-300 hover:scale-110"
+                      /></PopoverTrigger>
+                      <PopoverContent
+                        class="w-[500px] ml-150 p-0 bg-popover/95 backdrop-blur-xl border-border/50 shadow-2xl"
+                        side="top"
+                        align="end"
+                      >
+                        <div class="flex flex-col h-[500px]">
+                          <!-- Header -->
+                          <div class="px-5 py-4 border-b border-border/10">
+                            <h3 class="font-bold text-lg mb-1">播放列表</h3>
+                            <div
+                              class="flex items-center justify-between text-xs text-muted-foreground"
+                            >
+                              <span
+                                >{{
+                                  usePlaySetStore.playList.length
+                                }}
+                                首歌曲</span
+                              >
+                              <span>{{ totalDuration }}</span>
+                            </div>
+                          </div>
+
+                          <!-- Action Bar -->
+                          <div
+                            class="flex items-center gap-6 px-5 py-3 border-b border-border/10 text-sm select-none"
+                          >
+                            <div
+                              class="flex items-center gap-2 cursor-pointer hover:text-primary transition-colors"
+                              @click="toggleSelectAll"
+                            >
+                              <!-- Custom Checkbox -->
+                              <div
+                                class="w-4 h-4 rounded border border-muted-foreground/50 flex items-center justify-center transition-colors"
+                                :class="{
+                                  'bg-primary border-primary':
+                                    selectedList.length ===
+                                      usePlaySetStore.playList.length &&
+                                    usePlaySetStore.playList.length > 0,
+                                }"
+                              >
+                                <Check
+                                  v-if="
+                                    selectedList.length ===
+                                      usePlaySetStore.playList.length &&
+                                    usePlaySetStore.playList.length > 0
+                                  "
+                                  class="w-3 h-3 text-primary-foreground"
+                                />
+                              </div>
+                              <span>全选</span>
+                            </div>
+
+                            <div class="h-4 w-[1px] bg-border/20"></div>
+
+                            <div
+                              class="flex items-center gap-2 cursor-pointer hover:text-destructive transition-colors"
+                              @click="deleteSelected"
+                            >
+                              <Trash2 class="w-4 h-4" />
+                              <span>删除</span>
+                            </div>
+                          </div>
+
+                          <!-- List -->
+                          <div
+                            class="flex-1 overflow-y-auto custom-scrollbar p-1"
+                          >
+                            <div
+                              v-for="(item, index) in usePlaySetStore.playList"
+                              :key="item.id || index"
+                              class="group flex items-center gap-3 px-4 py-2 rounded-md hover:bg-muted/50 transition-colors cursor-pointer select-none"
+                              :class="{
+                                'bg-muted/30':
+                                  index === usePlaySetStore.playIndex,
+                              }"
+                              @dblclick="playMusicItem(index)"
+                            >
+                              <!-- Checkbox -->
+                              <div
+                                class="w-6 flex items-center justify-center"
+                                @click.stop="toggleSelect(item.id)"
+                              >
+                                <div
+                                  class="w-4 h-4 rounded border border-muted-foreground/30 flex items-center justify-center transition-colors group-hover:border-primary/50"
+                                  :class="{
+                                    'bg-primary border-primary':
+                                      selectedList.includes(item.id),
+                                  }"
+                                >
+                                  <Check
+                                    v-if="selectedList.includes(item.id)"
+                                    class="w-3 h-3 text-primary-foreground"
+                                  />
+                                </div>
+                              </div>
+
+                              <!-- Playing Indicator -->
+                              <div class="w-6 flex justify-center items-center">
+                                <div
+                                  v-if="index === usePlaySetStore.playIndex"
+                                  class="text-primary animate-pulse"
+                                >
+                                  <ListMusic class="w-4 h-4" />
+                                </div>
+                              </div>
+
+                              <!-- Cover -->
+                              <div
+                                class="w-10 h-10 rounded-md overflow-hidden flex-shrink-0 bg-muted shadow-sm"
+                              >
+                                <img
+                                  :src="
+                                    item.al?.picUrl || item.album?.blurPicUrl
+                                  "
+                                  class="w-full h-full object-cover"
+                                  loading="lazy"
+                                />
+                              </div>
+
+                              <!-- Info -->
+                              <div
+                                class="flex-1 min-w-0 flex flex-col justify-center gap-0.5"
+                              >
+                                <div
+                                  class="truncate text-sm font-medium"
+                                  :class="{
+                                    'text-primary':
+                                      index === usePlaySetStore.playIndex,
+                                  }"
+                                >
+                                  {{ item.name }}
+                                </div>
+                                <div
+                                  class="truncate text-xs text-muted-foreground/70"
+                                >
+                                  {{
+                                    (item.ar || item.artists)
+                                      ?.map((a: any) => a.name)
+                                      .join(" / ")
+                                  }}
+                                </div>
+                              </div>
+
+                              <!-- Duration -->
+                              <div
+                                class="text-xs text-muted-foreground/50 font-mono"
+                              >
+                                {{
+                                  formatMsOrSecToMinutesSeconds(
+                                    item.dt || 0,
+                                    true
+                                  )
+                                }}
+                              </div>
+                            </div>
+
+                            <div
+                              v-if="usePlaySetStore.playList.length === 0"
+                              class="flex flex-col items-center justify-center h-40 text-muted-foreground text-sm"
+                            >
+                              <span>暂无播放歌曲</span>
+                            </div>
+                          </div>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                   </button>
                 </div>
 
@@ -493,12 +820,12 @@
                       <MessageSquareDot class="size-[12px]" />2468评论
                     </div>
 
-                    <div
+                    <!-- <div
                       id="showlinear2"
                       class="p-3 bg-card/1 backdrop-blur-2xl rounded-full cursor-pointer hover:scale-[1.01] transition-all hover:text-primary"
-                    >
-                      <Heart class="size-[16px]" />
-                    </div>
+                    > -->
+                    <!-- <Heart class="size-[16px]" /> -->
+                    <!-- </div> -->
                   </div>
                   <div id="showlinear3">
                     <div class="flex items-center gap-2 group">
@@ -550,9 +877,7 @@
                 </div>
               </div>
             </div>
-            <div
-              class="flex-6 flex justify-center items-center text-xl text-white"
-            >
+            <div class="flex-6 flex justify-center items-center text-white">
               <div
                 class="flex flex-col overflow-auto h-9/10 w-4/5 items-center gcClass"
               >
@@ -560,8 +885,13 @@
                 <div
                   class="w-full text-center flex items-center justify-center shrink-0 h-13 transition-all"
                   :class="{
-                    'isActive !text-primary text-2xl bg-parimary-hover font-bold':
+                    'isActive !text-primary bg-parimary-hover font-bold rounded-lg':
                       isActive(i, index),
+                  }"
+                  :style="{
+                    fontSize: isActive(i, index)
+                      ? lyricFontSize + 4 + 'px'
+                      : lyricFontSize + 'px',
                   }"
                   v-for="(i, index) in usePlaySetStore.currentLyric"
                 >
@@ -586,6 +916,34 @@
     @play="played"
     @ended="ended"
   ></audio>
+
+  <!-- 自定义浮窗弹窗 -->
+  <Dialog v-model:open="isCustomFloatDialogOpen">
+    <DialogContent
+      class="sm:max-w-[425px] bg-card/95 backdrop-blur-xl border-border/50"
+    >
+      <DialogHeader>
+        <DialogTitle>自定义漂浮文本</DialogTitle>
+      </DialogHeader>
+      <div class="grid gap-4 py-4">
+        <div class="flex items-center gap-4">
+          <Input
+            id="custom-float-text"
+            v-model="tempCustomFloatText"
+            class="col-span-3 bg-background/50"
+            placeholder="请输入漂浮文本"
+            @keyup.enter="saveCustomFloatText"
+          />
+        </div>
+      </div>
+      <DialogFooter>
+        <Button variant="outline" @click="isCustomFloatDialogOpen = false"
+          >取消</Button
+        >
+        <Button @click="saveCustomFloatText">保存</Button>
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -596,13 +954,14 @@ import {
   watch,
   nextTick,
   useTemplateRef,
+  computed,
   onUnmounted,
 } from "vue"; //引入vue
 import playSetStore from "@/store/palySet"; //引入播放设置商店
 import { formatTimeToSeconds, formatMsOrSecToMinutesSeconds } from "@/utils"; //引入工具
+import dayjs from "dayjs"; //引入dayjs
 import {
   MessageSquareDot,
-  Heart,
   ChevronLeft,
   Play,
   ChevronRight,
@@ -620,6 +979,10 @@ import {
   Shuffle,
   Pause,
   Volume1,
+  Trash2,
+  Check,
+  Navigation,
+  Battery,
 } from "lucide-vue-next"; //引入lucide图标
 import {
   Drawer,
@@ -634,13 +997,42 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"; //引入工具提示组件
 import { gsap } from "gsap";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"; //引入弹出组件
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 //#endregion 引入import
-
 //#region 响应式数据 ref、reactive、watch、computed...
 const audioRef = useTemplateRef<HTMLAudioElement | any>("audioRef");
 const usePlaySetStore = playSetStore(); //使用store
 const isShowDrawer = ref(false);
+const currentTimeStr = ref<string>(dayjs().format("HH:mm")); //当前时间
+const batteryLevel = ref<number>(100);
+const isCharging = ref<boolean>(false);
+const isOnline = ref<boolean>(navigator.onLine);
 const currentTimeFrommater = ref<string>("00:00");
+const isCustomFloatDialogOpen = ref(false);
+const customFloatText = ref(localStorage.getItem("customFloatText") || "❤");
+// 歌词字体大小设置
+const DEFAULT_FONT_SIZE = 18;
+const MIN_FONT_SIZE = 12;
+const MAX_FONT_SIZE = 30;
+const lyricFontSize = ref<number>(
+  parseInt(
+    localStorage.getItem("lyricFontSize") || DEFAULT_FONT_SIZE.toString()
+  )
+);
+const tempCustomFloatText = ref("");
 // 从localStorage读取爱心显示状态，如果没有则默认为false
 const isHeartEnabled = ref(localStorage.getItem("isHeartEnabled") === "true");
 const currentTime = ref<number>(0); //当前播放的时分秒
@@ -726,10 +1118,56 @@ watch(currentTime, (newValue) => {
 //#endregion 响应式数据 ref、reactive、watch、computed...
 
 //#region 生命周期
+let timeInterval: any = null;
 onMounted(() => {
   audioRef.value.currentTime =
     JSON.parse(localStorage.getItem("currentTransfromBlock") || "{}")
       .currentTime || 0;
+
+  // 启动时间更新定时器
+  timeInterval = setInterval(() => {
+    currentTimeStr.value = dayjs().format("HH:mm");
+  }, 1000);
+
+  // 获取电池信息
+  if ((navigator as any).getBattery) {
+    (navigator as any).getBattery().then((battery: any) => {
+      // 初始值
+      batteryLevel.value = Math.floor(battery.level * 100);
+      isCharging.value = battery.charging;
+
+      // 监听变化
+      battery.addEventListener("levelchange", () => {
+        batteryLevel.value = Math.floor(battery.level * 100);
+        console.log("电量改变: " + battery.level);
+      });
+      battery.addEventListener("chargingchange", () => {
+        isCharging.value = battery.charging;
+        console.log("充电状态改变: " + battery.charging);
+      });
+      battery.addEventListener("chargingtimechange", function () {
+        console.log("完全充电需要时间: " + battery.chargingTime);
+      });
+      battery.addEventListener("dischargingtimechange", function () {
+        console.log("完全放电需要时间: " + battery.dischargingTime);
+      });
+    });
+  }
+
+  // 监听在线状态
+  window.addEventListener("online", () => {
+    isOnline.value = true;
+  });
+  window.addEventListener("offline", () => {
+    isOnline.value = false;
+  });
+});
+
+onUnmounted(() => {
+  if (timeInterval) {
+    clearInterval(timeInterval);
+    timeInterval = null;
+  }
 });
 // 监听页面刷新事件
 window.addEventListener("beforeunload", () => {
@@ -762,6 +1200,103 @@ const changeVolumn = (e: any, element: string) => {
   );
   console.log(volumn.value, volumnWitdh.value);
 };
+
+// 切换自定义浮窗
+const toggleCustomFloat = () => {
+  tempCustomFloatText.value = customFloatText.value;
+  isCustomFloatDialogOpen.value = true;
+};
+
+// 保存自定义浮窗文本
+const saveCustomFloatText = () => {
+  customFloatText.value = tempCustomFloatText.value;
+  localStorage.setItem("customFloatText", customFloatText.value);
+  isCustomFloatDialogOpen.value = false;
+};
+
+// 字体大小调整函数
+const increaseFontSize = () => {
+  if (lyricFontSize.value < MAX_FONT_SIZE) {
+    lyricFontSize.value += 2;
+    localStorage.setItem("lyricFontSize", lyricFontSize.value.toString());
+  }
+};
+
+const decreaseFontSize = () => {
+  if (lyricFontSize.value > MIN_FONT_SIZE) {
+    lyricFontSize.value -= 2;
+    localStorage.setItem("lyricFontSize", lyricFontSize.value.toString());
+  }
+};
+
+const resetFontSize = () => {
+  lyricFontSize.value = DEFAULT_FONT_SIZE;
+  localStorage.setItem("lyricFontSize", lyricFontSize.value.toString());
+};
+
+// 播放列表相关逻辑
+const selectedList = ref<string[]>([]); // 存储选中歌曲的ID
+
+// 切换选中状态
+const toggleSelect = (id: string) => {
+  const index = selectedList.value.indexOf(id);
+  if (index === -1) {
+    selectedList.value.push(id);
+  } else {
+    selectedList.value.splice(index, 1);
+  }
+};
+
+// 全选/取消全选
+const toggleSelectAll = () => {
+  if (
+    selectedList.value.length === usePlaySetStore.playList.length &&
+    usePlaySetStore.playList.length > 0
+  ) {
+    selectedList.value = [];
+  } else {
+    selectedList.value = usePlaySetStore.playList.map((item: any) => item.id);
+  }
+};
+
+// 删除选中
+const deleteSelected = () => {
+  if (selectedList.value.length === 0) return;
+  // 过滤掉选中的歌曲
+  const newPlayList = usePlaySetStore.playList.filter(
+    (item: any) => !selectedList.value.includes(item.id)
+  );
+  // 更新store
+  usePlaySetStore.playList = newPlayList;
+  // 清空选中
+  selectedList.value = [];
+  ended();
+  // 简单的边界处理：如果列表为空，停止播放
+  if (newPlayList.length === 0) {
+    usePlaySetStore.isPlay = false;
+    usePlaySetStore.currentMusicUrl = "";
+    usePlaySetStore.playIndex = 0;
+  } else if (usePlaySetStore.playIndex >= newPlayList.length) {
+    usePlaySetStore.playIndex = 0;
+  }
+};
+
+// 播放列表总时长
+const totalDuration = computed(() => {
+  const totalMs = usePlaySetStore.playList.reduce(
+    (acc: number, cur: any) => acc + (cur.dt || 0),
+    0
+  );
+  return formatMsOrSecToMinutesSeconds(totalMs, true);
+});
+
+// 播放指定歌曲
+const playMusicItem = async (index: number) => {
+  usePlaySetStore.playIndex = index;
+  await usePlaySetStore.fetchCurrentMusicUrl();
+  usePlaySetStore.isPlay = true;
+};
+
 //点击进度条
 const changeCurrentTime = (e: any, linePlay: string) => {
   const { left, width } = (
@@ -899,14 +1434,12 @@ function showHeartAnimation(toggleState = true) {
       window.heartAnimationInterval = null;
     }
 
-    // 移除所有爱心元素
+    // 移除所有漂浮元素
     const container = document.getElementById("drawid");
     if (container) {
-      const hearts = container.querySelectorAll("div");
+      const hearts = container.querySelectorAll(".floating-item");
       hearts.forEach((heart) => {
-        if (heart.innerHTML === "❤") {
-          heart.remove();
-        }
+        heart.remove();
       });
     }
     return;
@@ -921,12 +1454,10 @@ function showHeartAnimation(toggleState = true) {
     clearInterval(window.heartAnimationInterval);
   }
 
-  // 移除之前可能存在的爱心元素
-  const existingHearts = container.querySelectorAll("div");
+  // 移除之前可能存在的漂浮元素
+  const existingHearts = container.querySelectorAll(".floating-item");
   existingHearts.forEach((heart) => {
-    if (heart.innerHTML === "❤") {
-      heart.remove();
-    }
+    heart.remove();
   });
 
   // 设置定时器持续生成爱心
@@ -951,61 +1482,94 @@ function showHeartAnimation(toggleState = true) {
       // 移除爱心数量限制，允许持续生成爱心
       // 如果需要限制数量，可以在这里添加新的逻辑
     }
-  }, 2000); // 每2000毫秒生成一个新爱心
+  }, 4000); // 每2000毫秒生成一个新爱心
 }
 
 // 爱心动画函数，改为外部函数以确保正确调用
 function createHeart(container, isActiveChecker) {
   const heart = document.createElement("div");
-  heart.innerHTML = "❤";
+  heart.innerHTML = customFloatText.value || "❤";
+  heart.classList.add("floating-item");
+
+  // 随机起始位置 (0-95% 避免太靠右)
+  const startLeft = Math.random() * 95;
+
+  // 随机颜色 (如果用户没有指定自定义文字，使用红色系；如果有自定义文字，使用随机亮色)
+  const colors =
+    customFloatText.value && customFloatText.value !== "❤"
+      ? [
+          "#ff4757",
+          "#2ed573",
+          "#1e90ff",
+          "#ffa502",
+          "#a55eea",
+          "#ff6b81",
+          "#00d2d3",
+          "#54a0ff",
+        ]
+      : ["#ff4757", "#ff6b81", "#ff7f50", "#fd79a8"];
+  const color = colors[Math.floor(Math.random() * colors.length)];
 
   // 设置基础样式
   Object.assign(heart.style, {
     position: "absolute",
-    color: "#ff4757",
+    color: color,
     fontSize: `${Math.random() * 16 + 16}px`,
-    left: `${Math.random() * 100}%`,
-    bottom: "-20px",
+    left: `${startLeft}%`,
+    bottom: "-30px", // 从更低处开始
     opacity: "0",
     pointerEvents: "none",
     zIndex: "1000",
     fontWeight: "bold",
+    textShadow: "0 2px 4px rgba(0,0,0,0.1)", // 添加阴影
+    willChange: "transform, opacity", // 性能优化
   });
 
   container.appendChild(heart);
 
-  // 动画持续时间设置为15-20秒，与用户要求保持一致
-  const duration = 20000 - Math.random() * 5000;
+  // 动画参数
+  const duration = 15000 + Math.random() * 10000; // 15-25秒
   const startTime = Date.now();
+
+  // 摇摆参数
+  const swayAmplitude = 30 + Math.random() * 50; // 摇摆幅度
+  const swayFrequency = 2 + Math.random() * 3; // 摇摆频率
+  const swayPhase = Math.random() * Math.PI * 2; // 随机初始相位
 
   function animate() {
     // 检查动画是否仍应继续
     if (!isActiveChecker()) {
-      // 如果动画不再激活，清理元素
       if (heart.parentNode) {
         heart.parentNode.removeChild(heart);
       }
       return;
     }
 
-    const elapsed = Date.now() - startTime;
+    const now = Date.now();
+    const elapsed = now - startTime;
     const progress = Math.min(elapsed / duration, 1);
 
-    // 缓动函数 - 使用线性缓动
-    const easeProgress = progress;
+    // 计算当前位置 - 上升
+    const currentY = -progress * (container.offsetHeight + 100);
 
-    // 计算当前位置 - 从容器底部向上漂浮
-    const currentY = -easeProgress * (container.offsetHeight + 20);
+    // 计算横向摇摆 - 正弦波运动
+    const currentX =
+      Math.sin(progress * Math.PI * swayFrequency + swayPhase) * swayAmplitude;
 
-    // 计算透明度变化 - 保持持续可见
-    const currentOpacity = 1;
+    // 计算透明度 - 淡入淡出
+    let currentOpacity = 1;
+    if (progress < 0.1) {
+      currentOpacity = progress * 10; // 前10%淡入
+    } else if (progress > 0.8) {
+      currentOpacity = (1 - progress) * 5; // 后20%淡出
+    }
 
     // 计算缩放和旋转
-    const currentScale = 0.5 + easeProgress * 0.5;
-    const currentRotation = Math.sin(progress * Math.PI * 3) * 20;
+    const currentScale = 0.8 + Math.sin(progress * Math.PI * 2) * 0.2; // 轻微呼吸效果
+    const currentRotation = Math.sin(progress * Math.PI * 2 + swayPhase) * 15; // 轻微摆动旋转
 
     // 应用样式
-    heart.style.transform = `translateY(${currentY}px) scale(${currentScale}) rotate(${currentRotation}deg)`;
+    heart.style.transform = `translate(${currentX}px, ${currentY}px) scale(${currentScale}) rotate(${currentRotation}deg)`;
     heart.style.opacity = currentOpacity.toString();
 
     // 动画结束处理
@@ -1013,24 +1577,21 @@ function createHeart(container, isActiveChecker) {
       requestAnimationFrame(animate);
     } else {
       // 动画结束后，清理并移除爱心元素
-      setTimeout(() => {
-        if (heart.parentNode) {
-          try {
-            heart.parentNode.removeChild(heart);
-          } catch (e) {
-            // 忽略DOM操作可能的错误
+      if (heart.parentNode) {
+        try {
+          heart.parentNode.removeChild(heart);
+        } catch (e) {
+          // 忽略DOM操作可能的错误
+        }
+      }
+      // 递归生成逻辑
+      if (isActiveChecker() && Math.random() > 0.3) {
+        setTimeout(() => {
+          if (isActiveChecker()) {
+            createHeart(container, isActiveChecker);
           }
-        }
-        // 只有当动画仍在激活状态时才创建新爱心
-        if (isActiveChecker() && Math.random() > 0.3) {
-          // 70%概率生成新爱心
-          setTimeout(() => {
-            if (isActiveChecker()) {
-              createHeart(container, isActiveChecker);
-            }
-          }, 500);
-        }
-      }, 100);
+        }, 500);
+      }
     }
   }
 

@@ -99,7 +99,6 @@ export default defineStore("playset", {
               return [current[0].slice(1), current[1]];
             })
             .filter((i: any) => i[1]);
-          console.log("111", this.currentLyric);
           return this.fetchCurrentLyric;
         }
       } catch (error) {
