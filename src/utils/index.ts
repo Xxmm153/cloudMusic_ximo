@@ -61,3 +61,11 @@ export function formatTimeToSeconds(time: string): number {
   // 计算总毫秒
   return minutes * 60 * 1000 + seconds * 1000 + milliseconds;
 }
+//时间戳的字符串，返回年月日 如2002-11-22
+export function formatTime(time: string): string {
+  const date = new Date(time);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  return `${year}-${month}-${day}`;
+}

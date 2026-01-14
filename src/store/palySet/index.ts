@@ -5,6 +5,7 @@ export default defineStore("playset", {
   actions: {
     //添加播放列表
     async addPlayList(data: any, add: boolean) {
+      console.log("data", this.playList);
       // 如果true则添加进去播放列表
       if (add) {
         const index = this.playList.findIndex((i: any) => {
@@ -20,7 +21,13 @@ export default defineStore("playset", {
       } else {
         this.playList = data;
       }
-      this.playIndex = 0;
+      // 如果当前是随机播放模式，则随机一个索引；否则默认从0开始
+      if (this.sequence === 1 && this.playList.length > 1) {
+        this.playIndex = Math.floor(Math.random() * this.playList.length);
+      } else {
+        this.playIndex = 0;
+      }
+      console.log("随机播放", this.playIndex);
       // 获取音乐URL
       await this.fetchCurrentMusicUrl();
       this.isPlay = true;
@@ -124,6 +131,7 @@ export default defineStore("playset", {
     },
     //当前播放的音乐信息
     getCurrentPlayMusicInfo(): any {
+      console.log(this.playList[this.playIndex]);
       return this.playList[this.playIndex] || null;
     },
   },

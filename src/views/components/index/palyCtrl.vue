@@ -20,7 +20,11 @@
         />
 
         <img
-          :src="usePlaySetStore.getCurrentPlayMusicInfo.album.blurPicUrl"
+          :src="
+            usePlaySetStore.getCurrentPlayMusicInfo.album?.blurPicUrl
+              ? usePlaySetStore.getCurrentPlayMusicInfo.album?.blurPicUrl
+              : usePlaySetStore.getCurrentPlayMusicInfo.al.picUrl
+          "
           alt="歌曲封面"
           class="w-full h-full object-cover"
         />
@@ -36,8 +40,11 @@
         <div class="text-xs truncate transition-colors">
           {{
             usePlaySetStore.getCurrentPlayMusicInfo.artists
-              .map((i) => i.name)
-              .join("-")
+              ? usePlaySetStore.getCurrentPlayMusicInfo.artists
+              : usePlaySetStore.getCurrentPlayMusicInfo.ar
+
+                  .map((i) => i.name)
+                  .join("-")
           }}
         </div>
       </div>
@@ -72,7 +79,7 @@
           <!-- 播放图标带光晕效果 -->
           <div class="relative">
             <div class="absolute -inset-1 bg-white/20 rounded-full blur-sm" />
-            <Play class="w-4 h-4 ml-0.5 relative z-10" />
+            <Play class="w-4 h-4 ml-0.5 relative z-10 dark:text-[#000]" />
           </div>
         </button>
         <button
@@ -83,7 +90,7 @@
           <!-- 播放图标带光晕效果 -->
           <div class="relative">
             <div class="absolute -inset-1 bg-white/20 rounded-full blur-sm" />
-            <Pause class="w-4 h-4 ml-0.5 relative z-10" />
+            <Pause class="w-4 h-4 ml-0.5 relative z-10 dark:text-[#000]" />
           </div>
         </button>
 
@@ -370,7 +377,11 @@
       <div class="size-full relative" id="drawid">
         <div class="absolute size-full">
           <img
-            :src="usePlaySetStore.getCurrentPlayMusicInfo.album.blurPicUrl"
+            :src="
+              usePlaySetStore.getCurrentPlayMusicInfo.album?.blurPicUrl
+                ? usePlaySetStore.getCurrentPlayMusicInfo.album?.blurPicUrl
+                : usePlaySetStore.getCurrentPlayMusicInfo.al.picUrl
+            "
             alt=""
             class="object-cover size-full"
           />
@@ -512,7 +523,8 @@
                       >
                         <img
                           :src="
-                            usePlaySetStore.getCurrentPlayMusicInfo.album
+                            usePlaySetStore.getCurrentPlayMusicInfo.album ??
+                            usePlaySetStore.getCurrentPlayMusicInfo.al.picUrl
                               .blurPicUrl
                           "
                           alt="歌曲封面"
@@ -539,7 +551,10 @@
                   </h2>
                   <p class="text-green-300 text-sm font-bold">
                     {{
-                      usePlaySetStore.getCurrentPlayMusicInfo.artists
+                      (usePlaySetStore.getCurrentPlayMusicInfo.artists
+                        ? usePlaySetStore.getCurrentPlayMusicInfo.artists
+                        : usePlaySetStore.getCurrentPlayMusicInfo.ar
+                      )
                         .map((i) => i.name)
                         .join("-")
                     }}
@@ -615,7 +630,7 @@
                     id="bu3"
                     class="hover:translate-y-[-1px] transition-all flex items-center bg-card/30 backdrop-blur-2xl w-14 h-14 rounded-full bg-primary flex items-center justify-center text-white hover:scale-105 transition-all shadow-lg"
                   >
-                    <Play class="w-6 h-6 ml-1" />
+                    <Play class="w-6 h-6 ml-1 dark:text-[#000]" />
                   </button>
                   <button
                     @click.stop="playMusic(false)"
@@ -623,7 +638,7 @@
                     id="bu3"
                     class="hover:translate-y-[-1px] transition-all flex items-center bg-card/30 backdrop-blur-2xl w-14 h-14 rounded-full bg-primary flex items-center justify-center text-white hover:scale-105 transition-all shadow-lg"
                   >
-                    <Pause class="w-6 h-6 ml-1" />
+                    <Pause class="w-6 h-6 ml-1 dark:text-[#000]" />
                   </button>
                   <button
                     @click.stop="usePlaySetStore.next"
@@ -1362,11 +1377,14 @@ const updateCurrentTime = (e) => {
     false
   );
   if (!isShowDrawer.value) return;
-  currentTransfrom.value = Array.from(
-    document.querySelector(".gcClass")?.children
-  ).findIndex((i: any) => {
-    return i == document.querySelector(".isActive");
-  });
+  const gcContainer = document.querySelector(".gcClass");
+  if (!gcContainer) return;
+
+  currentTransfrom.value = Array.from(gcContainer.children).findIndex(
+    (i: any) => {
+      return i == document.querySelector(".isActive");
+    }
+  );
 };
 //播放动画
 const playMusic = (status: boolean) => {
