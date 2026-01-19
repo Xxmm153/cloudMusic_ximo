@@ -17,14 +17,17 @@
       </TableHeader>
       <TableBody>
         <TableRow
-          class="h-15 group"
+          class="h-15 group relative"
           v-for="(i, index) in songlistData"
           :key="i.id"
           @dblclick="playSong(i)"
         >
           <TableCell class="font-medium">
             <div class="group-hover:hidden">{{ index + 1 }}</div>
-            <Play class="size-3 hidden group-hover:block cursor-pointer"></Play>
+            <Play
+              @click="playSong(i)"
+              class="size-3 hidden group-hover:block cursor-pointer"
+            ></Play>
           </TableCell>
           <TableCell class="w-100">
             <div class="flex items-center gap-2">
@@ -43,9 +46,12 @@
           </TableCell>
           <TableCell class="h-15 flex justify-end items-center">
             <Info
-              class="border size-4 hidden group-hover:block cursor-pointer"
+              @click="showSongInfo(i)"
+              class="size-4 hidden group-hover:block cursor-pointer"
             ></Info>
           </TableCell>
+          <!-- 可以做一些播放的动画 -->
+          <!-- <div class="absolute w-full h-0.5 bottom-0 bg-red-500 left-0"></div> -->
         </TableRow>
       </TableBody>
     </Table>
@@ -58,6 +64,7 @@ import { ref, reactive, onMounted } from "vue"; //引入vue
 import { Play, Info } from "lucide-vue-next"; //引入图标
 import { formatMsOrSecToMinutesSeconds } from "@/utils"; //引入时间格式化
 import playsetStore from "@/store/palySet/index"; //引入store
+import { useRouter } from "vue-router"; //引入路由
 import {
   Table,
   TableBody,
@@ -71,7 +78,8 @@ import {
 
 //#region 响应式数据 ref、reactive、watch、computed...
 defineProps(["songlistData"]);
-const useplaysetStore = playsetStore();
+const useplaysetStore = playsetStore(); //引入store
+const router = useRouter(); //引入路由
 //#endregion 响应式数据 ref、reactive、watch、computed...
 
 //#region 生命周期
@@ -79,10 +87,19 @@ onMounted(() => {});
 //#endregion 生命周期
 
 //#region 事件函数
+//查看当前歌词的信息
+const showSongInfo = (item: any) => {
+  router.push({
+    name: "songLyrics",
+    params: {
+      item: JSON.stringify(item),
+    },
+  });
+};
 //播放单条
 const playSong = (item: any) => {
   console.log(item);
-  useplaysetStore.addPlayList(item, false);
+  useplaysetStore.addPlayList(item, true);
 };
 //处理作者
 const arCompuded = (ar: any) => {

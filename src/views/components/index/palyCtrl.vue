@@ -21,9 +21,9 @@
 
         <img
           :src="
-            usePlaySetStore.getCurrentPlayMusicInfo.album?.blurPicUrl
-              ? usePlaySetStore.getCurrentPlayMusicInfo.album?.blurPicUrl
-              : usePlaySetStore.getCurrentPlayMusicInfo.al.picUrl
+            usePlaySetStore.getCurrentPlayMusicInfo.album?.blurPicUrl ?
+              usePlaySetStore.getCurrentPlayMusicInfo.album?.blurPicUrl
+            : usePlaySetStore.getCurrentPlayMusicInfo.al.picUrl
           "
           alt="歌曲封面"
           class="w-full h-full object-cover"
@@ -39,12 +39,12 @@
         </div>
         <div class="text-xs truncate transition-colors">
           {{
-            usePlaySetStore.getCurrentPlayMusicInfo.artists
-              ? usePlaySetStore.getCurrentPlayMusicInfo.artists
-              : usePlaySetStore.getCurrentPlayMusicInfo.ar
-
-                  .map((i) => i.name)
-                  .join("-")
+            (usePlaySetStore.getCurrentPlayMusicInfo.artists ?
+              usePlaySetStore.getCurrentPlayMusicInfo.artists
+            : usePlaySetStore.getCurrentPlayMusicInfo.ar
+            )
+              .map((i) => i.name)
+              .join("-")
           }}
         </div>
       </div>
@@ -253,7 +253,7 @@
                     class="w-4 h-4 rounded border border-muted-foreground/30 flex items-center justify-center transition-colors group-hover:border-primary/50"
                     :class="{
                       'bg-primary border-primary': selectedList.includes(
-                        item.id
+                        item.id,
                       ),
                     }"
                   >
@@ -378,9 +378,9 @@
         <div class="absolute size-full">
           <img
             :src="
-              usePlaySetStore.getCurrentPlayMusicInfo.album?.blurPicUrl
-                ? usePlaySetStore.getCurrentPlayMusicInfo.album?.blurPicUrl
-                : usePlaySetStore.getCurrentPlayMusicInfo.al.picUrl
+              usePlaySetStore.getCurrentPlayMusicInfo.album?.blurPicUrl ?
+                usePlaySetStore.getCurrentPlayMusicInfo.album?.blurPicUrl
+              : usePlaySetStore.getCurrentPlayMusicInfo.al.picUrl
             "
             alt=""
             class="object-cover size-full"
@@ -496,9 +496,8 @@
                     id="so"
                     class="w-56 h-56 rounded-full bg-black shadow-2xl relative overflow-hidden song animate-spin-slow"
                     :style="{
-                      animationPlayState: usePlaySetStore.isPlay
-                        ? 'running'
-                        : 'paused',
+                      animationPlayState:
+                        usePlaySetStore.isPlay ? 'running' : 'paused',
                     }"
                   >
                     <!-- 唱片纹理 -->
@@ -551,9 +550,9 @@
                   </h2>
                   <p class="text-green-300 text-sm font-bold">
                     {{
-                      (usePlaySetStore.getCurrentPlayMusicInfo.artists
-                        ? usePlaySetStore.getCurrentPlayMusicInfo.artists
-                        : usePlaySetStore.getCurrentPlayMusicInfo.ar
+                      (usePlaySetStore.getCurrentPlayMusicInfo.artists ?
+                        usePlaySetStore.getCurrentPlayMusicInfo.artists
+                      : usePlaySetStore.getCurrentPlayMusicInfo.ar
                       )
                         .map((i) => i.name)
                         .join("-")
@@ -806,7 +805,7 @@
                                 {{
                                   formatMsOrSecToMinutesSeconds(
                                     item.dt || 0,
-                                    true
+                                    true,
                                   )
                                 }}
                               </div>
@@ -904,8 +903,9 @@
                       isActive(i, index),
                   }"
                   :style="{
-                    fontSize: isActive(i, index)
-                      ? lyricFontSize + 4 + 'px'
+                    fontSize:
+                      isActive(i, index) ?
+                        lyricFontSize + 4 + 'px'
                       : lyricFontSize + 'px',
                   }"
                   v-for="(i, index) in usePlaySetStore.currentLyric"
@@ -1044,8 +1044,8 @@ const MIN_FONT_SIZE = 12;
 const MAX_FONT_SIZE = 30;
 const lyricFontSize = ref<number>(
   parseInt(
-    localStorage.getItem("lyricFontSize") || DEFAULT_FONT_SIZE.toString()
-  )
+    localStorage.getItem("lyricFontSize") || DEFAULT_FONT_SIZE.toString(),
+  ),
 );
 const tempCustomFloatText = ref("");
 // 从localStorage读取爱心显示状态，如果没有则默认为false
@@ -1053,18 +1053,18 @@ const isHeartEnabled = ref(localStorage.getItem("isHeartEnabled") === "true");
 const currentTime = ref<number>(0); //当前播放的时分秒
 const currentTransfrom = ref<number>(
   JSON.parse(localStorage.getItem("currentTransfrom") || "{}")
-    .currentTransfrom || 0
+    .currentTransfrom || 0,
 ); //当前播放的进度条位置
 const currentTransfromBlock = ref<number>(
   JSON.parse(localStorage.getItem("currentTransfromBlock") || "{}")
-    .currentTransfromBlock || 0
+    .currentTransfromBlock || 0,
 ); //当前播放的进度条位置百分比
 const duration = ref<string>("00:00"); //当前音乐总时长
 const volumn = ref<number>(
-  JSON.parse(localStorage.getItem("volumn") || "{}").volumn || 0.1
+  JSON.parse(localStorage.getItem("volumn") || "{}").volumn || 0.1,
 ); //当前音量
 const volumnWitdh = ref<number>(
-  JSON.parse(localStorage.getItem("volumn") || "{}").volumnWitdh || 0
+  JSON.parse(localStorage.getItem("volumn") || "{}").volumnWitdh || 0,
 ); //当前音乐的音乐长度显示
 const muted = ref<boolean>(false); //是否静音
 watch(volumn, (newValue) => {
@@ -1110,7 +1110,7 @@ watch(
     } else {
       audioRef.value.pause();
     }
-  }
+  },
 );
 
 watch(currentTransfrom, () => {
@@ -1127,7 +1127,7 @@ watch(currentTransfrom, () => {
 watch(currentTime, (newValue) => {
   if (!audioRef.value?.duration) return;
   currentTransfromBlock.value = Math.floor(
-    (newValue / audioRef.value?.duration) * 100
+    (newValue / audioRef.value?.duration) * 100,
   );
 });
 //#endregion 响应式数据 ref、reactive、watch、computed...
@@ -1176,6 +1176,7 @@ onMounted(() => {
   window.addEventListener("offline", () => {
     isOnline.value = false;
   });
+  console.log("ximooooooo", usePlaySetStore.getCurrentPlayMusicInfo);
 });
 
 onUnmounted(() => {
@@ -1211,7 +1212,7 @@ const changeVolumn = (e: any, element: string) => {
   volumn.value = (clickX / width) * 0.5; //音量范围0-0.5
   localStorage.setItem(
     "volumn",
-    JSON.stringify({ volumn: volumn.value, volumnWitdh: volumnWitdh.value })
+    JSON.stringify({ volumn: volumn.value, volumnWitdh: volumnWitdh.value }),
   );
   console.log(volumn.value, volumnWitdh.value);
 };
@@ -1279,7 +1280,7 @@ const deleteSelected = () => {
   if (selectedList.value.length === 0) return;
   // 过滤掉选中的歌曲
   const newPlayList = usePlaySetStore.playList.filter(
-    (item: any) => !selectedList.value.includes(item.id)
+    (item: any) => !selectedList.value.includes(item.id),
   );
   // 更新store
   usePlaySetStore.playList = newPlayList;
@@ -1300,7 +1301,7 @@ const deleteSelected = () => {
 const totalDuration = computed(() => {
   const totalMs = usePlaySetStore.playList.reduce(
     (acc: number, cur: any) => acc + (cur.dt || 0),
-    0
+    0,
   );
   return formatMsOrSecToMinutesSeconds(totalMs, true);
 });
@@ -1326,7 +1327,7 @@ const changeCurrentTime = (e: any, linePlay: string) => {
       currentTransfromBlock: currentTransfromBlock.value,
       currentTransfrom: currentTransfrom.value,
       currentTime: audioRef.value?.duration * (clickX / width),
-    })
+    }),
   );
 };
 //播放开始
@@ -1369,12 +1370,12 @@ const isActive = (i: any, index: number) => {
 const updateCurrentTime = (e) => {
   duration.value = formatMsOrSecToMinutesSeconds(
     audioRef.value?.duration,
-    false
+    false,
   );
   currentTime.value = audioRef.value?.currentTime;
   currentTimeFrommater.value = formatMsOrSecToMinutesSeconds(
     audioRef.value?.currentTime,
-    false
+    false,
   );
   if (!isShowDrawer.value) return;
   const gcContainer = document.querySelector(".gcClass");
@@ -1383,7 +1384,7 @@ const updateCurrentTime = (e) => {
   currentTransfrom.value = Array.from(gcContainer.children).findIndex(
     (i: any) => {
       return i == document.querySelector(".isActive");
-    }
+    },
   );
 };
 //播放动画
@@ -1397,7 +1398,7 @@ const showGsap = () => {
     gsap.fromTo(
       "#so",
       { scale: 0 },
-      { scale: 1.1, duration: 1, ease: "back.out(2)" }
+      { scale: 1.1, duration: 1, ease: "back.out(2)" },
     );
     gsap.fromTo("#showlinear1", { scale: 0 }, { scale: 1, duration: 1 });
     gsap.fromTo("#showlinear2", { scale: 0 }, { scale: 1, duration: 1 });
@@ -1405,34 +1406,34 @@ const showGsap = () => {
     gsap.fromTo(
       "#user",
       { y: 100, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1 }
+      { y: 0, opacity: 1, duration: 1 },
     );
     gsap
       .timeline()
       .fromTo(
         "#bu5",
         { x: -100, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.3 }
+        { x: 0, opacity: 1, duration: 0.3 },
       )
       .fromTo(
         "#bu4",
         { x: -100, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.3 }
+        { x: 0, opacity: 1, duration: 0.3 },
       )
       .fromTo(
         "#bu3",
         { x: -100, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.3 }
+        { x: 0, opacity: 1, duration: 0.3 },
       )
       .fromTo(
         "#bu2",
         { x: -100, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.3 }
+        { x: 0, opacity: 1, duration: 0.3 },
       )
       .fromTo(
         "#bu1",
         { x: -100, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.3 }
+        { x: 0, opacity: 1, duration: 0.3 },
       );
   });
 };
@@ -1514,18 +1515,18 @@ function createHeart(container, isActiveChecker) {
 
   // 随机颜色 (如果用户没有指定自定义文字，使用红色系；如果有自定义文字，使用随机亮色)
   const colors =
-    customFloatText.value && customFloatText.value !== "❤"
-      ? [
-          "#ff4757",
-          "#2ed573",
-          "#1e90ff",
-          "#ffa502",
-          "#a55eea",
-          "#ff6b81",
-          "#00d2d3",
-          "#54a0ff",
-        ]
-      : ["#ff4757", "#ff6b81", "#ff7f50", "#fd79a8"];
+    customFloatText.value && customFloatText.value !== "❤" ?
+      [
+        "#ff4757",
+        "#2ed573",
+        "#1e90ff",
+        "#ffa502",
+        "#a55eea",
+        "#ff6b81",
+        "#00d2d3",
+        "#54a0ff",
+      ]
+    : ["#ff4757", "#ff6b81", "#ff7f50", "#fd79a8"];
   const color = colors[Math.floor(Math.random() * colors.length)];
 
   // 设置基础样式

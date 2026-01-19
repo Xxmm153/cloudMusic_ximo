@@ -93,12 +93,13 @@
           </button> -->
 
           <div class="flex items-center gap-2 ml-2">
-            <button
+            <!-- <button
               class="p-2.5 rounded-full hover:bg-white/40 dark:hover:bg-white/10 transition-colors"
             >
               <Heart class="size-5" />
-            </button>
+            </button> -->
             <button
+              @click="handleShare"
               class="p-2.5 rounded-full hover:bg-white/40 dark:hover:bg-white/10 transition-colors"
             >
               <Share2 class="size-5" />
@@ -119,9 +120,9 @@
           @click="changeTab(index)"
           class="relative group cursor-pointer py-1 transition-colors"
           :class="[
-            activeTab === index
-              ? 'text-foreground'
-              : 'text-muted-foreground hover:text-foreground',
+            activeTab === index ? 'text-foreground' : (
+              'text-muted-foreground hover:text-foreground'
+            ),
           ]"
         >
           <span :class="{ 'text-primary font-bold': activeTab === index }">{{
@@ -152,7 +153,7 @@
 import { ref, shallowRef, markRaw, onMounted } from "vue"; //引入vue
 import { useRoute } from "vue-router"; //引入路由
 import { songlist } from "@/api"; //引入api
-import { formatTime } from "@/utils/index"; //引入工具函数
+import { formatTime, deepClone } from "@/utils/index"; //引入工具函数
 import playsetStore from "@/store/palySet/index"; //引入store
 import {
   Play,
@@ -193,7 +194,8 @@ onMounted(() => {
 //#region 事件函数
 //获取歌单数据
 const playSongList = () => {
-  useplaysetStore.addPlayList(songlistData.value, false);
+  // 存储的时候深拷贝
+  useplaysetStore.addPlayList(deepClone(songlistData.value), false);
 };
 //获取歌单所有歌曲
 const getSongAllData = async () => {
@@ -212,6 +214,28 @@ const getSongList = async () => {
     const rudata = await songlist.getSonglistInfo(routeId);
     playCount.value = rudata.playlist;
   } catch (error) {}
+};
+// 分享功能
+const handleShare = async () => {
+  const shareData = {
+    title: playCount.value?.name || "歌单分享",
+    text: `我在CloudMusic发现了一个很棒的歌单：${playCount.value?.name}`,
+    url: window.location.href,
+  };
+
+  try {
+    // 优先使用 Web Share API (移动端体验更好)
+    if (navigator.share) {
+      await navigator.share(shareData);
+    } else {
+      // PC端或不支持Share API时，复制链接
+      await navigator.clipboard.writeText(window.location.href);
+      // 这里暂时使用 alert，建议后续集成 Toast 组件
+      alert("链接已复制到剪贴板！");
+    }
+  } catch (err) {
+    console.error("分享失败:", err);
+  }
 };
 //#region 按钮点击事件
 const changeTab = (index: number) => {

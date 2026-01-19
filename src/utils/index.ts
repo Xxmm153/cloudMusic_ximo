@@ -30,7 +30,7 @@ export function formatSecondsToTime(totalSeconds: number): string {
 //根据传入的值判断如果是毫秒则将毫秒转换为00：00格式 如果是秒则将秒转换为00：00
 export function formatMsOrSecToMinutesSeconds(
   value: number,
-  isMilliseconds: boolean = false
+  isMilliseconds: boolean = false,
 ): string {
   // 统一转成毫秒处理
   const totalMs = isMilliseconds ? value : value * 1000;
@@ -69,3 +69,14 @@ export function formatTime(time: string): string {
   const day = date.getDate();
   return `${year}-${month}-${day}`;
 }
+//深拷贝
+export const deepClone = (obj: any) => {
+  if (typeof obj !== "object" || obj === null) {
+    return obj;
+  }
+  const cloneObj = Array.isArray(obj) ? [] : {};
+  for (let key in obj) {
+    cloneObj[key] = deepClone(obj[key]);
+  }
+  return cloneObj;
+};

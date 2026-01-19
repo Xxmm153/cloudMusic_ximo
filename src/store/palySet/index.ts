@@ -21,12 +21,7 @@ export default defineStore("playset", {
       } else {
         this.playList = data;
       }
-      // 如果当前是随机播放模式，则随机一个索引；否则默认从0开始
-      if (this.sequence === 1 && this.playList.length > 1) {
-        this.playIndex = Math.floor(Math.random() * this.playList.length);
-      } else {
-        this.playIndex = 0;
-      }
+      this.playIndex = 0;
       console.log("随机播放", this.playIndex);
       // 获取音乐URL
       await this.fetchCurrentMusicUrl();
