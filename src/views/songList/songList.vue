@@ -150,7 +150,7 @@
 
 <script setup lang="ts">
 //#region 引入import
-import { ref, shallowRef, markRaw, onMounted } from "vue"; //引入vue
+import { ref, shallowRef, markRaw, onMounted, reactive } from "vue"; //引入vue
 import { useRoute } from "vue-router"; //引入路由
 import { songlist } from "@/api"; //引入api
 import { formatTime, deepClone } from "@/utils/index"; //引入工具函数
@@ -171,11 +171,11 @@ import commentComponent from "@/views/components/songList/comment.vue"; //引入
 
 //#region 响应式数据 ref、reactive、watch、computed...
 const router = useRoute(); //获取路由
-const tabs: TbabItem = [
-  { label: "歌曲", count: 50, component: markRaw(songListComponent) },
+const tabs = reactive<TbabItem>([
+  { label: "歌曲", count: 0, component: markRaw(songListComponent) },
   { label: "评论", count: 0, component: markRaw(commentComponent) },
-  { label: "收藏", count: 12, component: markRaw(LoveComponent) },
-]; //tab数据
+  // { label: "收藏", count: 0, component: markRaw(LoveComponent) },
+]); //tab数据
 
 const activeTab = ref(0); //tableindex
 const currentComponent = shallowRef(tabs[0]?.component ?? songListComponent); //当前显示的组件
@@ -213,6 +213,13 @@ const getSongList = async () => {
   try {
     const rudata = await songlist.getSonglistInfo(routeId);
     playCount.value = rudata.playlist;
+
+    // 更新 tab 计数
+    if (playCount.value) {
+      tabs[0].count = playCount.value.trackCount || 0;
+      tabs[1].count = playCount.value.commentCount || 0;
+      tabs[2].count = playCount.value.subscribedCount || 0;
+    }
   } catch (error) {}
 };
 // 分享功能
@@ -240,7 +247,7 @@ const handleShare = async () => {
 //#region 按钮点击事件
 const changeTab = (index: number) => {
   activeTab.value = index;
-  currentComponent.value = tabs[index].component;
+  currentComponent.value = tabs[index]?.component;
 };
 //#endregion 事件函数
 

@@ -7,5 +7,29 @@ const getSonglistInfo = (id: string) => {
 const getSonglistAll = (id: string) => {
   return request.get<any, any>(`/playlist/track/all?id=${id}`);
 };
+//获取歌单评论
+const getComment = (data: { id: number; limit: number; offset: number }) => {
+  return request.get<any, any>(`/comment/playlist`, {
+    params: {
+      id: data.id,
+      limit: data.limit,
+      offset: data.offset,
+    },
+  });
+};
+//获取歌曲评论
+const getSongComment = (data: {
+  id: number;
+  limit: number;
+  offset: number;
+}) => {
+  return request.get<any, any>(`/comment/music`, {
+    params: {
+      id: data.id,
+      limit: data.limit,
+      offset: data.offset,
+    },
+  });
+};
 //暴露出去
-export { getSonglistInfo, getSonglistAll };
+export { getSonglistInfo, getSonglistAll, getComment, getSongComment };

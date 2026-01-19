@@ -522,9 +522,13 @@
                       >
                         <img
                           :src="
-                            usePlaySetStore.getCurrentPlayMusicInfo.album ??
-                            usePlaySetStore.getCurrentPlayMusicInfo.al.picUrl
-                              .blurPicUrl
+                            (
+                              usePlaySetStore.getCurrentPlayMusicInfo.album
+                                ?.blurPicUrl
+                            ) ?
+                              usePlaySetStore.getCurrentPlayMusicInfo.album
+                                ?.blurPicUrl
+                            : usePlaySetStore.getCurrentPlayMusicInfo.al.picUrl
                           "
                           alt="歌曲封面"
                           class="w-full h-full object-cover"
@@ -827,12 +831,29 @@
                 <!-- 额外信息 -->
                 <div class="mt-6 text-sm text-white flex gap-25 items-center">
                   <div class="flex items-center justify-center gap-1">
-                    <div
-                      id="showlinear1"
-                      class="mr-4 flex items-center justify-center gap-2 bg-card/1 backdrop-blur-2xl h-10 px-4 rounded-xl cursor-pointer hover:scale-[1.01] transition-all hover:text-primary"
-                    >
-                      <MessageSquareDot class="size-[12px]" />2468评论
-                    </div>
+                    <Popover>
+                      <PopoverTrigger>
+                        <div
+                          id="showlinear1"
+                          class="mr-4 flex items-center justify-center gap-2 bg-card/1 backdrop-blur-2xl h-10 px-4 rounded-xl cursor-pointer hover:scale-[1.01] transition-all hover:text-primary"
+                        >
+                          <MessageSquareDot class="size-[12px]" />评论
+                        </div>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        class="w-[500px] h-[600px] ml-150 overflow-hidden bg-popover/95 backdrop-blur-xl border-border/50 shadow-2xl p-0 flex flex-col"
+                        side="top"
+                        align="center"
+                      >
+                        <div class="flex-1 overflow-auto custom-scrollbar">
+                          <commentComponent
+                            v-if="usePlaySetStore.getCurrentPlayMusicInfo?.id"
+                            :id="usePlaySetStore.getCurrentPlayMusicInfo.id"
+                            type="song"
+                          />
+                        </div>
+                      </PopoverContent>
+                    </Popover>
 
                     <!-- <div
                       id="showlinear2"
@@ -975,6 +996,7 @@ import {
 import playSetStore from "@/store/palySet"; //引入播放设置商店
 import { formatTimeToSeconds, formatMsOrSecToMinutesSeconds } from "@/utils"; //引入工具
 import dayjs from "dayjs"; //引入dayjs
+import commentComponent from "@/views/components/songList/comment.vue"; //引入评论组件
 import {
   MessageSquareDot,
   ChevronLeft,
