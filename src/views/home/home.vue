@@ -13,9 +13,11 @@
             class="w-full h-full pl-2.5 relative"
             :plugins="[plugin]"
             @mouseenter="plugin.stop"
-            @mouseleave="
-              [plugin.reset(), plugin.play(), console.log('Running')]
-            "
+            @mouseleave="[
+              plugin.reset(),
+              plugin.play(),
+              console.log('Running'),
+            ]"
           >
             <div
               class="imground absolute z-50 right-[5%] top-[80%] translate-y-[-50%] bg-card/20 backdrop-blur-xl p-2 rounded-full"
@@ -204,6 +206,7 @@
         v-for="(i, index) in hotSonger"
         :key="index"
         class="size-full flex flex-col justify-center items-center gap-1.5 content-center justify-items-center"
+        @click="goSonger(i)"
       >
         <img
           :src="i.picUrl + '?param=100y100'"
@@ -466,6 +469,10 @@ onMounted(() => {
 //#endregion 生命周期
 
 //#region 事件函数
+//跳转到歌手页面
+const goSonger = (i: any) => {
+  router.push({ name: "songer", params: { item: i.id } });
+};
 //跳转对应的歌单
 const goSsongList = (id: number) => {
   router.push({ path: "/songList", query: { id: id } });
@@ -617,7 +624,7 @@ const gaspShow = () => {
         gsap.fromTo(
           ".imground",
           { rotate: 0 },
-          { rotate: 360, duration: 5, repeat: -1, ease: "linear" }
+          { rotate: 360, duration: 5, repeat: -1, ease: "linear" },
         );
         // gsap.fromTo(
         //   ".imground",
@@ -625,7 +632,7 @@ const gaspShow = () => {
         //   { duration: 1.5, repeat: -1, y: 0, ease: "linear", yoyo: true }
         // )
       },
-    }
+    },
   );
 
   // 音乐符号动画
@@ -649,7 +656,7 @@ const gaspShow = () => {
       repeat: -1,
       yoyo: true,
       ease: "easeInOut",
-    }
+    },
   );
 
   gsap.fromTo(
@@ -664,7 +671,7 @@ const gaspShow = () => {
       repeat: -1,
       yoyo: true,
       ease: "easeInOut",
-    }
+    },
   );
 
   gsap.fromTo(
@@ -679,7 +686,7 @@ const gaspShow = () => {
       repeat: -1,
       yoyo: true,
       ease: "easeInOut",
-    }
+    },
   );
 
   gsap.fromTo(
@@ -694,7 +701,7 @@ const gaspShow = () => {
       repeat: -1,
       yoyo: true,
       ease: "easeInOut",
-    }
+    },
   );
 
   gsap.fromTo(
@@ -709,7 +716,7 @@ const gaspShow = () => {
       repeat: -1,
       yoyo: true,
       ease: "easeInOut",
-    }
+    },
   );
   gsap.fromTo(".but", { x: -20, opacity: 0 }, { x: 0, opacity: 2 });
   // gsap

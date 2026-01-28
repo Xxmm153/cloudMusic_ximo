@@ -167,10 +167,6 @@ const prop = defineProps({
     type: [Number, String],
     required: true,
   },
-  type: {
-    type: String,
-    default: "playlist", // playlist | song
-  },
 });
 
 // 获取歌单评论参数
@@ -224,23 +220,12 @@ const getComment = async (isLoadMore = false) => {
   isLoading.value = true;
 
   try {
-    let res: any;
-    if (prop.type === "song") {
-      res = await songlist.getSongComment(sendCommentData.value as any);
-    } else {
-      res = await songlist.getComment(sendCommentData.value as any);
-    }
-
+    const res = await songlist.getComment(sendCommentData.value as any);
     if (res.code == 200) {
       if (isLoadMore) {
         commentList.value.push(...res.comments);
       } else {
         commentList.value = res.comments;
-        // 如果是新加载（非翻页），检查热门评论
-        if (res.hotComments && res.hotComments.length > 0) {
-          // 这里可以选择是否混合热门评论，或者只显示最新
-          // 暂时保持只显示最新评论逻辑，或者按需添加
-        }
       }
 
       // 更新是否有更多数据状态

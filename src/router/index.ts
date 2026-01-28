@@ -41,6 +41,11 @@ const routes = [
         name: "songLyrics",
         component: () => import("@/views/songLyrics/songLyrics.vue"),
       },
+      {
+        path: "/songer/:item",
+        name: "songer",
+        component: () => import("@/views/songer/songer.vue"),
+      },
     ],
   },
   {
