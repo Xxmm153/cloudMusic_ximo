@@ -7,6 +7,10 @@ const getSonglistInfo = (id: string) => {
 const getSonglistAll = (id: string) => {
   return request.get<any, any>(`/playlist/track/all?id=${id}`);
 };
+//获取专辑详情
+const getAlbumInfo = (id: string) => {
+  return request.get<any, any>(`/album?id=${id}`);
+};
 //获取歌单评论
 const getComment = (data: { id: number; limit: number; offset: number }) => {
   return request.get<any, any>(`/comment/playlist`, {
@@ -31,5 +35,23 @@ const getSongComment = (data: {
     },
   });
 };
+
+// 收藏/取消收藏歌单
+const subscribePlaylist = (t: number, id: string) => {
+  return request.get<any, any>(`/playlist/subscribe`, {
+    params: {
+      t, // 1:收藏, 2:取消收藏
+      id,
+    },
+  });
+};
+
 //暴露出去
-export { getSonglistInfo, getSonglistAll, getComment, getSongComment };
+export {
+  getSonglistInfo,
+  getSonglistAll,
+  getComment,
+  getSongComment,
+  subscribePlaylist,
+  getAlbumInfo,
+};

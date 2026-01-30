@@ -100,30 +100,235 @@ const artistTopSong = (id: number, limit: number, offset: number) => {
       id,
     },
   });
-  //获取全部歌曲后端没返回图片 需要在去获取  所以只展示前50热门歌曲
-  // return request.get<any, any>("/artist/songs", {
-  //   params: {
-  //     id,
-  //     limit,
-  //     offset,
-  //   },
-  // });
 };
 
-//暴露出去
+//获取歌手专辑
+const getArtistAlbum = (id: number, limit: number, offset: number) => {
+  return request.get<any, any>("/artist/album", {
+    params: {
+      id,
+      limit,
+      offset,
+    },
+  });
+};
+
+//获取歌手MV
+const getArtistMv = (id: number) => {
+  return request.get<any, any>("/artist/mv", {
+    params: {
+      id,
+    },
+  });
+};
+
+//获取歌手描述
+const getArtistDesc = (id: number) => {
+  return request.get<any, any>("/artist/desc", {
+    params: {
+      id,
+    },
+  });
+};
+
+//获取MV详情
+const getMvDetail = (mvid: number) => {
+  return request.get<any, any>("/mv/detail", {
+    params: {
+      mvid,
+    },
+  });
+};
+
+//获取MV播放地址
+const getMvUrl = (id: number) => {
+  return request.get<any, any>("/mv/url", {
+    params: {
+      id,
+    },
+  });
+};
+
+//获取相似MV
+const getSimiMv = (mvid: number) => {
+  return request.get<any, any>("/simi/mv", {
+    params: {
+      mvid,
+    },
+  });
+};
+
+//获取相关视频
+const getRelatedVideo = (id: string | number) => {
+  return request.get<any, any>("/related/allvideo", {
+    params: {
+      id,
+    },
+  });
+};
+
+//获取MV评论
+const getMvComment = (id: number, limit: number = 20, offset: number = 0) => {
+  return request.get<any, any>("/comment/mv", {
+    params: {
+      id,
+      limit,
+      offset,
+    },
+  });
+};
+
+//获取全部MV
+const getAllMv = (
+  area: string = "全部",
+  type: string = "全部",
+  order: string = "上升最快",
+  limit: number = 30,
+  offset: number = 0,
+) => {
+  return request.get<any, any>("/mv/all", {
+    params: {
+      area,
+      type,
+      order,
+      limit,
+      offset,
+    },
+  });
+};
+
+//获取MV排行
+const getTopMv = (
+  limit: number = 10,
+  offset: number = 0,
+  area: string = "",
+) => {
+  return request.get<any, any>("/top/mv", {
+    params: {
+      limit,
+      offset,
+      area,
+    },
+  });
+};
+
+//推荐歌单 ( 未登录 )
+const personalized = (limit: number = 30) => {
+  return request.get<any, any>("/personalized", {
+    params: {
+      limit,
+    },
+  });
+};
+
+//推荐歌单 ( 登录 )
+const recommendResource = (cookie: string = "") => {
+  return request.get<any, any>(`/recommend/resource?timestamp=${Date.now()}`, {
+    params: {
+      cookie,
+    },
+  });
+};
+
+//获取每日推荐歌曲 ( 登录 )
+const recommendSongs = (cookie: string = "") => {
+  return request.get<any, any>(`/recommend/songs?timestamp=${Date.now()}`, {
+    params: {
+      cookie,
+    },
+  });
+};
+
+//获取登录状态
+const getLoginStatus = (cookie: string = "") => {
+  return request.get<any, any>(`/login/status?timestamp=${Date.now()}`, {
+    params: {
+      cookie,
+    },
+  });
+};
+
+//退出登录
+const logout = () => {
+  return request.post<any, any>(`/logout?timestamp=${Date.now()}`);
+};
+
+//获取歌词
+const getLyric = (id: number) => {
+  return request.get<any, any>("/lyric", {
+    params: {
+      id,
+    },
+  });
+};
+
+// 热搜列表(详细)
+const getSearchHot = () => {
+  return request.get<any, any>("/search/hot/detail");
+};
+
+// 搜索 suggestion
+const getSearchSuggest = (keywords: string) => {
+  return request.get<any, any>("/search/suggest", {
+    params: { keywords, type: "mobile" },
+  });
+};
+
+// 搜索
+const getCloudSearch = (
+  keywords: string,
+  type: number = 1,
+  limit: number = 30,
+  offset: number = 0,
+) => {
+  return request.get<any, any>("/cloudsearch", {
+    params: {
+      keywords,
+      type,
+      limit,
+      offset,
+    },
+  });
+};
+
+// 最新专辑
+const getNewAlbum = () => {
+  return request.get<any, any>("/album/newest");
+};
+
 export {
-  songerInfo,
-  artistTopSong,
-  getBanner,
-  getCellphone,
   getQrkey,
   getCreatQr,
   getCheckQr,
+  getCellphone,
+  getBanner,
   topSong,
   topPlaylist,
   topaArtistslist,
   toplist,
   playlistDetail,
-  personalizedMv,
   exclusivedRcmdMv,
+  personalizedMv,
+  songerInfo,
+  artistTopSong,
+  getArtistAlbum,
+  getArtistMv,
+  getArtistDesc,
+  getMvDetail,
+  getMvUrl,
+  getSimiMv,
+  getRelatedVideo,
+  getMvComment,
+  getAllMv,
+  getTopMv,
+  personalized,
+  recommendResource,
+  recommendSongs,
+  getLoginStatus,
+  logout,
+  getLyric,
+  getSearchHot,
+  getSearchSuggest,
+  getCloudSearch,
+  getNewAlbum,
 };

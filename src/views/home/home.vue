@@ -61,33 +61,23 @@
                 :key="index"
               >
                 <div class="p-1 w-full h-full">
-                  <Card class="w-full h-full bg-card/30 backdrop-blur-2xl p-0">
+                  <Card
+                    class="w-full h-full bg-card/30 backdrop-blur-2xl p-0"
+                    @click="handleBannerClick(i)"
+                  >
                     <CardContent
                       class="aspect-square w-full h-full p-0 relative"
                     >
-                      <!-- <div
-                        class="absolute top-[50%] left-[5%] translate-y-[-50%] text-[#fff] flex flex-col gap-[20px]"
-                      >
-                        <div class="text-2xl font-bold title">{{ i.typeTitle }}</div>
-                        <div class="more">为你推荐新的精彩内容</div>
-                        <div
-                          class="but w-[120px] h-[40px] text-primary bg-[#ffffffd9] border border-primary rounded-[6px] shadow flex justify-center items-center"
-                        >
-                          立即播放
-                        </div>
-                      </div> -->
                       <div
                         class="absolute text-[0.65rem] bottom-1 left-1 but w-20 h-6 border-foreground bg-card/60 backdrop-blur-2xl rounded-full shadow flex justify-center items-center"
                       >
                         {{ i.typeTitle }}
                       </div>
-                      <a :href="i.url">
-                        <img
-                          :src="i.bigImageUrl + '?param=800y400'"
-                          alt=""
-                          class="object-cover size-full opacity-[1] rounded-2xl"
-                        />
-                      </a>
+                      <img
+                        :src="i.bigImageUrl + '?param=800y400'"
+                        alt=""
+                        class="object-cover size-full opacity-[1] rounded-2xl"
+                      />
                     </CardContent>
                   </Card>
                 </div>
@@ -112,59 +102,20 @@
         <div class="flex flex-col flex-1 overflow-auto">
           <div class="grid grid-cols-4 gap-3 h-full pt-4">
             <div
+              v-for="item in recommendList"
+              :key="item.id"
               class="h-[100%] relative rounded-xl overflow-hidden cursor-pointer group transition-all"
+              @click="goSsongList(item.id)"
             >
               <img
-                src="https://picsum.photos/id/20/200/200"
+                :src="item.picUrl || item.coverImgUrl"
                 alt="歌单"
                 class="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-all"
               />
               <div
                 class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-[10px]"
               >
-                <span class="text-white text-sm truncate">每日推荐</span>
-              </div>
-            </div>
-            <div
-              class="h-[100%] relative rounded-xl overflow-hidden cursor-pointer group transition-all"
-            >
-              <img
-                src="https://picsum.photos/id/26/200/200"
-                alt="歌单"
-                class="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-all"
-              />
-              <div
-                class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-[10px]"
-              >
-                <span class="text-white text-sm truncate">热歌榜</span>
-              </div>
-            </div>
-            <div
-              class="h-[100%] relative rounded-xl overflow-hidden cursor-pointer group transition-all"
-            >
-              <img
-                src="https://picsum.photos/id/28/200/200"
-                alt="歌单"
-                class="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-all"
-              />
-              <div
-                class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-[10px]"
-              >
-                <span class="text-white text-sm truncate">歌单</span>
-              </div>
-            </div>
-            <div
-              class="h-[100%] relative rounded-xl overflow-hidden cursor-pointer group transition-all"
-            >
-              <img
-                src="https://picsum.photos/id/29/200/200"
-                alt="歌单"
-                class="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-all"
-              />
-              <div
-                class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-[10px]"
-              >
-                <span class="text-white text-sm truncate">歌单</span>
+                <span class="text-white text-sm truncate">{{ item.name }}</span>
               </div>
             </div>
           </div>
@@ -175,6 +126,7 @@
     <div class="pl-2.5 font-bold flex items-center justify-between">
       <div><span class="iconfont icon-bofanggedan"></span> 精选推荐</div>
       <div
+        @click="router.push('/search')"
         class="text-foreground/50 text-sm flex items-center gap-0.5 cursor-pointer hover:scale-[1.02] hover:text-foreground"
       >
         查看全部 <ArrowRight class="size-4" />
@@ -196,6 +148,7 @@
     <div class="pl-2.5 font-bold flex items-center justify-between">
       <div><span class="iconfont icon-bofanggedan"></span> 热门歌手</div>
       <div
+        @click="router.push('/search')"
         class="text-foreground/50 text-sm flex items-center gap-0.5 cursor-pointer hover:scale-[1.02] hover:text-foreground"
       >
         查看全部 <ArrowRight class="size-4" />
@@ -220,6 +173,7 @@
     <div class="pl-2.5 font-bold flex items-center justify-between">
       <div><span class="iconfont icon-bofanggedan"></span> 榜单竞选</div>
       <div
+        @click="router.push('/rankingList')"
         class="text-foreground/50 text-sm flex items-center gap-0.5 cursor-pointer hover:scale-[1.02] hover:text-foreground"
       >
         查看全部 <ArrowRight class="size-4" />
@@ -230,7 +184,8 @@
       <div
         v-for="i in ToplistData.slice(0, 6)"
         :key="i.id"
-        class="border rounded-xl p-[10px] bg-card/20 backdrop-blur-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-2px]"
+        @click="goSsongList(i.id)"
+        class="border rounded-xl p-[10px] bg-card/20 backdrop-blur-sm hover:shadow-md transition-all duration-300 hover:translate-y-[-2px] cursor-pointer"
       >
         <div class="flex justify-between items-center mb-[10px]">
           <div class="flex items-center gap-[5px]">
@@ -294,6 +249,7 @@
     <div class="pl-2.5 font-bold flex items-center justify-between">
       <div><span class="iconfont icon-bofanggedan"></span> 华语新歌</div>
       <div
+        @click="router.push('/search')"
         class="text-foreground/50 text-sm flex items-center gap-0.5 cursor-pointer hover:scale-[1.02] hover:text-foreground"
       >
         查看全部 <ArrowRight class="size-4" />
@@ -331,17 +287,59 @@
         </div>
       </div>
     </div>
+
+    <!-- 最新专辑 -->
+    <div class="pl-2.5 font-bold flex items-center justify-between mt-2">
+      <div><span class="iconfont icon-bofanggedan"></span> 最新专辑</div>
+      <div
+        @click="router.push('/search')"
+        class="text-foreground/50 text-sm flex items-center gap-0.5 cursor-pointer hover:scale-[1.02] hover:text-foreground"
+      >
+        查看全部 <ArrowRight class="size-4" />
+      </div>
+    </div>
+    <div class="!w-[calc(100%-20px)] ml-2.5 grid grid-cols-6 gap-3 mb-4">
+      <div
+        v-for="item in newAlbums"
+        :key="item.id"
+        @click="goAlbumDetail(item.id)"
+        class="flex flex-col gap-2 cursor-pointer group"
+      >
+        <div
+          class="aspect-square rounded-lg overflow-hidden relative border border-border/50"
+        >
+          <img
+            :src="item.picUrl + '?param=200y200'"
+            class="size-full object-cover group-hover:scale-105 transition-transform"
+          />
+        </div>
+        <div
+          class="text-sm line-clamp-1 font-medium group-hover:text-primary transition-colors"
+        >
+          {{ item.name }}
+        </div>
+        <div class="text-xs text-muted-foreground line-clamp-1">
+          {{ item.artist.name }}
+        </div>
+      </div>
+    </div>
     <!-- 网易出品mv -->
     <div class="pl-2.5 font-bold flex items-center justify-between">
       <div><span class="iconfont icon-bofanggedan"></span> 网易出品mv</div>
       <div
+        @click="router.push('/mv')"
         class="text-foreground/50 text-sm flex items-center gap-0.5 cursor-pointer hover:scale-[1.02] hover:text-foreground"
       >
         查看全部 <ArrowRight class="size-4" />
       </div>
     </div>
     <div class="ml-2.5 w-full grid grid-cols-4 gap-1">
-      <div v-for="i in giveWyMv" :key="i.id" class="w-full h-35 cursor-pointer">
+      <div
+        v-for="i in giveWyMv"
+        :key="i.id"
+        class="w-full h-35 cursor-pointer"
+        @click="goMvDetail(i.id)"
+      >
         <cardTwo :data="i" />
       </div>
     </div>
@@ -349,6 +347,7 @@
     <div class="pl-2.5 font-bold flex items-center justify-between">
       <div><span class="iconfont icon-bofanggedan"></span> 欧美新歌</div>
       <div
+        @click="router.push('/search')"
         class="text-foreground/50 text-sm flex items-center gap-0.5 cursor-pointer hover:scale-[1.02] hover:text-foreground"
       >
         查看全部 <ArrowRight class="size-4" />
@@ -359,6 +358,7 @@
         class="flex gap-1.5 px-2.5 bg-card/20 backdrop-blur-sm py-2 rounded-xl overflow-hidden hover:shadow-xl transition-all shadow group"
         v-for="i in newFastOM.slice(0, 12)"
         :key="i.id"
+        @click="playMusic(i)"
       >
         <div class="size-16 border rounded-sm relative cursor-pointer">
           <img
@@ -389,13 +389,19 @@
     <div class="pl-2.5 font-bold flex items-center justify-between">
       <div><span class="iconfont icon-bofanggedan"></span> 推荐mv</div>
       <div
+        @click="router.push('/mv')"
         class="text-foreground/50 text-sm flex items-center gap-0.5 cursor-pointer hover:scale-[1.02] hover:text-foreground"
       >
         查看全部 <ArrowRight class="size-4" />
       </div>
     </div>
     <div class="ml-2.5 w-full grid grid-cols-4 gap-1">
-      <div v-for="i in giveMv" :key="i.id" class="w-full h-35 cursor-pointer">
+      <div
+        v-for="i in giveMv"
+        :key="i.id"
+        class="w-full h-35 cursor-pointer"
+        @click="goMvDetail(i.id)"
+      >
         <cardTwo :data="i" />
       </div>
     </div>
@@ -427,6 +433,7 @@ import type {
   getBannerParamsDataType,
 } from "@/api/type"; //引入api的类型
 import playSetStore from "@/store/palySet"; //引入播放设置商店
+import userStore from "@/store/user"; //引入用户store
 // 创建store实例
 import {
   Carousel,
@@ -452,6 +459,9 @@ const giveMv = ref<any[]>([]); //推荐的mv
 const giveWyMv = ref<any[]>([]); //网易出品mv
 const bannerData = ref<getBannerParamsDataListType[]>(); //当前轮播图的数据
 const usePlaySetStore = playSetStore(); //使用store
+const useUserStore = userStore(); //使用用户store
+const recommendList = ref<any[]>([]);
+const newAlbums = ref<any[]>([]);
 const router = useRouter(); //使用路由
 //#endregion 响应式数据 ref、reactive、watch、computed...
 
@@ -465,10 +475,77 @@ onMounted(() => {
   topSongHy(); //新歌速递
   getPersonalizedMvData(); //获取推荐mv
   getExclusivedRcmdMvData(); //获取网易出品mv
+  getRecommendData(); //获取推荐歌单
+  getNewAlbumData(); //获取最新专辑
 });
 //#endregion 生命周期
 
 //#region 事件函数
+//获取推荐歌单
+const getRecommendData = async () => {
+  try {
+    let res;
+    if (useUserStore.isLogin) {
+      res = await homeapi.recommendResource(useUserStore.cookie || "");
+    } else {
+      res = await homeapi.personalized(4);
+    }
+
+    if (res.code === 200) {
+      recommendList.value = (res.recommend || res.result || []).slice(0, 4);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+//获取最新专辑
+const getNewAlbumData = async () => {
+  try {
+    const res = await homeapi.getNewAlbum();
+    if (res.code === 200) {
+      newAlbums.value = res.albums.slice(0, 12);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+//跳转到专辑详情
+const goAlbumDetail = (id: number) => {
+  router.push({ path: "/songList", query: { id: id, type: "album" } });
+};
+
+//跳转到MV详情
+const goMvDetail = (id: number) => {
+  router.push({ path: "/mv", query: { id: id } });
+};
+
+//轮播图点击跳转
+const handleBannerClick = async (i: any) => {
+  // targetType: 1-歌曲, 10-专辑, 1000-歌单, 1004-视频/MV
+  switch (i.targetType) {
+    case 1: // 歌曲
+      const res = await homeapi.getCloudSearch(i.typeTitle, 1, 1);
+      if (res.code === 200 && res.result.songs.length > 0) {
+        playMusic(res.result.songs[0]);
+      }
+      break;
+    case 10: // 专辑
+      goAlbumDetail(i.targetId);
+      break;
+    case 1000: // 歌单
+      goSsongList(i.targetId);
+      break;
+    case 1004: // MV
+      goMvDetail(i.targetId);
+      break;
+    default:
+      if (i.url) window.open(i.url, "_blank");
+      break;
+  }
+};
+
 //跳转到歌手页面
 const goSonger = (i: any) => {
   router.push({ name: "songer", params: { item: i.id } });
@@ -479,7 +556,15 @@ const goSsongList = (id: number) => {
 };
 //播放音乐
 const playMusic = async (data: any) => {
-  await usePlaySetStore.addPlayList(data, true);
+  // 转换数据格式以匹配播放列表需要的格式
+  const songData = {
+    id: data.id,
+    name: data.name,
+    ar: data.artists || data.ar,
+    al: data.album || data.al,
+    dt: data.duration || data.dt,
+  };
+  await usePlaySetStore.addPlayList(songData, true);
 };
 //网易出品mv
 const getExclusivedRcmdMvData = async () => {

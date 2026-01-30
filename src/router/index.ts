@@ -17,8 +17,8 @@ const routes = [
         component: () => import("@/views/rankingList/rankingList.vue"),
       },
       {
-        path: "/seach",
-        component: () => import("@/views/seach/seach.vue"),
+        path: "/search",
+        component: () => import("@/views/search/search.vue"),
       },
       {
         path: "/recentlyPlayed",

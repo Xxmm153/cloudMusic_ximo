@@ -69,8 +69,12 @@
     <div class="flex gap-[10px] h-full items-center">
       <!-- 收缩框 -->
       <InputGroup class="!h-[65%]">
-        <InputGroupInput placeholder="搜索音乐、歌手、专辑..." />
-        <InputGroupAddon>
+        <InputGroupInput
+          v-model="searchValue"
+          @keydown.enter="handleSearch"
+          placeholder="搜索音乐、歌手、专辑..."
+        />
+        <InputGroupAddon class="cursor-pointer" @click="handleSearch">
           <Search class="size-[13px]" />
         </InputGroupAddon>
       </InputGroup>
@@ -95,7 +99,19 @@
         ></Button
       >
       <!-- 登录按钮 -->
+      <div v-if="useUserStore.isLogin" class="flex items-center gap-2 mr-2">
+        <img
+          :src="useUserStore.userInfo?.avatarUrl"
+          class="size-7 rounded-full border border-primary/20 cursor-pointer"
+          @click="goRouter('/set')"
+          alt="avatar"
+        />
+        <span class="text-[13px] font-medium max-w-[80px] truncate">{{
+          useUserStore.userInfo?.nickname
+        }}</span>
+      </div>
       <Button
+        v-else
         @click="showLogin"
         variant="outline"
         size="sm"
@@ -480,6 +496,7 @@ import { Label } from "@/components/ui/label"; //引入标签组件
 import "vue-sonner/style.css"; //引入弹窗css
 import { Toaster } from "@/components/ui/sonner"; //引入弹窗
 import { toast } from "vue-sonner"; //引入弹窗
+import userStore from "@/store/user/index"; // 引入用户store
 //#endregion 引入import
 interface loginTypeType {
   text: string;
@@ -487,6 +504,21 @@ interface loginTypeType {
 }
 //#region 响应式数据 ref、reactive、watch、computed...
 const router = useRouter(); //使用路由
+const useUserStore = userStore(); //使用用户store
+const searchValue = ref(""); // 搜索内容
+
+// 搜索功能
+const handleSearch = () => {
+  if (!searchValue.value.trim()) {
+    router.push({ path: "/search" });
+    return;
+  }
+  router.push({
+    path: "/search",
+    query: { keyword: searchValue.value },
+  });
+};
+
 const themShow = ref<boolean>(false); //主题弹窗显示
 const isDrak = ref<any>(localStorage.getItem("isDrak") || false); //是否为暗黑模式
 const currentThem = ref(localStorage.getItem("themeXimo") || "rose");
@@ -639,13 +671,18 @@ const goLogin = async () => {
     }
 
     const rudata = await homeapi.getCellphone(params);
-    // 调用接口显示有风险 没办法做
     if (rudata.code === 200) {
       // 进行存储当前用户信息及token
+      useUserStore.setUserInfo(rudata.profile);
+      useUserStore.setToken(rudata.token);
+      useUserStore.setCookie(rudata.cookie);
+      loginDialogShow.value = false;
+      toast.success("登录成功！");
     } else {
       //提示
+      toast.error(rudata.message || "登录失败，请重试");
     }
-    console.log("手机号", rudata);
+    console.log("登录结果", rudata);
   } catch (error) {
     console.error("登录失败", error);
   }
@@ -679,8 +716,15 @@ const reCreatQr = async () => {
 // 二维码轮询
 const qrPolling = async () => {
   const qrUrlData = await homeapi.getCheckQr(QrKey.value);
-  //当前只要登录就都不行  二维码登录成功的在这处理
-  // if(){}
+  // 二维码登录成功的在这处理
+  if (qrUrlData.code === 803) {
+    closeQrInterval();
+    useUserStore.setCookie(qrUrlData.cookie);
+    loginDialogShow.value = false;
+    toast.success("扫码登录成功！");
+    // 重新获取用户信息
+    getUserInfo();
+  }
   if (qrUrlData.code === 802) {
     avatarUrl.value = qrUrlData.avatarUrl;
     nickname.value = qrUrlData.nickname;
@@ -693,6 +737,19 @@ const qrPolling = async () => {
     closeQrInterval(); //关闭定时器
   }
 };
+
+// 获取用户信息
+const getUserInfo = async () => {
+  try {
+    const res = await homeapi.getLoginStatus(useUserStore.cookie || "");
+    if (res.data.code === 200 && res.data.profile) {
+      useUserStore.setUserInfo(res.data.profile);
+    }
+  } catch (error) {
+    console.error("获取用户信息失败", error);
+  }
+};
+
 //点击‘登录’按钮
 const showLogin = () => {
   loginDialogShow.value = true;

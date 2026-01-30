@@ -93,11 +93,16 @@
           </button> -->
 
           <div class="flex items-center gap-2 ml-2">
-            <!-- <button
+            <button
+              @click="handleSubscribe"
               class="p-2.5 rounded-full hover:bg-white/40 dark:hover:bg-white/10 transition-colors"
+              :class="{ 'text-red-500': playCount?.subscribed }"
             >
-              <Heart class="size-5" />
-            </button> -->
+              <Heart
+                class="size-5"
+                :class="{ 'fill-current': playCount?.subscribed }"
+              />
+            </button>
             <button
               @click="handleShare"
               class="p-2.5 rounded-full hover:bg-white/40 dark:hover:bg-white/10 transition-colors"
@@ -150,9 +155,18 @@
 
 <script setup lang="ts">
 //#region 引入import
-import { ref, shallowRef, markRaw, onMounted, reactive } from "vue"; //引入vue
+import {
+  ref,
+  shallowRef,
+  markRaw,
+  onMounted,
+  reactive,
+  onActivated,
+  watch,
+} from "vue"; //引入vue
 import { useRoute } from "vue-router"; //引入路由
 import { songlist } from "@/api"; //引入api
+const { getSonglistInfo, getSonglistAll, getAlbumInfo } = songlist;
 import { formatTime, deepClone } from "@/utils/index"; //引入工具函数
 import playsetStore from "@/store/palySet/index"; //引入store
 import {
@@ -167,6 +181,7 @@ import type { TbabItem } from "./type"; //引入ts类型
 import songListComponent from "@/views/components/songList/songlist.vue"; //引入子组件
 import LoveComponent from "@/views/components/songList/love.vue"; //引入子组件
 import commentComponent from "@/views/components/songList/comment.vue"; //引入子组件
+import { toast } from "vue-sonner"; //引入弹窗
 //#endregion 引入import
 
 //#region 响应式数据 ref、reactive、watch、computed...
@@ -174,7 +189,7 @@ const router = useRoute(); //获取路由
 const tabs = reactive<TbabItem>([
   { label: "歌曲", count: 0, component: markRaw(songListComponent) },
   { label: "评论", count: 0, component: markRaw(commentComponent) },
-  // { label: "收藏", count: 0, component: markRaw(LoveComponent) },
+  { label: "收藏", count: 0, component: markRaw(LoveComponent) },
 ]); //tab数据
 
 const activeTab = ref(0); //tableindex
@@ -189,6 +204,26 @@ onMounted(() => {
   getSongList();
   getSongAllData();
 });
+
+// 处理 keep-alive 缓存
+onActivated(() => {
+  const routeId = router.query.id as string;
+  if (routeId && String(playCount.value?.id) !== String(routeId)) {
+    getSongList();
+    getSongAllData();
+  }
+});
+
+// 监听路由参数变化，以便在组件复用时更新数据
+watch(
+  () => router.query.id,
+  (newId) => {
+    if (newId) {
+      getSongList();
+      getSongAllData();
+    }
+  },
+);
 //#endregion 生命周期
 
 //#region 事件函数
@@ -201,26 +236,64 @@ const playSongList = () => {
 const getSongAllData = async () => {
   if (!router.query.id) return;
   const routeId = router.query.id as string;
+  const isAlbum = router.query.type === "album";
+
   try {
-    const rudata = await songlist.getSonglistAll(routeId);
-    songlistData.value = rudata.songs;
-  } catch (error) {}
+    if (isAlbum) {
+      const res = await getAlbumInfo(routeId);
+      songlistData.value = res.songs;
+    } else {
+      const rudata = await getSonglistAll(routeId);
+      songlistData.value = rudata.songs;
+    }
+  } catch (error) {
+    console.error("获取歌曲列表失败", error);
+  }
 };
 //获取歌单数据
 const getSongList = async () => {
   if (!router.query.id) return;
   const routeId = router.query.id as string;
-  try {
-    const rudata = await songlist.getSonglistInfo(routeId);
-    playCount.value = rudata.playlist;
+  const isAlbum = router.query.type === "album";
 
-    // 更新 tab 计数
-    if (playCount.value) {
-      tabs[0].count = playCount.value.trackCount || 0;
-      tabs[1].count = playCount.value.commentCount || 0;
-      tabs[2].count = playCount.value.subscribedCount || 0;
+  try {
+    if (isAlbum) {
+      const res = await getAlbumInfo(routeId);
+      const album = res.album;
+      playCount.value = {
+        id: album.id,
+        name: album.name,
+        coverImgUrl: album.picUrl,
+        creator: {
+          nickname: album.artist.name,
+          avatarUrl: album.artist.picUrl,
+        },
+        createTime: album.publishTime,
+        description: album.description || album.company || "暂无简介",
+        trackCount: album.size,
+        playCount: 0,
+        subscribedCount: 0,
+        tags: [album.type || "专辑"],
+        subscribed: false,
+      };
+      // 更新 tab 计数
+      tabs[0].count = album.size || 0;
+      tabs[1].count = 0; // 专辑评论可能需要单独接口，暂设为0
+      tabs[2].count = 0;
+    } else {
+      const rudata = await getSonglistInfo(routeId);
+      playCount.value = rudata.playlist;
+
+      // 更新 tab 计数
+      if (playCount.value) {
+        tabs[0].count = playCount.value.trackCount || 0;
+        tabs[1].count = playCount.value.commentCount || 0;
+        tabs[2].count = playCount.value.subscribedCount || 0;
+      }
     }
-  } catch (error) {}
+  } catch (error) {
+    console.error("获取歌单/专辑详情失败", error);
+  }
 };
 // 分享功能
 const handleShare = async () => {
@@ -238,10 +311,38 @@ const handleShare = async () => {
       // PC端或不支持Share API时，复制链接
       await navigator.clipboard.writeText(window.location.href);
       // 这里暂时使用 alert，建议后续集成 Toast 组件
-      alert("链接已复制到剪贴板！");
+      toast.success("链接已复制到剪贴板！");
     }
   } catch (err) {
     console.error("分享失败:", err);
+  }
+};
+
+// 收藏功能
+const handleSubscribe = async () => {
+  if (!playCount.value) return;
+  const id = playCount.value.id;
+  const t = playCount.value.subscribed ? 2 : 1;
+
+  try {
+    const res = await songlist.subscribePlaylist(t, id);
+    if (res.code === 200) {
+      playCount.value.subscribed = !playCount.value.subscribed;
+      if (t === 1) {
+        playCount.value.subscribedCount++;
+        toast.success("收藏成功");
+      } else {
+        playCount.value.subscribedCount--;
+        toast.success("取消收藏成功");
+      }
+      // Update tab count
+      tabs[2].count = playCount.value.subscribedCount;
+    } else {
+      toast.error("操作失败");
+    }
+  } catch (error) {
+    console.error(error);
+    toast.error("操作失败");
   }
 };
 //#region 按钮点击事件
